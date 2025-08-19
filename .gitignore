@@ -1,0 +1,14 @@
+#gitignore file 
+
+# Node.js dependencies - built with package.json so not really necessary to keep track of 
+node_modules/
+
+# Environment variables 
+.env
+
+# Logs - logs generated at runtime will be used for testing and debugging / no need to commit and track at this juncture
+*.log
+
+# OS-specific files - locally generated for either mac or windows / not needed to track / just in case
+.DS_Store
+Thumbs.db
