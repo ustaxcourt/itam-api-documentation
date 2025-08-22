@@ -5,10 +5,23 @@
  * dotenv is a standard package that handles environment variables.
  * Aim is to use this tool / package (as we need Node.js to use it) to do our variable handling
  * 
+ * Note from Microsoft on OData version: 
+ * The OData version 4.01 is the latest version. It includes enhancements and more features not available in version 4.0, and therefore not currently available in the Dataverse Web API.
+ * Source: https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/query/overview
+ * 
+ * Note from Microsoft on API version: (v9.x versions being the most recent - debating between v9.1 and v9.2)
+ * While the v9.x releases can support specific differences, there have been no breaking changes added to v9.0, v9.1, or v9.2 releases. 
+ * Each of these releases are have identical Web API behaviors.
+ * Source: https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/web-api-versions 
+ * 
+ * These versions should be evaluated annually or bi-annually to review for depreciations for security and best practice.
+ * 
  * In progress. @sharletclaros 
+ * 
+ *
  * */
 
-require('dotenv').config();
+
 
 const config = {
   auth: {

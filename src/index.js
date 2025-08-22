@@ -3,7 +3,6 @@
  */
 
 
-require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
 
 console.log('DATAVERSE_URL from .env:', process.env.DATAVERSE_URL);
 
