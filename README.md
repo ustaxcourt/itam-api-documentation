@@ -16,5 +16,11 @@ Each of these folders will include general sets of documentation for additional 
 
 ### 1. Set up your .env variable in your local instance of the repo
 Please use the `.env.example` file as reference. Create a local `.env` file with the Client, Tenant, Secret, and Environment ID/URL information filled in. 
-### 2. Install Node.js and dotenv
-So we can load our env variables and handle authentications across our different API calls / scripts
+### 2. Install Node.js version 20.6.0 or higher
+So we can load our env variables and handle authentications across our different API calls / scripts. We include handling within package.json and will within all API files as well. 
+You can run any script (using src/index.js as an example here) using the following command as well: 
+
+`node --env-file=.env src/index.js`
+
+### 3. If cloning or forking... if using through (insert packaging solution here)
+You do this! -...
