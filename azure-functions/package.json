@@ -9,12 +9,12 @@
   "dependencies": {
     "@azure/functions": "^4.0.0"
   },
-    "engines": {
+  "engines": {
     "node": ">=16.0.0"
   },
   "devDependencies": {},
-  "main": "src/{index.js,functions/*.js}"
-  
 
+  "type": "module",
+  "main": "index.js"
 
 }
