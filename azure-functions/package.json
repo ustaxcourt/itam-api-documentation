@@ -1,20 +1,22 @@
+
 {
   "name": "azure-functions",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
+  
   "scripts": {
     "start": "func start",
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
-    "@azure/functions": "^4.0.0"
+    "@azure/functions": "^4.0.0",
+    "axios": "^1.6.0"
   },
   "engines": {
     "node": ">=16.0.0"
   },
   "devDependencies": {},
 
-  "type": "module",
   "main": "index.js"
-
 }

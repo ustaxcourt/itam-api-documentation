@@ -1,6 +1,10 @@
 
 import { app } from '@azure/functions';
 
+
+console.log('Function helloworld loaded');
+
+
 app.http('helloworld', {
   methods: ['GET'],
   authLevel: 'anonymous',

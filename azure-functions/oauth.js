@@ -1,12 +1,11 @@
 
-const axios = require('axios');
+import axios from 'axios';
 
-/**
- * Get OAuth token from Azure AD for Dataverse access
- * @returns {Promise<string>} - Access token
- */
-async function getToken() {
-  const { CLIENT_ID, TENANT_ID, CLIENT_SECRET, DATAVERSE_URL } = process.env;
+console.log('oauth loaded');
+
+
+export async function getToken() {
+  const { CLIENT_ID, TENANT_ID, CLIENT_SECRET, DATAVERSE_URL, SCOPE } = process.env;
 
   const tokenUrl = `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token`;
 
@@ -14,7 +13,7 @@ async function getToken() {
   params.append('client_id', CLIENT_ID);
   params.append('client_secret', CLIENT_SECRET);
   params.append('grant_type', 'client_credentials');
-  params.append('scope', `${DATAVERSE_URL}/.default`);
+  params.append('scope', SCOPE);
 
   try {
     const response = await axios.post(tokenUrl, params);
@@ -24,5 +23,3 @@ async function getToken() {
     throw error;
   }
 }
-
-module.exports = { getToken };
