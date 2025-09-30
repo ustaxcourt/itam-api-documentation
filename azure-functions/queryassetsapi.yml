@@ -1,0 +1,61 @@
+openapi: '3.0.3'
+info:
+  title: API Title
+  version: '1.0'
+servers:
+  - url: http://localhost:7072/api/queryAsset?id={guid}
+paths:
+  /api/queryAsset:
+    get:
+      parameters:
+        - name: guid
+          in: query
+          description: Guid of AssetId
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: OK
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  item:
+                    type: string
+                    example: "HP EliteDisplay E241i #166"
+                  location:
+                    type: string
+                    example: "G47"
+                  status:
+                    type: string
+                    example: "Active"
+                  itemstatus:
+                    type: string
+                    example: "Available"
+                  phone:
+                    type: string
+                    nullable: true
+                    example: null
+                  condition:
+                    type: string
+                    example: "Good"
+                  activation:
+                    type: string
+                    nullable: true
+                    example: null
+                  user:
+                    type: string
+                    example: "NO OWNER ASSIGNED"
+                  stateCode:
+                    type: string
+                    example: "Active"
+                  osVersion:
+                    type: string
+                    nullable: true
+                    example: null
+
+        '400':
+          description: OK

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { getToken } from './oauth.js';
 
 const { DATAVERSE_URL } = process.env;
-const keyList = ["crf7f_rela_sharepoint_list_id", "@odata.etag", "overriddencreatedon", "importsequencenumber", "versionnumber", "_owningbusinessunit_value", "_ownerid_value", "_owningteam_value", "timezoneruleversionnumber", "utcconversiontimezonecode", "_owninguser_value", "_crf7f_microsoftentralookup_value"];
+//const keyList = ["crf7f_rela_sharepoint_list_id", "@odata.etag", "overriddencreatedon", "importsequencenumber", "versionnumber", "_owningbusinessunit_value", "_ownerid_value", "_owningteam_value", "timezoneruleversionnumber", "utcconversiontimezonecode", "_owninguser_value", "_crf7f_microsoftentralookup_value"];
 
 
 app.http('queryAsset', {
@@ -31,14 +31,15 @@ app.http('queryAsset', {
       const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
-          Accept: 'application/json'
+          Accept: 'application/json',
+          Prefer: 'odata.include-annotations="OData.Community.Display.V1.FormattedValue"'
         }
       });
 
 
       return {
         status: 200,
-        jsonBody: cleanData(response.data["value"][0])
+        jsonBody: filterDictionary(response.data["value"][0])
       };
     } catch (error) {
       const status = error.response?.status || 500;
@@ -55,30 +56,54 @@ app.http('queryAsset', {
   }
 });
 
+function filterDictionary(dict) {
+    const cleaned = {};
+    const guidRegex = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
 
+    const allowedKeys = [
+        "_crf7f_ois_asset_dat_itemlookup_value@OData.Community.Display.V1.FormattedValue",
+        "_crf7f_fac_asset_ref_locationlookup_value@OData.Community.Display.V1.FormattedValue",
+        "statuscode@OData.Community.Display.V1.FormattedValue",
+        "crf7f_asset_item_status@OData.Community.Display.V1.FormattedValue",
+        "crf7f_phone_numbers",
+        "crf7f_asset_item_condition@OData.Community.Display.V1.FormattedValue",
+        "crf7f_service_activation",
+        "_crf7f_ois_asset_entra_dat_usercurrentow_value@OData.Community.Display.V1.FormattedValue",
+        "statecode@OData.Community.Display.V1.FormattedValue",
+        "crf7f_os_version"
+    ];
 
-function cleanData(data) {
-    let cleaned = {};
-    for (const key in data) {
+    const keyMap = {
 
-        if (key.endsWith("by_value") || keyList.includes(key)) {
+        "_crf7f_ois_asset_dat_itemlookup_value@OData.Community.Display.V1.FormattedValue": "item",
+        "_crf7f_fac_asset_ref_locationlookup_value@OData.Community.Display.V1.FormattedValue": "location",
+        "statuscode@OData.Community.Display.V1.FormattedValue": "status",
+        "crf7f_asset_item_status@OData.Community.Display.V1.FormattedValue": "itemstatus",
+        "crf7f_phone_numbers": "phone",
+        "crf7f_asset_item_condition@OData.Community.Display.V1.FormattedValue": "condition",
+        "crf7f_service_activation": "activation",
+        "_crf7f_ois_asset_entra_dat_usercurrentow_value@OData.Community.Display.V1.FormattedValue": "user",
+        "statecode@OData.Community.Display.V1.FormattedValue": "stateCode",
+        "crf7f_os_version": "osVersion"
+    };
+
+    for (const key in dict) {
+        const value = dict[key];
+
+        // Skip if key is not allowed
+        if (!allowedKeys.includes(key)) {
             continue;
         }
-        let newKey = key.startsWith("crf7f_") ? key.slice(6) : key;
-        if (newKey === "ois_asset_rela_item_orgid") {
-            newKey = "assetid";
+
+        // Skip if value contains a GUID
+        if (typeof value === "string" && guidRegex.test(value)) {
+            continue;
         }
-        if (newKey === "_crf7f_fac_asset_ref_locationlookup_value") {
-            newKey = "locationlookup_value";
-        }
-        if (newKey === "_crf7f_ois_asset_dat_itemlookup_value") {
-            newKey = "itemlookup_value";
-        }
-        if (newKey === "_crf7f_ois_asset_entra_dat_usercurrentow_value") {
-            newKey = "entracurrentuser";
-        }
-        cleaned[newKey] = data[key];
+
+        // Use pretty key name
+        const prettyKey = keyMap[key] || key;
+        cleaned[prettyKey] = value;
     }
+
     return cleaned;
 }
-
