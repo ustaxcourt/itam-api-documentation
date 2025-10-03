@@ -34,7 +34,7 @@ paths:
                     example: "Active"
                     enum: 
                     - Active
-                  itemstatus:
+                  itemStatus:
                     type: string
                     example: "Available"
                     enum:
@@ -136,7 +136,7 @@ paths:
                 error: "Dataverse query failed"
                 details: "Resource Not Found"
         '403':
-          description: Permission Denied
+          description: Forbidden
           content:
             application/json:
               schema:

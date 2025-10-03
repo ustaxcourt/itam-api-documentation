@@ -81,7 +81,7 @@ function filterDictionary(dict) {
         "_crf7f_ois_asset_dat_itemlookup_value@OData.Community.Display.V1.FormattedValue": "item",
         "_crf7f_fac_asset_ref_locationlookup_value@OData.Community.Display.V1.FormattedValue": "location",
         "statuscode@OData.Community.Display.V1.FormattedValue": "status",
-        "crf7f_asset_item_status@OData.Community.Display.V1.FormattedValue": "itemstatus",
+        "crf7f_asset_item_status@OData.Community.Display.V1.FormattedValue": "itemStatus",
         "crf7f_phone_numbers": "phone",
         "crf7f_asset_item_condition@OData.Community.Display.V1.FormattedValue": "condition",
         "crf7f_service_activation": "activation",
