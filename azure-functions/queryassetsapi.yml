@@ -85,7 +85,7 @@ paths:
                       Phone:
                         type: string
                         example: "+1-555-123-4567"
-                      JobTitle:
+                      jobTitle:
                         type: string
                         example: "Office 365 Engineer"
                       GUID:
