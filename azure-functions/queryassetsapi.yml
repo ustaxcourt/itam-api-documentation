@@ -26,17 +26,15 @@ paths:
                   item:
                     type: string
                     example: "HP EliteDisplay E241i #166"
+                    nullable: true
                   location:
                     type: string
                     example: "G47"
-                  status:
-                    type: string
-                    example: "Active"
-                    enum: 
-                    - Active
+                    nullable: true
                   itemStatus:
                     type: string
                     example: "Available"
+                    nullable: true
                     enum:
                       - Assigned
                       - Available
@@ -47,6 +45,7 @@ paths:
                       - Inoperative
                       - Unknown
                       - Excess in Depot
+                      - null
                   phone:
                     type: string
                     nullable: true
@@ -54,6 +53,7 @@ paths:
                   condition:
                     type: string
                     example: "Good"
+                    nullable: true
                     enum:
                       - Excellent
                       - Good
@@ -61,14 +61,16 @@ paths:
                       - Garbage
                       - Damaged
                       - New
+                      - null
 
                   activation:
-                    type: string
+                    type: boolean
                     nullable: true
                     example: null
                     enum:
                       - true
                       - false
+                      - null
                   user:
                     type: object
                     
@@ -96,16 +98,15 @@ paths:
                       isActive:
                         type: boolean
                         example: true
-                  stateCode:
-                    type: string
-                    example: "Active"
-                    enum:
-                      - Active
-                      - Inactive
+                    nullable: true
                   osVersion:
                     type: string
                     nullable: true
-                    example: null
+                    example: Windows 11 23H2
+                    enum:
+                      - Windows 11 23H2
+                      - Windows 11 24H2
+                      - Windows 10
 
 
         '401':
