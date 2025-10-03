@@ -88,7 +88,7 @@ function filterDictionary(dict) {
 
     const keyMap = {
 
-        "_crf7f_ois_asset_dat_itemlookup_value@OData.Community.Display.V1.FormattedValue": "item",
+        "_crf7f_ois_asset_dat_itemlookup_value@OData.Community.Display.V1.FormattedValue": "assetName",
         "_crf7f_fac_asset_ref_locationlookup_value@OData.Community.Display.V1.FormattedValue": "location",
         "crf7f_asset_item_status@OData.Community.Display.V1.FormattedValue": "itemStatus",
         "crf7f_phone_numbers": "phone",

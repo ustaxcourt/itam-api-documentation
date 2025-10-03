@@ -23,10 +23,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  item:
+                  assetName:
                     type: string
                     example: "HP EliteDisplay E241i #166"
-                    nullable: true
+                    nullable: false
                   location:
                     type: string
                     example: "G47"
@@ -34,7 +34,7 @@ paths:
                   itemStatus:
                     type: string
                     example: "Available"
-                    nullable: true
+                    nullable: false
                     enum:
                       - Assigned
                       - Available
@@ -53,7 +53,7 @@ paths:
                   condition:
                     type: string
                     example: "Good"
-                    nullable: true
+                    nullable: false
                     enum:
                       - Excellent
                       - Good
@@ -107,6 +107,7 @@ paths:
                       - Windows 11 23H2
                       - Windows 11 24H2
                       - Windows 10
+                      - null
 
 
         '401':
