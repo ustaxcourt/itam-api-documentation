@@ -45,7 +45,6 @@ paths:
                       - Inoperative
                       - Unknown
                       - Excess in Depot
-                      - null
                   phone:
                     type: string
                     nullable: true
@@ -61,7 +60,6 @@ paths:
                       - Garbage
                       - Damaged
                       - New
-                      - null
 
                   activation:
                     type: boolean
@@ -75,14 +73,14 @@ paths:
                     type: object
                     
                     properties:
-                      Name:
+                      name:
                         type: string
                         example: "Matthew Hung"
-                      Email:
+                      email:
                         type: string
                         format: email
                         example: "matthew.hung@example.com"
-                      Phone:
+                      phone:
                         type: string
                         example: "+1-555-123-4567"
                       jobTitle:
@@ -92,7 +90,7 @@ paths:
                         type: string
                         format: uuid
                         example: "123e4567-e89b-12d3-a456-426614174000"
-                      Location:
+                      location:
                         type: string
                         example: "Arden, California"
                       isActive:
