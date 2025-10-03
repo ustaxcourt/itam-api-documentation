@@ -3,7 +3,7 @@ info:
   title: Query Assets
   version: '1.0'
 servers:
-  - url: http://localhost:7072/api/queryAsset?id={guid}
+  - url: /api/queryAsset?id={guid}
 paths:
   /api/queryAsset:
     get:
@@ -32,9 +32,21 @@ paths:
                   status:
                     type: string
                     example: "Active"
+                    enum: 
+                    - Active
                   itemstatus:
                     type: string
                     example: "Available"
+                    enum:
+                      - Assigned
+                      - Available
+                      - Kiosk
+                      - Recycled
+                      - Decommissioned
+                      - Repair
+                      - Inoperative
+                      - Unknown
+                      - Excess in Depot
                   phone:
                     type: string
                     nullable: true
@@ -42,20 +54,94 @@ paths:
                   condition:
                     type: string
                     example: "Good"
+                    enum:
+                      - Excellent
+                      - Good
+                      - Poor
+                      - Garbage
+                      - Damaged
+                      - New
+
                   activation:
                     type: string
                     nullable: true
                     example: null
+                    enum:
+                      - true
+                      - false
                   user:
-                    type: string
-                    example: "NO OWNER ASSIGNED"
+                    type: object
+                    
+                    properties:
+                      Name:
+                        type: string
+                        example: "Matthew Hung"
+                      Email:
+                        type: string
+                        format: email
+                        example: "matthew.hung@example.com"
+                      Phone:
+                        type: string
+                        example: "+1-555-123-4567"
+                      JobTitle:
+                        type: string
+                        example: "Office 365 Engineer"
+                      GUID:
+                        type: string
+                        format: uuid
+                        example: "123e4567-e89b-12d3-a456-426614174000"
+                      Location:
+                        type: string
+                        example: "Arden, California"
+                      isActive:
+                        type: boolean
+                        example: true
                   stateCode:
                     type: string
                     example: "Active"
+                    enum:
+                      - Active
+                      - Inactive
                   osVersion:
                     type: string
                     nullable: true
                     example: null
 
+
+        '401':
+          description: Unauthorized – Authentication required
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                error: "Dataverse query failed"
+                details: "Request failed with status code 401"
         '400':
-          description: OK
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                error: "Dataverse query failed"
+                details: "error"
+        '404':
+          description: Resource Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                error: "Dataverse query failed"
+                details: "Resource Not Found"
+        '403':
+          description: Permission Denied
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                error: "Dataverse query failed"
+                details: "Permission Denied"
+

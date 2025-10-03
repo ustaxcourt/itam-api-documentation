@@ -25,7 +25,7 @@ app.http('queryAsset', {
       const id = request.query.get('id'); // GUID
 
 
-      let url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs?$filter=crf7f_ois_asset_rela_item_orgid eq '${id}'`;
+      const url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs?$filter=crf7f_ois_asset_rela_item_orgid eq '${id}'`;
 
 
       const response = await axios.get(url, {
@@ -36,12 +36,15 @@ app.http('queryAsset', {
         }
       });
 
+      
+
 
       return {
         status: 200,
         jsonBody: filterDictionary(response.data["value"][0])
       };
     } catch (error) {
+      
       const status = error.response?.status || 500;
       context.error('Dataverse query error:', error.response?.data || error.message);
 
