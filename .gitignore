@@ -1,0 +1,46 @@
+# Node.js dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Terraform working directory and state
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+
+# Terraform variable files (sensitive)
+*.tfvars
+*.tfvars.json
+
+# Terraform override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform CLI config
+.terraformrc
+terraform.rc
+
+# Executables
+terraform.exe
+
+# IDE/editor folders
+.vscode/
+.idea/
+*.swp
+*.swo
+
+terraform/.terraform/providers/registry.terraform.io/hashicorp/azurerm/4.46.0/windows_amd64/terraform-provider-azurerm_v4.46.0_x5.exe
+
+
+terraform/.terraform/providers/**/terraform-provider-azurerm_*.exe
