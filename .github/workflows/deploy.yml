@@ -1,0 +1,35 @@
+name: Deploy Azure Function App (JavaScript ESM)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '22.18.0'
+
+    - name: Install dependencies
+      run: npm ci
+      working-directory: ./azure-functions
+
+    - name: Zip function app
+      run: |
+        cd azure-functions
+        zip -r ../functionapp.zip .
+    
+    - name: Deploy to Azure Functions
+      uses: Azure/functions-action@v1
+      with:
+        app-name: ${{ secrets.AZURE_FUNCTIONAPP_NAME }}
+        package: functionapp.zip
+        publish-profile: ${{ secrets.AZURE_CREDENTIALS }}
