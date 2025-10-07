@@ -15,7 +15,7 @@ Thumbs.db
 .terraform/
 *.tfstate
 *.tfstate.backup
-.terraform.lock.hcl
+*.exe
 
 # Terraform variable files (sensitive)
 *.tfvars
@@ -39,8 +39,3 @@ terraform.exe
 .idea/
 *.swp
 *.swo
-
-terraform/.terraform/providers/registry.terraform.io/hashicorp/azurerm/4.46.0/windows_amd64/terraform-provider-azurerm_v4.46.0_x5.exe
-
-
-terraform/.terraform/providers/**/terraform-provider-azurerm_*.exe
