@@ -1,0 +1,147 @@
+openapi: '3.0.3'
+info:
+  title: Query Assets
+  version: '1.0'
+servers:
+  - url: /api/queryAsset?id={guid}
+paths:
+  /api/queryAsset:
+    get:
+      parameters:
+        - name: guid
+          in: query
+          description: Guid of AssetId
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: OK
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assetName:
+                    type: string
+                    example: "HP EliteDisplay E241i #166"
+                    nullable: false
+                  location:
+                    type: string
+                    example: "G47"
+                    nullable: true
+                  itemStatus:
+                    type: string
+                    example: "Available"
+                    nullable: false
+                    enum:
+                      - Assigned
+                      - Available
+                      - Kiosk
+                      - Recycled
+                      - Decommissioned
+                      - Repair
+                      - Inoperative
+                      - Unknown
+                      - Excess in Depot
+                  phone:
+                    type: string
+                    nullable: true
+                    example: null
+                  condition:
+                    type: string
+                    example: "Good"
+                    nullable: false
+                    enum:
+                      - Excellent
+                      - Good
+                      - Poor
+                      - Garbage
+                      - Damaged
+                      - New
+
+                  activation:
+                    type: boolean
+                    nullable: true
+                    example: null
+                    enum:
+                      - true
+                      - false
+                      - null
+                  user:
+                    type: object
+                    
+                    properties:
+                      name:
+                        type: string
+                        example: "Matthew Hung"
+                      email:
+                        type: string
+                        format: email
+                        example: "matthew.hung@example.com"
+                      phone:
+                        type: string
+                        example: "+1-555-123-4567"
+                      jobTitle:
+                        type: string
+                        example: "Office 365 Engineer"
+                      guid:
+                        type: string
+                        format: uuid
+                        example: "123e4567-e89b-12d3-a456-426614174000"
+                      location:
+                        type: string
+                        example: "Arden, California"
+                      isActive:
+                        type: boolean
+                        example: true
+                    nullable: true
+                  osVersion:
+                    type: string
+                    nullable: true
+                    example: Windows 11 23H2
+                    enum:
+                      - Windows 11 23H2
+                      - Windows 11 24H2
+                      - Windows 10
+                      - null
+
+
+        '401':
+          description: Unauthorized – Authentication required
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                error: "Dataverse query failed"
+                details: "Request failed with status code 401"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                error: "Dataverse query failed"
+                details: "error"
+        '404':
+          description: Resource Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                error: "Dataverse query failed"
+                details: "Resource Not Found"
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                error: "Dataverse query failed"
+                details: "Permission Denied"
+
