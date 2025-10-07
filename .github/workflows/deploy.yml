@@ -33,4 +33,3 @@ jobs:
         app-name: ${{ secrets.AZURE_FUNCTIONAPP_NAME }}
         package: functionapp.zip
         publish-profile: ${{ secrets.AZURE_CREDENTIALS }}
-
