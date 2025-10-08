@@ -16,13 +16,15 @@ This root file as well as the Azure Functions Folder will contain documentation 
 
 ## Here are instructions on how to get set-up and use our developed API tools:
 Dependancies:
-Node.js v22.18.0
-Terraform v1.13.3
+Node.js v22.18.0, 
+Terraform v1.13.3, 
 Azure Functions v4
 
 Local files needed:
-local.settings.json - Azure Functions, for now for appropriate IDs and secrets
-terraform.tfvars - Local information regarding subscription and existing resource identification
+
+- local.settings.json - Azure Functions, for now for appropriate IDs and secrets
+
+- terraform.tfvars - Local information regarding subscription and existing resource identification
 
 ### Steps for deployment via GitHub actions and provisioning with Terraform
 (Local deployment as of now until Authentication is finalized) 
