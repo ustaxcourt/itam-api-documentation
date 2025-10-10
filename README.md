@@ -55,7 +55,7 @@ Local files needed:
 
 For full reading on the task related to Terraform Provisioning - you can review this document [here.](https://ustaxcourt.sharepoint.com/:w:/r/sites/ITAssetManagementProject-adhoc/Shared%20Documents/main/AM6000_Deployment/6300_EnvironmentSetup/Azure%20functions%20with%20Terraform%20-%20Deployment%20and%20Configuration.docx?d=w24b54c43d78642edb23ea3666d22ec0a&csf=1&web=1&e=mBgQwZ)
 
-
+***For README in these next steps
 Add piece on storing variables in azure portal app settings maybe
 Azure App Settings: Store CLIENT_ID, TENANT_ID, DATAVERSE_URL, and SCOPE in Azure Function App Settings.
 
