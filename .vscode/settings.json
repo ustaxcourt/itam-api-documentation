@@ -1,5 +1,4 @@
 {
-  "files.insertFinalNewline": true,
   "azureFunctions.deploySubpath": "azure-functions",
   "azureFunctions.postDeployTask": "npm install (functions)",
   "azureFunctions.preDeployTask": "npm prune (functions)",
@@ -9,5 +8,6 @@
   "debug.internalConsoleOptions": "neverOpen",
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
+  "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true
 }
