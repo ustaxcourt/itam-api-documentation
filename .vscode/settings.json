@@ -1,9 +1,13 @@
 {
-    "azureFunctions.deploySubpath": "azure-functions",
-    "azureFunctions.postDeployTask": "npm install (functions)",
-    "azureFunctions.projectLanguage": "JavaScript",
-    "azureFunctions.projectRuntime": "~4",
-    "debug.internalConsoleOptions": "neverOpen",
-    "azureFunctions.projectLanguageModel": 4,
-    "azureFunctions.preDeployTask": "npm prune (functions)"
+  "files.insertFinalNewline": true,
+  "azureFunctions.deploySubpath": "azure-functions",
+  "azureFunctions.postDeployTask": "npm install (functions)",
+  "azureFunctions.preDeployTask": "npm prune (functions)",
+  "azureFunctions.projectLanguage": "JavaScript",
+  "azureFunctions.projectLanguageModel": 4,
+  "azureFunctions.projectRuntime": "~4",
+  "debug.internalConsoleOptions": "neverOpen",
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "files.trimTrailingWhitespace": true
 }
