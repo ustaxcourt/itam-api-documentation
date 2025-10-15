@@ -59,3 +59,8 @@ For full reading on the task related to Terraform Provisioning - you can review 
 1. A folder named `__tests__` exists within the `/azure-functions` directory.
 2. To ensure each interation of our api doesnt not alter or change our responses, these tests will test each api endpoint and its datatype.
 3. We will run a `.yml` workflow within the `.github/workflows` folder within the repo. This workflow will trigger on commit to any branch and run the tests stored within the `/__tests__` folder
+***For README in these next steps
+Add piece on storing variables in azure portal app settings maybe
+Azure App Settings: Store CLIENT_ID, TENANT_ID, DATAVERSE_URL, and SCOPE in Azure Function App Settings.
+
+.. then also the vscode extensions for devs
