@@ -68,7 +68,8 @@ handler: async (request, context) => {
       status,
       jsonBody: {
         error: 'Dataverse query failed',
-        details: error.response?.data?.error?.message || error.message
+        details: error.response?.status === 401 ? 'Request failed with invalid authorization status code 403' : error.response?.data?.error?.message || error.message
+
       }
     };
   }
