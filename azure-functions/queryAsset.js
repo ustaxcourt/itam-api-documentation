@@ -14,7 +14,7 @@ handler: async (request, context) => {
     const clientSecret = request.headers.get('x-client-secret');
     if (!clientSecret) {
       return {
-        status: 400,
+        status: 401,
         jsonBody: {
           error: 'Missing client secret',
           details: 'Please provide x-client-secret in the request headers.'
@@ -25,7 +25,7 @@ handler: async (request, context) => {
     const token = await getToken(clientSecret);
     if (!token) {
       return {
-        status: 403,
+        status: 401,
         jsonBody: {
           error: 'Unauthorized',
           details: 'OAuth token is missing or invalid.'
@@ -61,7 +61,7 @@ handler: async (request, context) => {
       jsonBody: dictionary
     };
   } catch (error) {
-    const status = error.response?.status || 500;
+    const status = error.response?.status === 401 ? 403 : error.response?.status || 500;
     context.error('Dataverse query error:', error.response?.data || error.message);
 
     return {
