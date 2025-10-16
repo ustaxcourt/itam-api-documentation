@@ -34,7 +34,8 @@ app.http('startAuth', {
       // Store codeVerifier in a cookie (or use encrypted query param/session)
       const cookie = `code_verifier=${codeVerifier}; Path=/; HttpOnly; Secure`;
 
-      const authorizeUrl = `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/authorize?` +
+      const authorizeUrl =
+        `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/authorize?` +
         `client_id=${CLIENT_ID}` +
         `&response_type=code` +
         `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
@@ -43,7 +44,15 @@ app.http('startAuth', {
         `&code_challenge=${codeChallenge}` +
         `&code_challenge_method=S256`;
 
+
+
       context.log('Redirecting to:', authorizeUrl);
+
+      context.log('Response headers:', {
+        'Location': authorizeUrl,
+        'Set-Cookie': cookie
+      });
+
 
       context.res = {
         status: 302,
@@ -52,6 +61,7 @@ app.http('startAuth', {
           'Location': authorizeUrl
         }
       };
+      return;
     } catch (error) {
       context.log.error('startAuth error:', error.message);
       return {
