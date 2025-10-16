@@ -15,6 +15,13 @@ data "azurerm_storage_account" "storage" {
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
+# Reference existing key vault
+data "azurerm_key_vault" "existing_kv" {
+  name                = var.key_vault_name
+  resource_group_name = var.resource_group_name
+}
+
+
 # Create Service Plan for Linux and Node.js v22
 resource "azurerm_service_plan" "plan" {
   name                = "${var.function_app_name}-plan"
@@ -32,6 +39,7 @@ resource "azurerm_application_insights" "insights" {
   application_type    = "web"
 }
 
+
 # Create Azure Function App
 resource "azurerm_linux_function_app" "function" {
   name                       = var.function_app_name
@@ -44,6 +52,10 @@ resource "azurerm_linux_function_app" "function" {
   site_config {
     # optional remove if causing issues
     application_insights_key = azurerm_application_insights.insights.instrumentation_key
+  }
+
+  identity {
+    type = "SystemAssigned"
   }
 
   app_settings = {

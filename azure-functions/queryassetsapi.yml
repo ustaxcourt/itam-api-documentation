@@ -115,8 +115,8 @@ paths:
               schema:
                 type: object
               example:
-                error: "Dataverse query failed"
-                details: "Request failed with status code 401"
+                error: "Missing client secret"
+                details: "Please provide x-client-secret in the request headers."
         '400':
           description: Bad Request
           content:
@@ -143,5 +143,5 @@ paths:
                 type: object
               example:
                 error: "Dataverse query failed"
-                details: "Permission Denied"
+                details: "Request failed with invalid authorization status code 403"
 
