@@ -1,13 +1,11 @@
-
 {
   "name": "azure-functions",
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  
   "scripts": {
     "start": "func start",
-    "test": "echo \"No tests yet...\""
+    "test": "jest azure-tests"
   },
   "dependencies": {
     "@azure/functions": "^4.0.0",
@@ -17,6 +15,5 @@
     "node": ">=22.18.0"
   },
   "devDependencies": {},
-
   "main": "index.js"
 }
