@@ -12,6 +12,7 @@
     "axios": "^1.6.0"
   },
   "devDependencies": {
+    "jest": "^30.2.0",
     "nodemon": "^3.0.1"
   },
   "author": "Sharlet Claros",
