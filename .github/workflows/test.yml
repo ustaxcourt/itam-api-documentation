@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - deployTest
+      - automated-testing-for-api-endpoints-AT-114
 
 jobs:
   test:
