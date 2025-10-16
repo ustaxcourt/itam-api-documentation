@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "func start",
-    "test": "jest azure-tests"
+    "test": "jest"
   },
   "dependencies": {
     "@azure/functions": "^4.0.0",

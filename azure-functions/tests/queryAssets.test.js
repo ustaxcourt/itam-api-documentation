@@ -1,4 +1,4 @@
-const queryAsset = require('./queryAsset');
+const queryAsset = require('../queryAsset');
 
 test('should return correct asset JSON structure with expected data types', async () => {
   const context = {};
