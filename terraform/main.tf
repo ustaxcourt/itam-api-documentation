@@ -15,13 +15,6 @@ data "azurerm_storage_account" "storage" {
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
-# Reference existing key vault
-data "azurerm_key_vault" "existing_kv" {
-  name                = var.key_vault_name
-  resource_group_name = var.resource_group_name
-}
-
-
 # Create Service Plan for Linux and Node.js v22
 resource "azurerm_service_plan" "plan" {
   name                = "${var.function_app_name}-plan"
