@@ -6,6 +6,7 @@ import './queryAssets.js';
 
 import './queryAsset.js';
 import './authCallback.js';
+import './startAuth.js';
 
 app.setup({
   enableHttpStream: true
