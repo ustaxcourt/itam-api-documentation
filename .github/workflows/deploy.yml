@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - deployTest
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -13,6 +14,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        ref: ${{ github.ref }}
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
