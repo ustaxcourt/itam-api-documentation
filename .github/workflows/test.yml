@@ -1,6 +1,10 @@
 name: Azure Function Test
 
-on: [pull_request]
+on:
+  push:
+    branches:
+      - main
+      - deployTest
 
 jobs:
   test:
