@@ -1,4 +1,5 @@
-const queryAsset = require('./queryAsset');
+
+import queryAsset from './queryAsset.js'
 
 test('should return correct asset JSON structure with expected data types', async () => {
   const context = {};
