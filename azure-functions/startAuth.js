@@ -1,6 +1,9 @@
 import { app } from '@azure/functions';
 import crypto from 'crypto';
 
+const { CLIENT_ID, TENANT_ID, REDIRECT_URI, SCOPE } = process.env;
+
+
 function generateCodeVerifier() {
   return crypto.randomBytes(32).toString('hex');
 }
@@ -36,7 +39,7 @@ app.http('startAuth', {
         `&response_type=code` +
         `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
         `&response_mode=query` +
-        `&scope=openid profile offline_access https://yourorg.crm.dynamics.com/.default` +
+        `&scope=${encodeURIComponent(SCOPE)}` +
         `&code_challenge=${codeChallenge}` +
         `&code_challenge_method=S256`;
 
