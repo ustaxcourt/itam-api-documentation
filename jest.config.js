@@ -1,5 +1,5 @@
 
 export default {
   testEnvironment: 'node',
-  transform: {},
+  roots: ['itam-api-documentation/azure-functions'],
 };
