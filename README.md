@@ -56,11 +56,12 @@ Local files needed:
 For full reading on the task related to Terraform Provisioning - you can review this document [here.](https://ustaxcourt.sharepoint.com/:w:/r/sites/ITAssetManagementProject-adhoc/Shared%20Documents/main/AM6000_Deployment/6300_EnvironmentSetup/Azure%20functions%20with%20Terraform%20-%20Deployment%20and%20Configuration.docx?d=w24b54c43d78642edb23ea3666d22ec0a&csf=1&web=1&e=mBgQwZ)
 
 ### How testing is done (PROPOSAL)
-1. A folder named `__tests__` exists within the `/azure-functions` directory.
-2. To ensure each interation of our api doesnt not alter or change our responses, these tests will test each api endpoint and its datatype.
-3. We will run a `.yml` workflow within the `.github/workflows` folder within the repo. This workflow will trigger on commit to any branch and run the tests stored within the `/__tests__` folder
+More info in root folder, filename, AT-114testing.pdf
+
 ***For README in these next steps
 Add piece on storing variables in azure portal app settings maybe
 Azure App Settings: Store CLIENT_ID, TENANT_ID, DATAVERSE_URL, and SCOPE in Azure Function App Settings.
 
 .. then also the vscode extensions for devs
+
+
