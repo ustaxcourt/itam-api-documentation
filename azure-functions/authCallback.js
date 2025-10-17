@@ -2,14 +2,13 @@ import { app } from '@azure/functions';
 import { exchangeAuthorizationCode } from './oauth.js';
 
 app.http('authCallback', {
-  methods: ['GET'],
+  methods: ['POST'],
   authLevel: 'anonymous',
   handler: async (request, context) => {
     try {
-      const code = request.query.get('code');
-      const codeVerifier = request.query.get('code_verifier'); // You may need to pass this securely
+      const { code, code_verifier } = await request.json();
 
-      if (!code || !codeVerifier) {
+      if (!code || !code_verifier) {
         return {
           status: 400,
           jsonBody: {
@@ -19,7 +18,7 @@ app.http('authCallback', {
         };
       }
 
-      const tokenData = await exchangeAuthorizationCode(code, codeVerifier);
+      const tokenData = await exchangeAuthorizationCode(code, code_verifier);
 
       // TODO: Store refreshToken securely or issue a session token
       return {
@@ -27,6 +26,7 @@ app.http('authCallback', {
         jsonBody: {
           message: 'Token exchange successful',
           accessToken: tokenData.accessToken,
+          refreshToken: tokenData.refreshToken,
           expiresIn: tokenData.expiresIn
         }
       };
