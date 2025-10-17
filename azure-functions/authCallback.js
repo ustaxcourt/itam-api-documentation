@@ -1,6 +1,11 @@
 import { app } from '@azure/functions';
 import { exchangeAuthorizationCode } from './oauth.js';
 
+function parseJwt(token) {
+  const [, payload] = token.split('.');
+  return JSON.parse(Buffer.from(payload, 'base64').toString());
+}
+
 app.http('authCallback', {
   methods: ['POST'],
   authLevel: 'anonymous',
@@ -12,21 +17,31 @@ app.http('authCallback', {
         return {
           status: 400,
           jsonBody: {
-            error: 'Missing code or code_verifier',
-            details: 'Authorization code and PKCE code verifier are required.'
+            error: 'Missing code or code_verifier'
           }
         };
       }
 
       const tokenData = await exchangeAuthorizationCode(code, code_verifier);
+      const userInfo = parseJwt(tokenData.idToken);
+      const userId = userInfo.oid || userInfo.email || 'unknown-user';
 
-      // TODO: Store refreshToken securely or issue a session token
+      await fetch('http://localhost:7071/api/storeTokens', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          accessToken: tokenData.accessToken,
+          refreshToken: tokenData.refreshToken,
+          expiresIn: tokenData.expiresIn
+        })
+      });
+
       return {
         status: 200,
         jsonBody: {
-          message: 'Token exchange successful',
+          message: 'Token exchange and storage successful',
           accessToken: tokenData.accessToken,
-          refreshToken: tokenData.refreshToken,
           expiresIn: tokenData.expiresIn
         }
       };
