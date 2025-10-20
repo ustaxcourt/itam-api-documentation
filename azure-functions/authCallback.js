@@ -1,6 +1,8 @@
 import { app } from '@azure/functions';
 import { exchangeAuthorizationCode } from './oauth.js';
 
+const storeTokensURL = process.env.STORETOKENS_FUNCTION_KEY;
+
 function parseJwt(token) {
   const [, payload] = token.split('.');
   const padded = payload.padEnd(payload.length + (4 - payload.length % 4) % 4, '=');
@@ -48,7 +50,7 @@ app.http('authCallback', {
       const userInfo = parseJwt(tokenData.idToken);
       const userId = userInfo.oid || userInfo.email || 'unknown-user';
 
-      await fetch('http://localhost:7071/api/storeTokens', {
+      await fetch(storeTokensURL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
