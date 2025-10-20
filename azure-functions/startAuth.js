@@ -3,7 +3,6 @@ import crypto from 'crypto';
 
 const { CLIENT_ID, TENANT_ID, REDIRECT_URI, SCOPE } = process.env;
 
-
 function generateCodeVerifier() {
   return crypto.randomBytes(32).toString('hex');
 }
@@ -18,20 +17,17 @@ app.http('startAuth', {
   authLevel: 'anonymous',
   handler: async (request, context) => {
     try {
-      const { CLIENT_ID, TENANT_ID, REDIRECT_URI } = process.env;
-
-      if (!CLIENT_ID || !TENANT_ID || !REDIRECT_URI) {
+      if (!CLIENT_ID || !TENANT_ID || !REDIRECT_URI || !SCOPE) {
         context.log.error('Missing environment variables');
         return {
           status: 500,
-          body: 'Missing CLIENT_ID, TENANT_ID, or REDIRECT_URI in environment settings.'
+          body: 'Missing CLIENT_ID, TENANT_ID, REDIRECT_URI, or SCOPE in environment settings.'
         };
       }
 
       const codeVerifier = generateCodeVerifier();
       const codeChallenge = generateCodeChallenge(codeVerifier);
 
-      // Store codeVerifier in a cookie (or use encrypted query param/session)
       const cookie = `code_verifier=${codeVerifier}; Path=/; HttpOnly; Secure`;
 
       const authorizeUrl =
@@ -44,24 +40,15 @@ app.http('startAuth', {
         `&code_challenge=${codeChallenge}` +
         `&code_challenge_method=S256`;
 
-
-
       context.log('Redirecting to:', authorizeUrl);
 
-      context.log('Response headers:', {
-        'Location': authorizeUrl,
-        'Set-Cookie': cookie
-      });
-
-
-      context.res = {
+      return {
         status: 302,
         headers: {
           'Set-Cookie': cookie,
           'Location': authorizeUrl
         }
       };
-      return;
     } catch (error) {
       context.log.error('startAuth error:', error.message);
       return {
