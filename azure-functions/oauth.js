@@ -6,7 +6,7 @@ console.log('Function oauth loaded');
  * Exchanges an authorization code for access and refresh tokens using PKCE.
  */
 export async function exchangeAuthorizationCode(code, codeVerifier) {
-  const { CLIENT_ID, TENANT_ID, REDIRECT_URI } = process.env;
+  const { CLIENT_ID, TENANT_ID, REDIRECT_URI, SCOPE } = process.env;
 
   const tokenUrl = `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token`;
 
@@ -16,7 +16,7 @@ export async function exchangeAuthorizationCode(code, codeVerifier) {
   params.append('code', code);
   params.append('redirect_uri', REDIRECT_URI);
   params.append('code_verifier', codeVerifier);
-  params.append('scope', 'openid profile offline_access https://yourorg.crm.dynamics.com/.default');
+  params.append('scope', SCOPE);
 
   const response = await axios.post(tokenUrl, params);
   return {
@@ -31,7 +31,7 @@ export async function exchangeAuthorizationCode(code, codeVerifier) {
  * Uses a refresh token to obtain a new access token.
  */
 export async function getToken(refreshToken) {
-  const { CLIENT_ID, TENANT_ID } = process.env;
+  const { CLIENT_ID, TENANT_ID, SCOPE } = process.env;
 
   const tokenUrl = `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token`;
 
@@ -39,7 +39,7 @@ export async function getToken(refreshToken) {
   params.append('grant_type', 'refresh_token');
   params.append('client_id', CLIENT_ID);
   params.append('refresh_token', refreshToken);
-  params.append('scope', 'openid profile offline_access https://yourorg.crm.dynamics.com/.default');
+  params.append('scope', SCOPE);
 
   const response = await axios.post(tokenUrl, params);
   return {
