@@ -29,3 +29,8 @@ output "app_insights_connection_string" {
   value       = azurerm_application_insights.insights.connection_string
   sensitive   = true
 }
+
+output "user_tokens_table_name" {
+  description = "The name of the Azure Table used for token storage"
+  value       = var.table_name
+}

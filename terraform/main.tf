@@ -57,5 +57,13 @@ resource "azurerm_linux_function_app" "function" {
     AzureWebJobsStorage                   = data.azurerm_storage_account.storage.primary_connection_string
     APPINSIGHTS_INSTRUMENTATIONKEY        = azurerm_application_insights.insights.instrumentation_key
     APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.insights.connection_string
+
+
+    # OAuth and Storage Settings
+    STORAGE_ACCOUNT_NAME = data.azurerm_storage_account.storage.name
+    TABLE_NAME           = var.table_name
+    CLIENT_ID            = var.client_id
+    TENANT_ID            = var.tenant_id
+    REDIRECT_URI         = var.redirect_uri
   }
 }
