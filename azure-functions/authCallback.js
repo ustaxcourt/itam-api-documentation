@@ -3,15 +3,27 @@ import { exchangeAuthorizationCode } from './oauth.js';
 
 function parseJwt(token) {
   const [, payload] = token.split('.');
-  return JSON.parse(Buffer.from(payload, 'base64').toString());
+  const padded = payload.padEnd(payload.length + (4 - payload.length % 4) % 4, '=');
+  return JSON.parse(Buffer.from(padded, 'base64').toString());
+}
+
+function getCookieValue(cookieHeader, name) {
+  const cookies = cookieHeader?.split(';') || [];
+  for (const cookie of cookies) {
+    const [key, value] = cookie.trim().split('=');
+    if (key === name) return decodeURIComponent(value);
+  }
+  return null;
 }
 
 app.http('authCallback', {
-  methods: ['POST'],
+  methods: ['GET'],
   authLevel: 'anonymous',
   handler: async (request, context) => {
     try {
-      const { code, code_verifier } = await request.json();
+      const code = request.query.get('code');
+      const cookieHeader = request.headers['cookie'];
+      const code_verifier = getCookieValue(cookieHeader, 'code_verifier');
 
       if (!code || !code_verifier) {
         return {
