@@ -8,6 +8,7 @@ import './queryAsset.js';
 import './authCallback.js';
 import './startAuth.js';
 import './testRedirect.js';
+import './storeTokens.js';
 
 
 app.setup({
