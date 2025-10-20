@@ -25,11 +25,21 @@ app.http('authCallback', {
       const cookieHeader = request.headers['cookie'];
       const code_verifier = getCookieValue(cookieHeader, 'code_verifier');
 
+      // Log incoming values for debugging
+      context.log('🔍 Incoming query code:', code);
+      context.log('🔍 Incoming cookie header:', cookieHeader);
+      context.log('🔍 Parsed code_verifier:', code_verifier);
+
       if (!code || !code_verifier) {
         return {
           status: 400,
           jsonBody: {
-            error: 'Missing code or code_verifier'
+            error: 'Missing code or code_verifier',
+            received: {
+              code,
+              cookieHeader,
+              code_verifier
+            }
           }
         };
       }
@@ -58,7 +68,7 @@ app.http('authCallback', {
         }
       };
     } catch (error) {
-      context.error('Auth callback error:', error.message);
+      context.log.error('Auth callback error:', error.message);
       return {
         status: 500,
         jsonBody: {
