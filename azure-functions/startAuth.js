@@ -28,7 +28,7 @@ app.http('startAuth', {
       const codeVerifier = generateCodeVerifier();
       const codeChallenge = generateCodeChallenge(codeVerifier);
 
-      const cookie = `code_verifier=${codeVerifier}; Path=/; HttpOnly; Secure`;
+      const cookie = `code_verifier=${codeVerifier}; Path=/; HttpOnly; Secure; SameSite=None`;
 
       const authorizeUrl =
         `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/authorize?` +
