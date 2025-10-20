@@ -1,5 +1,5 @@
 import { app } from '@azure/functions';
-import { TableClient } from '@azure/data-tables';
+import { TableClient, AzureNamedKeyCredential } from "@azure/data-tables";
 import { DefaultAzureCredential } from '@azure/identity';
 
 
