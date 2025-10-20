@@ -28,8 +28,6 @@ app.http('startAuth', {
       const codeVerifier = generateCodeVerifier();
       const codeChallenge = generateCodeChallenge(codeVerifier);
 
-      const cookie = `code_verifier=${codeVerifier}; Path=/; HttpOnly; Secure; SameSite=None`;
-
       const authorizeUrl =
         `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/authorize?` +
         `client_id=${CLIENT_ID}` +
@@ -40,14 +38,31 @@ app.http('startAuth', {
         `&code_challenge=${codeChallenge}` +
         `&code_challenge_method=S256`;
 
-      context.log('Redirecting to:', authorizeUrl);
+      const html = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="UTF-8">
+            <title>Redirecting...</title>
+            <script>
+              document.cookie = "code_verifier=${codeVerifier}; path=/; secure; samesite=None";
+              setTimeout(() => {
+                window.location.href = "${authorizeUrl}";
+              }, 500); // Delay to ensure cookie is stored
+            </script>
+          </head>
+          <body>
+            <p>Redirecting to sign in...</p>
+          </body>
+        </html>
+      `;
 
       return {
-        status: 302,
+        status: 200,
         headers: {
-          'Set-Cookie': cookie,
-          'Location': authorizeUrl
-        }
+          'Content-Type': 'text/html'
+        },
+        body: html
       };
     } catch (error) {
       context.log.error('startAuth error:', error.message);
