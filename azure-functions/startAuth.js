@@ -18,7 +18,7 @@ app.http('startAuth', {
   handler: async (request, context) => {
     try {
       if (!CLIENT_ID || !TENANT_ID || !REDIRECT_URI || !SCOPE) {
-        context.log.error('Missing environment variables');
+        context.log('Missing environment variables');
         return {
           status: 500,
           body: 'Missing CLIENT_ID, TENANT_ID, REDIRECT_URI, or SCOPE in environment settings.'
@@ -38,10 +38,10 @@ app.http('startAuth', {
         `&code_challenge=${codeChallenge}` +
         `&code_challenge_method=S256`;
 
-      // Debugging logs
-      context.log.info('Generated code_verifier:', codeVerifier);
-      context.log.info('Generated code_challenge:', codeChallenge);
-      context.log.info('Redirecting to:', authorizeUrl);
+      // Logging for debugging
+      context.log('Generated code_verifier:', codeVerifier);
+      context.log('Generated code_challenge:', codeChallenge);
+      context.log('Redirecting to:', authorizeUrl);
 
       return {
         status: 302,
@@ -51,7 +51,7 @@ app.http('startAuth', {
         }
       };
     } catch (error) {
-      context.log.error('startAuth error:', error.message);
+      context.log('startAuth error:', error.message);
       return {
         status: 500,
         body: 'Internal Server Error'
