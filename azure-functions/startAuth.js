@@ -1,60 +1,49 @@
 import { app } from '@azure/functions';
-import crypto from 'crypto';
+import { PublicClientApplication } from '@azure/msal-node';
 
-const { CLIENT_ID, TENANT_ID, REDIRECT_URI, SCOPE } = process.env;
+const config = {
+  auth: {
+    clientId: process.env.CLIENT_ID,
+    authority: `https://login.microsoftonline.com/${process.env.TENANT_ID}`
+  }
+};
 
-function generateCodeVerifier() {
-  return crypto.randomBytes(32).toString('hex');
-}
-
-function generateCodeChallenge(codeVerifier) {
-  const hash = crypto.createHash('sha256').update(codeVerifier).digest();
-  return hash.toString('base64url');
-}
+const msalInstance = new PublicClientApplication(config);
 
 app.http('startAuth', {
   methods: ['GET'],
   authLevel: 'anonymous',
   handler: async (request, context) => {
     try {
-      if (!CLIENT_ID || !TENANT_ID || !REDIRECT_URI || !SCOPE) {
-        context.log('Missing environment variables');
-        return {
-          status: 500,
-          body: 'Missing CLIENT_ID, TENANT_ID, REDIRECT_URI, or SCOPE in environment settings.'
-        };
-      }
+      const deviceCodeRequest = {
+        scopes: [
+          'openid',
+          'profile',
+          'offline_access',
+          'https://yourorg.crm.dynamics.com/user_impersonation'
+        ],
+        deviceCodeCallback: (response) => {
+          // This message tells the user how to authenticate
+          context.log(`\nDEVICE CODE MESSAGE:\n${response.message}\n`);
+        }
+      };
 
-      const codeVerifier = generateCodeVerifier();
-      const codeChallenge = generateCodeChallenge(codeVerifier);
+      const authResult = await msalInstance.acquireTokenByDeviceCode(deviceCodeRequest);
 
-      const authorizeUrl =
-        `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/authorize?` +
-        `client_id=${CLIENT_ID}` +
-        `&response_type=code` +
-        `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
-        `&response_mode=query` +
-        `&scope=${encodeURIComponent(SCOPE)}` +
-        `&code_challenge=${codeChallenge}` +
-        `&code_challenge_method=S256`;
-
-      // Logging for debugging
-      context.log('Generated code_verifier:', codeVerifier);
-      context.log('Generated code_challenge:', codeChallenge);
-      context.log('Redirecting to:', authorizeUrl);
+      context.log('Access Token:', authResult.accessToken);
 
       return {
-        status: 302,
-        headers: {
-          Location: authorizeUrl,
-          'Set-Cookie': `code_verifier=${codeVerifier}; Path=/; Secure; HttpOnly; SameSite=None`
+        status: 200,
+        body: {
+          message: 'Authentication successful. You can now use the access token to call Dataverse.',
+          accessToken: authResult.accessToken
         }
       };
     } catch (error) {
-      context.log('startAuth error:', error.message);
+      context.log('Authentication error:', error.message);
       return {
         status: 500,
-        body: 'Internal Server Error'
+        body: 'Authentication failed. Check logs for details.'
       };
     }
   }
