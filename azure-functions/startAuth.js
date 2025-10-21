@@ -9,7 +9,7 @@ function generateCodeVerifier() {
 
 function generateCodeChallenge(codeVerifier) {
   const hash = crypto.createHash('sha256').update(codeVerifier).digest();
-  return hash.toString('base64url'); // base64url encoding
+  return hash.toString('base64url');
 }
 
 app.http('startAuth', {
@@ -38,31 +38,17 @@ app.http('startAuth', {
         `&code_challenge=${codeChallenge}` +
         `&code_challenge_method=S256`;
 
-      const html = `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="UTF-8">
-            <title>Redirecting...</title>
-            <script>
-              document.cookie = "code_verifier=${codeVerifier}; path=/; secure; samesite=None";
-              setTimeout(() => {
-                window.location.href = "${authorizeUrl}";
-              }, 500); // Delay to ensure cookie is stored
-            </script>
-          </head>
-          <body>
-            <p>Redirecting to sign in...</p>
-          </body>
-        </html>
-      `;
+      // Debugging logs
+      context.log.info('Generated code_verifier:', codeVerifier);
+      context.log.info('Generated code_challenge:', codeChallenge);
+      context.log.info('Redirecting to:', authorizeUrl);
 
       return {
-        status: 200,
+        status: 302,
         headers: {
-          'Content-Type': 'text/html'
-        },
-        body: html
+          Location: authorizeUrl,
+          'Set-Cookie': `code_verifier=${codeVerifier}; Path=/; Secure; HttpOnly; SameSite=None`
+        }
       };
     } catch (error) {
       context.log.error('startAuth error:', error.message);
