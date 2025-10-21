@@ -15,7 +15,7 @@ function getCookieValue(cookieHeader, name) {
     const [key, value] = cookie.trim().split('=');
     if (key === name) return decodeURIComponent(value);
   }
-  return null;
+  return "null";
 }
 
 app.http('authCallback', {
