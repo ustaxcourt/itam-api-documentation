@@ -30,16 +30,14 @@ export async function authCallback(request, context) {
     });
 
     const userEmail = tokenResponse.account.username;
-    const refreshToken = tokenResponse.refreshToken;
-
-    // Encrypt and store refresh token securely
 
     return {
       status: 200,
       body: `User ${userEmail} authenticated successfully.`
     };
+
   } catch (error) {
-    context.log('Auth callback error:', error.message);
+    context.log('Auth callback error:', error);
     return { status: 500, body: 'Authentication failed.' };
   }
 }
