@@ -1,91 +1,41 @@
 import { app } from '@azure/functions';
-import { PublicClientApplication, ConfidentialClientApplication } from '@azure/msal-node';
-import { TableClient } from '@azure/data-tables';
 import crypto from 'crypto';
+import { storeCodeVerifier } from './storeCodeVerifier.js';
 
-const {
-  CLIENT_ID,
-  TENANT_ID,
-  CLIENT_SECRET,
-  AzureWebJobsStorage,
-  TABLE_NAME,
-  SCOPE,
-  ENCRYPTION_KEY // 32-byte hex string
-} = process.env;
-
-// Encryption helpers
-const ivLength = 16;
-
-function encrypt(text) {
-  const iv = crypto.randomBytes(ivLength);
-  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
-  let encrypted = cipher.update(text, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
-  return `${iv.toString('hex')}:${encrypted}`;
+function generateCodeVerifier() {
+  return crypto.randomBytes(32).toString('base64url');
 }
 
-// MSAL clients
-const publicClientApp = new PublicClientApplication({
-  auth: {
-    clientId: CLIENT_ID,
-    authority: `https://login.microsoftonline.com/${TENANT_ID}`
-  }
-});
-
-const confidentialClientApp = new ConfidentialClientApplication({
-  auth: {
-    clientId: CLIENT_ID,
-    authority: `https://login.microsoftonline.com/${TENANT_ID}`,
-    clientSecret: CLIENT_SECRET
-  }
-});
-
-const tableClient = TableClient.fromConnectionString(AzureWebJobsStorage, TABLE_NAME);
+function generateCodeChallenge(codeVerifier) {
+  const hash = crypto.createHash('sha256').update(codeVerifier).digest();
+  return Buffer.from(hash).toString('base64url');
+}
 
 export async function login(request, context) {
-  try {
-    const deviceCodeRequest = {
-      scopes: ['User.Read', 'offline_access'],
-      deviceCodeCallback: (response) => {
-        context.log(`DEVICE CODE MESSAGE:\n${response.message}`);
-      }
-    };
+  const codeVerifier = generateCodeVerifier();
+  const codeChallenge = generateCodeChallenge(codeVerifier);
+  const state = crypto.randomUUID();
 
-    const userAuth = await publicClientApp.acquireTokenByDeviceCode(deviceCodeRequest);
-    const userEmail = userAuth.account.username;
-    const refreshToken = userAuth.refreshToken;
+  await storeCodeVerifier(state, codeVerifier);
 
-    if (!userEmail.endsWith('@yourdomain.com')) {
-      return { status: 403, body: 'User not authorized.' };
+  const redirectUri = `https://${request.headers.get('host')}/api/auth-callback`;
+
+  const authUrl = new URL(`https://login.microsoftonline.com/${process.env.TENANT_ID}/oauth2/v2.0/authorize`);
+  authUrl.searchParams.set('client_id', process.env.CLIENT_ID);
+  authUrl.searchParams.set('response_type', 'code');
+  authUrl.searchParams.set('redirect_uri', redirectUri);
+  authUrl.searchParams.set('response_mode', 'query');
+  authUrl.searchParams.set('scope', 'User.Read offline_access');
+  authUrl.searchParams.set('code_challenge', codeChallenge);
+  authUrl.searchParams.set('code_challenge_method', 'S256');
+  authUrl.searchParams.set('state', state);
+
+  return {
+    status: 302,
+    headers: {
+      Location: authUrl.toString()
     }
-
-    const encryptedToken = encrypt(refreshToken);
-
-    await tableClient.upsertEntity({
-      partitionKey: 'UserTokens',
-      rowKey: userEmail,
-      refreshToken: encryptedToken,
-      timestamp: new Date().toISOString()
-    });
-
-    const backendAuth = await confidentialClientApp.acquireTokenByClientCredential({
-      scopes: [SCOPE]
-    });
-
-    return {
-      status: 200,
-      body: {
-        message: `User ${userEmail} authenticated.`,
-        dataverseToken: backendAuth.accessToken
-      }
-    };
-  } catch (error) {
-    context.log('Login error:', error.message);
-    return {
-      status: 500,
-      body: 'Login failed.'
-    };
-  }
+  };
 }
 
 app.http('login', {
