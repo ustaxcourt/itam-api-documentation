@@ -12,7 +12,7 @@ export async function authCallback(request, context) {
   }
 
   const codeVerifier = await getCodeVerifier(state);
-  const redirectUri = `https://${request.headers.get('host')}/api/auth-callback`;
+  const redirectUri = process.env.REDIRECT_URI;
 
   const msalClient = new PublicClientApplication({
     auth: {

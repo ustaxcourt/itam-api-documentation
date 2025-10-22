@@ -18,7 +18,7 @@ export async function login(request, context) {
 
   await storeCodeVerifier(state, codeVerifier);
 
-  const redirectUri = `https://${request.headers.get('host')}/api/auth-callback`;
+  const redirectUri = process.env.REDIRECT_URI;
 
   const authUrl = new URL(`https://login.microsoftonline.com/${process.env.TENANT_ID}/oauth2/v2.0/authorize`);
   authUrl.searchParams.set('client_id', process.env.CLIENT_ID);
