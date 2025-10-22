@@ -44,7 +44,7 @@ export async function authCallback(request, context) {
   }
 }
 
-app.http('auth-callback', {
+app.http('authCallback', {
   methods: ['GET'],
   authLevel: 'anonymous',
   handler: authCallback
