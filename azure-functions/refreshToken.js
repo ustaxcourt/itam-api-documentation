@@ -1,61 +1,69 @@
 import { app } from '@azure/functions';
+import { PublicClientApplication } from '@azure/msal-node';
 import { TableClient } from '@azure/data-tables';
-import { DefaultAzureCredential } from '@azure/identity';
-import axios from 'axios';
+import crypto from 'crypto';
 
-const tableName = "UserTokens";
-const storageAccountName = process.env.STORAGE_ACCOUNT_NAME;
-const tenantId = process.env.TENANT_ID;
-const clientId = process.env.CLIENT_ID;
+const {
+  CLIENT_ID,
+  TENANT_ID,
+  AzureWebJobsStorage,
+  TABLE_NAME,
+  SCOPE,
+  ENCRYPTION_KEY
+} = process.env;
 
-const accountUrl = `https://${storageAccountName}.table.core.windows.net`;
-const credential = new DefaultAzureCredential();
-const tableClient = new TableClient(accountUrl, tableName, credential);
+function decrypt(encryptedText) {
+  const [ivHex, encrypted] = encryptedText.split(':');
+  const iv = Buffer.from(ivHex, 'hex');
+  const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
+  let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
+}
+
+const msalClient = new PublicClientApplication({
+  auth: {
+    clientId: CLIENT_ID,
+    authority: `https://login.microsoftonline.com/${TENANT_ID}`
+  }
+});
+
+const tableClient = TableClient.fromConnectionString(AzureWebJobsStorage, TABLE_NAME);
+
+export async function refreshToken(request, context) {
+  try {
+    const userEmail = request.query.get('email');
+    if (!userEmail) {
+      return { status: 400, body: 'Missing email parameter.' };
+    }
+
+    const entity = await tableClient.getEntity('UserTokens', userEmail);
+    const encryptedToken = entity.refreshToken;
+    const refreshToken = decrypt(encryptedToken);
+
+    const refreshed = await msalClient.acquireTokenByRefreshToken({
+      refreshToken,
+      scopes: ['User.Read']
+    });
+
+    return {
+      status: 200,
+      body: {
+        message: 'Token refreshed successfully.',
+        accessToken: refreshed.accessToken
+      }
+    };
+  } catch (error) {
+    context.log('Refresh error:', error.message);
+    return {
+      status: 500,
+      body: 'Token refresh failed.'
+    };
+  }
+}
 
 app.http('refreshToken', {
-  methods: ['POST'],
-  authLevel: 'function',
-  handler: async (request, context) => {
-    try {
-      const { userId } = await request.json();
-
-      if (!userId) {
-        return {
-          status: 400,
-          jsonBody: { error: 'Missing userId' }
-        };
-      }
-
-      const entity = await tableClient.getEntity('tokens', userId);
-      const refreshToken = entity.refreshToken;
-
-      const tokenUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
-      const params = new URLSearchParams();
-      params.append('grant_type', 'refresh_token');
-      params.append('client_id', clientId);
-      params.append('refresh_token', refreshToken);
-      params.append('scope', 'openid profile offline_access https://yourorg.crm.dynamics.com/.default');
-
-      const response = await axios.post(tokenUrl, params);
-      const tokenData = response.data;
-
-      return {
-        status: 200,
-        jsonBody: {
-          message: 'Token refreshed successfully',
-          accessToken: tokenData.access_token,
-          expiresIn: tokenData.expires_in
-        }
-      };
-    } catch (error) {
-      context.error('Refresh token error:', error.message);
-      return {
-        status: 500,
-        jsonBody: {
-          error: 'Failed to refresh token',
-          details: error.message
-        }
-      };
-    }
-  }
+  methods: ['GET'],
+  authLevel: 'anonymous',
+  handler: refreshToken
 });

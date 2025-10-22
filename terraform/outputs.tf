@@ -34,3 +34,8 @@ output "user_tokens_table_name" {
   description = "The name of the Azure Table used for token storage"
   value       = var.table_name
 }
+
+output "scope" {
+  description = "Scope used for Dataverse API access"
+  value       = var.scope
+}

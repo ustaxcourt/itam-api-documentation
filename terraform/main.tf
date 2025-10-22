@@ -65,5 +65,6 @@ resource "azurerm_linux_function_app" "function" {
     CLIENT_ID            = var.client_id
     TENANT_ID            = var.tenant_id
     REDIRECT_URI         = var.redirect_uri
+    SCOPE                = var.scope
   }
 }
