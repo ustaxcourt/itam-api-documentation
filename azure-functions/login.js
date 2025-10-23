@@ -12,24 +12,41 @@ function generateCodeChallenge(codeVerifier) {
 }
 
 export async function login(request, context) {
+  context.log('🔔 Login function triggered');
+
   const redirectUri = process.env.REDIRECT_URI;
   const clientId = process.env.CLIENT_ID;
   const tenantId = process.env.TENANT_ID;
 
+  // Validate environment variables
   if (!redirectUri || !clientId || !tenantId) {
-    context.log.error('Missing required environment variables.');
-    return { status: 500, body: 'Server misconfiguration.' };
+    context.log.error('❌ Missing required environment variables:', {
+      redirectUri,
+      clientId,
+      tenantId
+    });
+    return { status: 500, body: 'Server misconfiguration: missing environment variables.' };
   }
 
-  const codeVerifier = generateCodeVerifier();
-  const codeChallenge = generateCodeChallenge(codeVerifier);
+  let codeVerifier, codeChallenge;
+  try {
+    codeVerifier = generateCodeVerifier();
+    codeChallenge = generateCodeChallenge(codeVerifier);
+    context.log('✅ PKCE values generated:', { codeVerifier, codeChallenge });
+  } catch (err) {
+    context.log.error('❌ Error generating PKCE values:', err);
+    return { status: 500, body: 'Failed to generate secure login parameters.' };
+  }
+
   const state = crypto.randomUUID();
+  context.log('🆔 Generated state:', state);
 
   try {
     await storeCodeVerifier(state, codeVerifier);
+    context.log('✅ Code verifier stored successfully for state:', state);
   } catch (err) {
-    context.log.error('Failed to store code verifier:', err);
-    return { status: 500, body: 'Failed to initiate login.' };
+    context.log.error('❌ Failed to store code verifier:', err);
+    return { status: 500, body: 'Failed to initiate login session.' };
   }
 
   const authUrl = new URL(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize`);
@@ -42,7 +59,7 @@ export async function login(request, context) {
   authUrl.searchParams.set('code_challenge_method', 'S256');
   authUrl.searchParams.set('state', state);
 
-  context.log.info('Redirecting to:', authUrl.toString());
+  context.log('➡️ Redirecting to Azure AD:', authUrl.toString());
 
   return {
     status: 302,
@@ -57,3 +74,4 @@ app.http('login', {
   authLevel: 'anonymous',
   handler: login
 });
+``
