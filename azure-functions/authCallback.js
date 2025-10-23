@@ -38,7 +38,7 @@ export async function authCallback(request, context) {
 
   } catch (error) {
     context.log('Auth callback error:', error);
-    return { status: 500, body: 'Authentication failed.' };
+    return { status: 500, body: 'Authentication failed: ${error.message}' };
   }
 }
 
