@@ -47,14 +47,17 @@ export async function authCallback(request, context) {
   });
 
   try {
+    context.log('🔄 Starting token acquisition...');
     const tokenResponse = await msalClient.acquireTokenByCode({
       code,
       scopes: ['User.Read', 'offline_access'],
       redirectUri,
       codeVerifier
     });
-
-    context.log('✅ Token response received:', tokenResponse);
+    context.log('✅ Token acquired successfully:', {
+      accessToken: tokenResponse.accessToken,
+      account: tokenResponse.account
+    });
 
     const userEmail = tokenResponse.account?.username || 'unknown';
     context.log('👤 Authenticated user:', userEmail);
@@ -78,3 +81,4 @@ app.http('authCallback', {
   authLevel: 'anonymous',
   handler: authCallback
 });
+``
