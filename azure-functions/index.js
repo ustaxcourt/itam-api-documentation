@@ -6,10 +6,8 @@ import './queryAssets.js';
 
 import './queryAsset.js';
 import './authCallback.js';
-import './startAuth.js';
 import './storeTokens.js';
 import './login.js';
-import './refreshToken.js';
 
 
 app.setup({
