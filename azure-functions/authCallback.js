@@ -3,12 +3,16 @@ import { PublicClientApplication } from '@azure/msal-node';
 import { getCodeVerifier } from './getCodeVerifier.js';
 
 export async function authCallback(request, context) {
+  context.log('🔔 Auth callback triggered');
+
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
   const state = url.searchParams.get('state');
 
+  context.log('🔍 Received query parameters:', { code, state });
+
   if (!code || !state) {
-    context.log.error('Missing code or state in callback.');
+    context.log.error('❌ Missing code or state in query parameters.');
     return { status: 400, body: 'Missing code or state.' };
   }
 
@@ -16,8 +20,10 @@ export async function authCallback(request, context) {
   const clientId = process.env.CLIENT_ID;
   const tenantId = process.env.TENANT_ID;
 
+  context.log('🔧 Environment variables:', { redirectUri, clientId, tenantId });
+
   if (!redirectUri || !clientId || !tenantId) {
-    context.log.error('Missing required environment variables.');
+    context.log.error('❌ Missing required environment variables.');
     return { status: 500, body: 'Server misconfiguration.' };
   }
 
@@ -27,8 +33,9 @@ export async function authCallback(request, context) {
     if (!codeVerifier) {
       throw new Error('Code verifier not found for state.');
     }
+    context.log('✅ Retrieved code verifier:', codeVerifier);
   } catch (err) {
-    context.log.error('Failed to retrieve code verifier:', err);
+    context.log.error('❌ Failed to retrieve code verifier:', err);
     return { status: 400, body: 'Invalid or expired login session.' };
   }
 
@@ -47,9 +54,10 @@ export async function authCallback(request, context) {
       codeVerifier
     });
 
-    const userEmail = tokenResponse.account?.username || 'unknown';
+    context.log('✅ Token response received:', tokenResponse);
 
-    context.log.info('User authenticated:', userEmail);
+    const userEmail = tokenResponse.account?.username || 'unknown';
+    context.log('👤 Authenticated user:', userEmail);
 
     return {
       status: 200,
@@ -57,7 +65,7 @@ export async function authCallback(request, context) {
     };
 
   } catch (error) {
-    context.log.error('Auth callback error:', error);
+    context.log.error('❌ Token acquisition failed:', error);
     return {
       status: 500,
       body: `Authentication failed: ${error.message || 'Unknown error'}`
