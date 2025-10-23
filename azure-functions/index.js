@@ -8,6 +8,7 @@ import './queryAsset.js';
 import './authCallback.js';
 import './storeTokens.js';
 import './login.js';
+import './connectivityTest.js';
 
 app.setup({
   enableHttpStream: true
