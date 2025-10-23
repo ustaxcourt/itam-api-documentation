@@ -1,6 +1,8 @@
 import { app } from '@azure/functions';
 import { PublicClientApplication } from '@azure/msal-node';
 import { getCodeVerifier } from './getCodeVerifier.js';
+import { LogLevel } from '@azure/msal-node';
+
 
 export async function authCallback(request, context) {
   context.log('🔔 Auth callback triggered');
@@ -39,12 +41,25 @@ export async function authCallback(request, context) {
     return { status: 400, body: 'Invalid or expired login session.' };
   }
 
+
   const msalClient = new PublicClientApplication({
     auth: {
       clientId,
       authority: `https://login.microsoftonline.com/${tenantId}`
+    },
+    system: {
+      loggerOptions: {
+        loggerCallback: (level, message, containsPii) => {
+          if (!containsPii) {
+            context.log(`[MSAL][${LogLevel[level]}] ${message}`);
+          }
+        },
+        piiLoggingEnabled: false,
+        logLevel: LogLevel.Verbose
+      }
     }
   });
+
 
   try {
     context.log('🔄 Starting token acquisition...');
