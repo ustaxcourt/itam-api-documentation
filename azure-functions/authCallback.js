@@ -8,16 +8,34 @@ export async function authCallback(request, context) {
   const state = url.searchParams.get('state');
 
   if (!code || !state) {
+    context.log.error('Missing code or state in callback.');
     return { status: 400, body: 'Missing code or state.' };
   }
 
-  const codeVerifier = await getCodeVerifier(state);
   const redirectUri = process.env.REDIRECT_URI;
+  const clientId = process.env.CLIENT_ID;
+  const tenantId = process.env.TENANT_ID;
+
+  if (!redirectUri || !clientId || !tenantId) {
+    context.log.error('Missing required environment variables.');
+    return { status: 500, body: 'Server misconfiguration.' };
+  }
+
+  let codeVerifier;
+  try {
+    codeVerifier = await getCodeVerifier(state);
+    if (!codeVerifier) {
+      throw new Error('Code verifier not found for state.');
+    }
+  } catch (err) {
+    context.log.error('Failed to retrieve code verifier:', err);
+    return { status: 400, body: 'Invalid or expired login session.' };
+  }
 
   const msalClient = new PublicClientApplication({
     auth: {
-      clientId: process.env.CLIENT_ID,
-      authority: `https://login.microsoftonline.com/${process.env.TENANT_ID}`
+      clientId,
+      authority: `https://login.microsoftonline.com/${tenantId}`
     }
   });
 
@@ -29,7 +47,9 @@ export async function authCallback(request, context) {
       codeVerifier
     });
 
-    const userEmail = tokenResponse.account.username;
+    const userEmail = tokenResponse.account?.username || 'unknown';
+
+    context.log.info('User authenticated:', userEmail);
 
     return {
       status: 200,
@@ -37,8 +57,11 @@ export async function authCallback(request, context) {
     };
 
   } catch (error) {
-    context.log('Auth callback error:', error);
-    return { status: 500, body: 'Authentication failed: ${error.message}' };
+    context.log.error('Auth callback error:', error);
+    return {
+      status: 500,
+      body: `Authentication failed: ${error.message || 'Unknown error'}`
+    };
   }
 }
 
