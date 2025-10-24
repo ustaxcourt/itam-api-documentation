@@ -15,12 +15,18 @@ app.http('authTest', {
       };
     }
 
+    // Decode the token to inspect scopes
+    const payload = JSON.parse(Buffer.from(accessToken.split('.')[1], 'base64').toString());
+
     context.log('✅ Access token received');
+    context.log('🔍 Token scopes:', payload.scp);
+
     return {
       status: 200,
       body: {
         message: '✅ You are authenticated!',
-        accessToken
+        scopes: payload.scp,
+        token: accessToken
       }
     };
   }
