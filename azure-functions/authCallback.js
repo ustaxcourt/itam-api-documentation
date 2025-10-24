@@ -1,7 +1,7 @@
 import { app } from '@azure/functions';
 import axios from 'axios';
 import qs from 'qs';
-import { retrieveCodeVerifier } from './storeCodeVerifier.js'; // Your storage module
+import { getCodeVerifier } from './getCodeVerifier.js';
 
 export async function authCallback(request, context) {
   context.log('🔔 Callback function triggered');
@@ -19,7 +19,7 @@ export async function authCallback(request, context) {
 
   let codeVerifier;
   try {
-    codeVerifier = await retrieveCodeVerifier(state);
+    codeVerifier = await getCodeVerifier(state);
     if (!codeVerifier) {
       throw new Error('Code verifier not found for state');
     }
