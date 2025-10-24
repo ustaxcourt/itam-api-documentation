@@ -1,65 +1,93 @@
 import { app } from '@azure/functions';
-import axios from 'axios';
-import qs from 'qs';
+import { PublicClientApplication } from '@azure/msal-node';
 import { getCodeVerifier } from './getCodeVerifier.js';
+import { LogLevel } from '@azure/msal-node';
+
 
 export async function authCallback(request, context) {
-  context.log('🔔 Callback function triggered');
+  context.log('🔔 Auth callback triggered');
 
-  const { code, state } = request.query;
+  const url = new URL(request.url);
+  const code = url.searchParams.get('code');
+  const state = url.searchParams.get('state');
+
+  context.log('🔍 Received query parameters:', { code, state });
 
   if (!code || !state) {
-    context.log.error('❌ Missing code or state in query');
-    return { status: 400, body: 'Missing authorization code or state.' };
+    context.log.error('❌ Missing code or state in query parameters.');
+    return { status: 400, body: 'Missing code or state.' };
   }
 
   const redirectUri = process.env.REDIRECT_URI;
   const clientId = process.env.CLIENT_ID;
   const tenantId = process.env.TENANT_ID;
 
+  context.log('🔧 Environment variables:', { redirectUri, clientId, tenantId });
+
+  if (!redirectUri || !clientId || !tenantId) {
+    context.log.error('❌ Missing required environment variables.');
+    return { status: 500, body: 'Server misconfiguration.' };
+  }
+
   let codeVerifier;
   try {
     codeVerifier = await getCodeVerifier(state);
     if (!codeVerifier) {
-      throw new Error('Code verifier not found for state');
+      throw new Error('Code verifier not found for state.');
     }
-    context.log('✅ Retrieved code verifier for state:', state);
+    context.log('✅ Retrieved code verifier:', codeVerifier);
   } catch (err) {
     context.log.error('❌ Failed to retrieve code verifier:', err);
     return { status: 400, body: 'Invalid or expired login session.' };
   }
 
-  const tokenUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
+
+  const msalClient = new PublicClientApplication({
+    auth: {
+      clientId,
+      authority: `https://login.microsoftonline.com/${tenantId}`
+    },
+    system: {
+      loggerOptions: {
+        loggerCallback: (level, message, containsPii) => {
+          if (!containsPii) {
+            context.log(`[MSAL][${LogLevel[level]}] ${message}`);
+          }
+        },
+        piiLoggingEnabled: false,
+        logLevel: LogLevel.Verbose
+      }
+    }
+  });
+
 
   try {
-    const tokenResponse = await axios.post(tokenUrl, qs.stringify({
-      client_id: clientId,
-      grant_type: 'authorization_code',
+    context.log('🔄 Starting token acquisition...');
+    const tokenResponse = await msalClient.acquireTokenByCode({
       code,
-      redirect_uri: redirectUri,
-      code_verifier: codeVerifier
-    }), {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
+      scopes: ['User.Read', 'offline_access'],
+      redirectUri,
+      codeVerifier
+    });
+    context.log('✅ Token acquired successfully:', {
+      accessToken: tokenResponse.accessToken,
+      account: tokenResponse.account
     });
 
-    const { access_token, refresh_token, id_token, expires_in } = tokenResponse.data;
-
-    context.log('✅ Token exchange successful');
+    const userEmail = tokenResponse.account?.username || 'unknown';
+    context.log('👤 Authenticated user:', userEmail);
 
     return {
       status: 200,
-      body: {
-        access_token,
-        refresh_token,
-        id_token,
-        expires_in
-      }
+      body: `User ${userEmail} authenticated successfully.`
     };
-  } catch (err) {
-    context.log.error('❌ Token exchange failed:', err.response?.data || err.message);
-    return { status: 500, body: 'Token exchange failed.' };
+
+  } catch (error) {
+    context.log.error('❌ Token acquisition failed:', error);
+    return {
+      status: 500,
+      body: `Authentication failed: ${error.message || 'Unknown error'}`
+    };
   }
 }
 

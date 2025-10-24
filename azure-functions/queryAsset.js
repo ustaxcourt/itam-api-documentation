@@ -1,6 +1,5 @@
 import { app } from '@azure/functions';
 import axios from 'axios';
-import { getToken } from './oauth.js';
 
 const { DATAVERSE_URL } = process.env;
 //const keyList = ["crf7f_rela_sharepoint_list_id", "@odata.etag", "overriddencreatedon", "importsequencenumber", "versionnumber", "_owningbusinessunit_value", "_ownerid_value", "_owningteam_value", "timezoneruleversionnumber", "utcconversiontimezonecode", "_owninguser_value", "_crf7f_microsoftentralookup_value"];
@@ -9,41 +8,12 @@ const { DATAVERSE_URL } = process.env;
 app.http('queryAsset', {
   methods: ['GET'],
   authLevel: 'anonymous',
-  route: 'assets/{itemid}',
+  route: 'v1/assets/{itemid}',
   handler: async (request, context) => {
     try {
-      const clientSecret = request.headers.get('x-client-secret');
-      if (!clientSecret) {
-        return {
-          status: 401,
-          jsonBody: {
-            error: 'Missing client secret',
-            details: 'Please provide x-client-secret in the request headers.'
-          }
-        };
-      }
-
-      const token = await getToken(clientSecret);
-      if (!token) {
-        return {
-          status: 401,
-          jsonBody: {
-            error: 'Unauthorized',
-            details: 'OAuth token is missing or invalid.'
-          }
-        };
-      }
 
       const id = request.params.itemid;
       const url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs?$filter=crf7f_ois_asset_rela_item_orgid eq '${id}'`;
-
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
-          Prefer: 'odata.include-annotations="OData.Community.Display.V1.FormattedValue"'
-        }
-      });
 
       const dictionary = filterDictionary(response.data["value"][0]);
 
