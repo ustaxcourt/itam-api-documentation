@@ -1,4 +1,6 @@
-export const authTest = async (context, req) => {
+import { app } from '@azure/functions';
+
+export async function authTest(req, context) {
   // Log all headers for debugging
   context.log('Incoming headers:', req.headers);
 
@@ -6,32 +8,27 @@ export const authTest = async (context, req) => {
   const accessToken = req.headers['x-ms-token-aad-access-token'];
 
   if (!accessToken) {
-    context.res = {
+    return {
       status: 401,
-      body: {
+      jsonBody: {
         error: 'Access token not found. Ensure Easy Auth is enabled and user is authenticated.'
       }
     };
-    return;
   }
 
-  // Return access token and optionally other useful headers
-  context.res = {
+  return {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
-    body: {
+    jsonBody: {
       accessToken,
       message: 'Access token retrieved successfully. Check logs for full headers.'
     }
   };
-};
+}
 
-// App Registration-style declaration for central index.js
-export const app = {
-  http: {
-    route: 'authTest',
-    methods: ['GET'],
-    authLevel: 'anonymous',
-    handler: authTest
-  }
-};
+// Register the function with Azure Functions runtime
+app.http('authTest', {
+  methods: ['GET'],
+  authLevel: 'anonymous',
+  handler: authTest
+});
