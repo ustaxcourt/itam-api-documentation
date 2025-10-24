@@ -2,7 +2,7 @@ import { app } from '@azure/functions';
 
 app.http('authTest', {
   methods: ['GET'],
-  authLevel: 'function', // Azure handles auth before your code runs
+  authLevel: 'anonymous',
   route: 'authTest',
   handler: async (request, context) => {
     const accessToken = request.headers['x-ms-token-aad-access-token'];
