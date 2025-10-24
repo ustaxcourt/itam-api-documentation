@@ -5,9 +5,23 @@ app.http('authTest', {
   authLevel: 'function', // Azure handles auth before your code runs
   route: 'authTest',
   handler: async (request, context) => {
+    const accessToken = request.headers['x-ms-token-aad-access-token'];
+
+    if (!accessToken) {
+      context.log('❌ No access token found in headers');
+      return {
+        status: 401,
+        body: 'Unauthorized: No access token found.'
+      };
+    }
+
+    context.log('✅ Access token received');
     return {
       status: 200,
-      body: '✅ You are authenticated!',
+      body: {
+        message: '✅ You are authenticated!',
+        accessToken
+      }
     };
-  },
+  }
 });
