@@ -3,7 +3,7 @@ info:
   title: Query Assets
   version: "1.0"
 servers:
-  - url: /api/assets/{guid}
+  - url: /api/v1/assets/{guid}
 paths:
   /api/queryAsset:
     get:
