@@ -1,5 +1,6 @@
 import { app } from '@azure/functions';
 import axios from 'axios';
+import { getToken } from './oauth.js';
 
 const { DATAVERSE_URL } = process.env;
 //const keyList = ["crf7f_rela_sharepoint_list_id", "@odata.etag", "overriddencreatedon", "importsequencenumber", "versionnumber", "_owningbusinessunit_value", "_ownerid_value", "_owningteam_value", "timezoneruleversionnumber", "utcconversiontimezonecode", "_owninguser_value", "_crf7f_microsoftentralookup_value"];
@@ -11,9 +12,27 @@ app.http('queryAsset', {
   route: 'v1/assets/{itemid}',
   handler: async (request, context) => {
     try {
-
       const id = request.params.itemid;
+      const token = await getToken();
+      if (!token) {
+        return {
+          status: 403,
+          jsonBody: {
+            error: 'Unauthorized',
+            details: 'dev token is missing or invalid.'
+          }
+        };
+      }
+
       const url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs?$filter=crf7f_ois_asset_rela_item_orgid eq '${id}'`;
+
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+          Prefer: 'odata.include-annotations="OData.Community.Display.V1.FormattedValue"'
+        }
+      });
 
       const dictionary = filterDictionary(response.data["value"][0]);
 
@@ -32,15 +51,14 @@ app.http('queryAsset', {
         jsonBody: dictionary
       };
     } catch (error) {
-      const status = error.response?.status === 401 ? 403 : error.response?.status || 500;
+      const status = error.response?.status || 500;
       context.error('Dataverse query error:', error.response?.data || error.message);
 
       return {
         status,
         jsonBody: {
           error: 'Dataverse query failed',
-          details: error.response?.status === 401 ? 'Request failed with invalid authorization status code 403' : error.response?.data?.error?.message || error.message
-
+          details: error.response?.data?.error?.message || error.message
         }
       };
     }
