@@ -5,10 +5,6 @@ import './testAuth.js';
 import './queryAssets.js';
 
 import './queryAsset.js';
-import './authCallback.js';
-import './storeTokens.js';
-import './login.js';
-import './connectivityTest.js';
 import './authTest.js';
 
 app.setup({
