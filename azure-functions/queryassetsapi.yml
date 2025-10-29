@@ -3,9 +3,9 @@ info:
   title: Query Assets
   version: "1.0"
 servers:
-  - url: /api/v1/assets/{guid}
+  - url: /api
 paths:
-  /api/queryAsset:
+  /v1/assets/{itemguid}:
     get:
       parameters:
         - name: guid
