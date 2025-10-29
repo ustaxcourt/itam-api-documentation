@@ -61,7 +61,6 @@ resource "azurerm_linux_function_app" "function" {
 
     # OAuth and Storage Settings
     STORAGE_ACCOUNT_NAME = data.azurerm_storage_account.storage.name
-    TABLE_NAME           = var.table_name
     CLIENT_ID            = var.client_id
     TENANT_ID            = var.tenant_id
     REDIRECT_URI         = var.redirect_uri
