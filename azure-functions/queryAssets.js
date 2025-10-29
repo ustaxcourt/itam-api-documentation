@@ -7,6 +7,7 @@ const { DATAVERSE_URL } = process.env;
 app.http('queryAssets', {
   methods: ['GET'],
   authLevel: 'anonymous',
+  route: 'v1/assets/{itemid}',
   handler: async (request, context) => {
     try {
       const token = await getToken();
@@ -20,7 +21,7 @@ app.http('queryAssets', {
         };
       }
 
-      const id = request.query.get('id'); // GUID
+      const id = request.params.itemid;
       const name = request.query.get('name'); // string
       const condition = request.query.get('condition'); // integer (OptionSet)
 
