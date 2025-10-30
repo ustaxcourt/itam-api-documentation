@@ -19,7 +19,7 @@ app.http('queryAsset', {
           status: 403,
           jsonBody: {
             error: 'Unauthorized',
-            details: 'dev token is missing or invalid.'
+            details: 'Dataverse internal token is missing or invalid.'
           }
         };
       }
