@@ -29,3 +29,8 @@ output "app_insights_connection_string" {
   value       = azurerm_application_insights.insights.connection_string
   sensitive   = true
 }
+
+output "scope" {
+  description = "Scope used for Dataverse API access"
+  value       = var.scope
+}

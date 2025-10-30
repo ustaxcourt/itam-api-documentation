@@ -19,3 +19,23 @@ variable "subscription_id" {
   type        = string
   sensitive   = true
 }
+
+variable "table_name" {
+  description = "Name of the existing Azure Table used for token storage"
+  type        = string
+}
+
+variable "client_id" {
+  description = "Azure AD Application (Client) ID for OAuth"
+  type        = string
+}
+
+variable "tenant_id" {
+  description = "Azure AD Tenant ID"
+  type        = string
+}
+
+variable "redirect_uri" {
+  description = "Redirect URI used in OAuth flow"
+  type        = string
+}

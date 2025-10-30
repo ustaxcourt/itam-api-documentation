@@ -1,7 +1,7 @@
-openapi: '3.0.3'
+openapi: "3.0.3"
 info:
   title: Query Assets
-  version: '1.0'
+  version: "1.0"
 servers:
   - url: /api
 paths:
@@ -16,9 +16,9 @@ paths:
             type: string
 
       responses:
-        '200':
+        "200":
           description: OK
-          content: 
+          content:
             application/json:
               schema:
                 type: object
@@ -71,7 +71,7 @@ paths:
                       - null
                   user:
                     type: object
-                    
+
                     properties:
                       name:
                         type: string
@@ -107,8 +107,7 @@ paths:
                       - Windows 10
                       - null
 
-
-        '401':
+        "401":
           description: Unauthorized – Authentication required
           content:
             application/json:
@@ -117,7 +116,7 @@ paths:
               example:
                 error: "Missing client secret"
                 details: "Please provide x-client-secret in the request headers."
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -126,7 +125,7 @@ paths:
               example:
                 error: "Dataverse query failed"
                 details: "error"
-        '404':
+        "404":
           description: Resource Not Found
           content:
             application/json:
@@ -135,7 +134,7 @@ paths:
               example:
                 error: "Dataverse query failed"
                 details: "Resource Not Found"
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
@@ -144,4 +143,3 @@ paths:
               example:
                 error: "Dataverse query failed"
                 details: "Request failed with invalid authorization status code 403"
-

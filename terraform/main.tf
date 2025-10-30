@@ -15,13 +15,6 @@ data "azurerm_storage_account" "storage" {
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
-# Reference existing key vault
-data "azurerm_key_vault" "existing_kv" {
-  name                = var.key_vault_name
-  resource_group_name = var.resource_group_name
-}
-
-
 # Create Service Plan for Linux and Node.js v22
 resource "azurerm_service_plan" "plan" {
   name                = "${var.function_app_name}-plan"
@@ -64,5 +57,13 @@ resource "azurerm_linux_function_app" "function" {
     AzureWebJobsStorage                   = data.azurerm_storage_account.storage.primary_connection_string
     APPINSIGHTS_INSTRUMENTATIONKEY        = azurerm_application_insights.insights.instrumentation_key
     APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.insights.connection_string
+
+
+    # OAuth and Storage Settings
+    STORAGE_ACCOUNT_NAME = data.azurerm_storage_account.storage.name
+    CLIENT_ID            = var.client_id
+    TENANT_ID            = var.tenant_id
+    REDIRECT_URI         = var.redirect_uri
+    SCOPE                = var.scope
   }
 }
