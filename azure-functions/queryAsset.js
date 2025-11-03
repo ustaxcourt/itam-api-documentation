@@ -1,6 +1,7 @@
 import { app } from '@azure/functions';
 import axios from 'axios';
 import { getToken } from './oauth.js';
+import { filterDictionary } from './helperFunctions/filterDict.js';
 
 const { DATAVERSE_URL } = process.env;
 //const keyList = ["crf7f_rela_sharepoint_list_id", "@odata.etag", "overriddencreatedon", "importsequencenumber", "versionnumber", "_owningbusinessunit_value", "_ownerid_value", "_owningteam_value", "timezoneruleversionnumber", "utcconversiontimezonecode", "_owninguser_value", "_crf7f_microsoftentralookup_value"];
@@ -24,7 +25,7 @@ app.http('queryAsset', {
         };
       }
 
-      const url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs?$filter=crf7f_ois_asset_rela_item_orgid eq '${id}'`;
+      url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs?$filter=crf7f_ois_asset_rela_item_orgid eq '${id}'&$expand=crf7f_ois_asset_entra_dat_userCurrentOw($select=crf7f_email,crf7f_jobtitle,crf7f_name,crf7f_isactive,crf7f_iscontractor, crf7f_entra_object_id,crf7f_phone)`;
 
       const response = await axios.get(url, {
         headers: {
