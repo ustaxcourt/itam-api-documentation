@@ -7,7 +7,7 @@ const { DATAVERSE_URL } = process.env;
 app.http('queryAssets', {
   methods: ['GET'],
   authLevel: 'anonymous',
-  route: 'v1/assets/{itemid}',
+  route: 'v1/queryassets/{itemid}',
   handler: async (request, context) => {
     try {
       const token = await getToken();
