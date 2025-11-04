@@ -4,7 +4,6 @@ import { getToken } from './oauth.js';
 import { filterDictionary } from './helperFunctions/filterDict.js';
 
 const { DATAVERSE_URL } = process.env;
-//const keyList = ["crf7f_rela_sharepoint_list_id", "@odata.etag", "overriddencreatedon", "importsequencenumber", "versionnumber", "_owningbusinessunit_value", "_ownerid_value", "_owningteam_value", "timezoneruleversionnumber", "utcconversiontimezonecode", "_owninguser_value", "_crf7f_microsoftentralookup_value"];
 
 
 app.http('queryAsset', {
