@@ -13,16 +13,10 @@ variable "function_app_name" {
   type        = string
 }
 
-
 variable "subscription_id" {
   description = "Azure Subscription ID"
   type        = string
   sensitive   = true
-}
-
-variable "table_name" {
-  description = "Name of the existing Azure Table used for token storage"
-  type        = string
 }
 
 variable "client_id" {
@@ -35,7 +29,12 @@ variable "tenant_id" {
   type        = string
 }
 
-variable "redirect_uri" {
-  description = "Redirect URI used in OAuth flow"
+variable "auth_tenant_id" {
+  description = "Tenant ID for the authentication App Registration"
   type        = string
+}
+
+variable "auth_redirect_uris" {
+  description = "List of redirect URIs for the authentication App Registration"
+  type        = list(string)
 }
