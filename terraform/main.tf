@@ -52,17 +52,56 @@ resource "azurerm_linux_function_app" "function" {
   }
 
   app_settings = {
-    FUNCTIONS_WORKER_RUNTIME               = "node"
+    FUNCTIONS_WORKER_RUNTIME              = "node"
     WEBSITE_RUN_FROM_PACKAGE              = "1"
     AzureWebJobsStorage                   = data.azurerm_storage_account.storage.primary_connection_string
     APPINSIGHTS_INSTRUMENTATIONKEY        = azurerm_application_insights.insights.instrumentation_key
     APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.insights.connection_string
 
 
-    # OAuth and Storage Settings
+    # Dataverse App Registry Auth and Storage Settings
     STORAGE_ACCOUNT_NAME = data.azurerm_storage_account.storage.name
     CLIENT_ID            = var.client_id
     TENANT_ID            = var.tenant_id
     SCOPE                = var.scope
+    DATAVERSE_URL        = var.dataverse_url
   }
+
+  auth_settings_v2 {
+    auth_enabled           = true
+    require_authentication = true
+    unauthenticated_action = "Return401"
+    runtime_version        = "~1"
+
+    active_directory_v2 {
+      client_id                  = azuread_application.function_auth_app.client_id
+      client_secret_setting_name = "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
+      allowed_applications       = [azuread_application.function_auth_app.client_id]
+      allowed_audiences          = ["api://${azuread_application.function_auth_app.client_id}"]
+      tenant_auth_endpoint       = "https://sts.windows.net/${var.auth_tenant_id}/v2.0"
+    }
+  }
+
+  sticky_settings {
+    app_setting_names = [
+      "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
+    ]
+  }
+
+  site_config {
+    application_stack {
+      node_version = "22"
+    }
+
+    cors {
+      allowed_origins = [
+        "https://portal.azure.com",
+        "https://ustc-itam-apis.azurewebsites.net"
+      ]
+      support_credentials = false
+    }
+
+    application_insights_connection_string = azurerm_application_insights.insights.connection_string
+  }
+
 }

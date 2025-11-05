@@ -34,6 +34,11 @@ variable "scope" {
   type        = string
 }
 
+variable "dataverse_url" {
+  description = "Azure App Registry Dataverse URL Environment Variable for Dataverse App"
+  type        = string
+}
+
 variable "auth_tenant_id" {
   description = "Tenant ID for the authentication App Registration"
   type        = string
