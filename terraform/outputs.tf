@@ -37,7 +37,7 @@ output "scope" {
 
 output "function_auth_app_id" {
   description = "The Application (client) ID of the Function Auth App Registration"
-  value       = azuread_application.function_auth_app.application_id
+  value       = azuread_application.function_auth_app.client_id
 }
 
 output "function_auth_object_id" {

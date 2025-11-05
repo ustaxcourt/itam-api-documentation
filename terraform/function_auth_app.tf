@@ -27,5 +27,5 @@ resource "azuread_application" "function_auth_app" {
 }
 
 resource "azuread_service_principal" "function_auth_sp" {
-  application_id = azuread_application.function_auth_app.application_id
+  client_id = azuread_application.function_auth_app.client_id
 }

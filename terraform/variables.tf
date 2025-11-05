@@ -29,6 +29,11 @@ variable "tenant_id" {
   type        = string
 }
 
+variable "scope" {
+  description = "Azure App Registry Scope Environment Variable for Dataverse App"
+  type        = string
+}
+
 variable "auth_tenant_id" {
   description = "Tenant ID for the authentication App Registration"
   type        = string
