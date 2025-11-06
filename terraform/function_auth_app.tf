@@ -8,7 +8,7 @@ resource "azuread_application" "function_auth_app" {
   identifier_uris  = [var.auth_identifier_uri]
 
   web {
-    homepage_url  = var.auth_homepage_url
+    homepage_url  = "https://${azurerm_linux_function_app.function.default_hostname}"
     redirect_uris = var.auth_redirect_uris
 
     implicit_grant {

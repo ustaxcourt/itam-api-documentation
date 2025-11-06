@@ -54,11 +54,6 @@ variable "auth_identifier_uri" {
   type        = string
 }
 
-variable "auth_homepage_url" {
-  description = "Homepage URL for the authentication App Registration"
-  type        = string
-}
-
 variable "auth_scope_id" {
   description = "OAuth2 permission scope ID for the authentication App Registration"
   type        = string
