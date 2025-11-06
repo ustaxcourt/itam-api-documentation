@@ -23,14 +23,29 @@ paths:
               schema:
                 type: object
                 properties:
+                  activation:
+                    type: boolean
+                    nullable: true
+                    example: null
+                    enum:
+                      - true
+                      - false
+                      - null
                   assetName:
                     type: string
                     example: "HP EliteDisplay E241i #166"
                     nullable: false
-                  location:
+                  condition:
                     type: string
-                    example: "G47"
-                    nullable: true
+                    example: "Good"
+                    nullable: false
+                    enum:
+                      - Excellent
+                      - Good
+                      - Poor
+                      - Garbage
+                      - Damaged
+                      - New
                   itemStatus:
                     type: string
                     example: "Available"
@@ -45,57 +60,40 @@ paths:
                       - Inoperative
                       - Unknown
                       - Excess in Depot
+                  location:
+                    type: string
+                    example: "G47"
+                    nullable: true
                   phone:
                     type: string
                     nullable: true
                     example: null
-                  condition:
-                    type: string
-                    example: "Good"
-                    nullable: false
-                    enum:
-                      - Excellent
-                      - Good
-                      - Poor
-                      - Garbage
-                      - Damaged
-                      - New
-
-                  activation:
-                    type: boolean
-                    nullable: true
-                    example: null
-                    enum:
-                      - true
-                      - false
-                      - null
                   user:
                     type: object
-
                     properties:
-                      name:
-                        type: string
-                        example: "Matthew Hung"
                       email:
                         type: string
                         format: email
                         example: "matthew.hung@example.com"
+                      isActive:
+                        type: boolean
+                        example: true
+                      isContractor:
+                        type: boolean
+                        example: true
                       phone:
                         type: string
                         example: "+1-555-123-4567"
                       jobTitle:
                         type: string
                         example: "Office 365 Engineer"
-                      guid:
-                        type: string
-                        format: uuid
-                        example: "123e4567-e89b-12d3-a456-426614174000"
                       location:
                         type: string
                         example: "Arden, California"
-                      isActive:
-                        type: boolean
-                        example: true
+                      name:
+                        type: string
+                        example: "Matthew Hung"
+
                     nullable: true
                   osVersion:
                     type: string
