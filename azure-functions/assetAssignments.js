@@ -12,18 +12,6 @@ app.http('assignments', {
   handler: async (request, context) => {
 
     try {
-      const assetId = request.params.assetid;
-      let userId;
-      let body;
-
-      if (request.method === 'POST') {
-        userId = request.params.userid;
-        body = `crf7f_ois_asset_entra_dat_users(${userId})`
-      }
-      else {
-        body = null;
-      }
-
 
       const token = await getToken();
       if (!token) {
@@ -33,12 +21,38 @@ app.http('assignments', {
             error: 'Unauthorized',
             details: 'Dataverse internal token is missing or invalid.'
           }
-        };
+        }
+      };
+
+      const assetId = request.params.assetid;
+      let userId;
+      let body;
+
+      if (request.method === 'POST') {
+        let entrauserId = request.params.userid;
+        let url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_entra_dat_users?$filter=crf7f_name eq '${entrauserId}'`;
+        let response = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+            Prefer: 'odata.include-annotations="OData.Community.Display.V1.FormattedValue"'
+          }
+        });
+        let rowId = response.data["value"][0]["crf7f_ois_asset_entra_dat_userid"];
+
+        body = `crf7f_ois_asset_entra_dat_users(${rowId})`
+      }
+      else {
+        body = null;
       }
 
-      const url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs(${assetId})`;
 
-      const response = await axios.patch(url,
+
+
+
+      let url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs(${assetId})`;
+
+      let response = await axios.patch(url,
         {
           "crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind": body
         },
