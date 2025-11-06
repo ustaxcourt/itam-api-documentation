@@ -32,7 +32,7 @@ app.http('assignments', {
 
       if (request.method === 'POST') {
         let userId = request.params.userid;
-        rowId = giveMeRowId(userId)
+        rowId = await giveMeRowId(userId);
         var body = {
           "crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind": `crf7f_ois_asset_entra_dat_users(${rowId})`,
           "crf7f_asset_item_status": 0
