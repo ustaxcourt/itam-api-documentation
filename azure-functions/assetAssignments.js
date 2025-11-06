@@ -6,7 +6,7 @@ const { DATAVERSE_URL } = process.env;
 
 
 app.http('assignments', {
-  methods: ['POST', 'DELETE'],
+  methods: ['POST'],
   authLevel: 'anonymous',
   route: 'v1/assets/{assetid}/assignments/{userid}',
   handler: async (request, context) => {
