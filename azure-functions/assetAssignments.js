@@ -10,7 +10,7 @@ const { DATAVERSE_URL } = process.env;
 app.http('assignments', {
   methods: ['POST', 'DELETE'],
   authLevel: 'anonymous',
-  route: 'v1/assets/{assetid}/assignments/{userid?}',
+  route: 'v1/assets/{assetid}/assignments/',
   handler: async (request, context) => {
     try {
       const token = await getToken();
