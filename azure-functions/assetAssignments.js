@@ -12,9 +12,7 @@ app.http('assignments', {
   authLevel: 'anonymous',
   route: 'v1/assets/{assetid}/assignments/{userid}',
   handler: async (request, context) => {
-
     try {
-
       const token = await getToken();
       if (!token) {
         return {
