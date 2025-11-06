@@ -1,6 +1,8 @@
 import { app } from '@azure/functions';
 import axios from 'axios';
 import { getToken } from './oauth.js';
+import { giveMeRowId } from './helperFunctions/userHelpers.js';
+
 
 const { DATAVERSE_URL } = process.env;
 
@@ -29,17 +31,8 @@ app.http('assignments', {
       var rowId;
 
       if (request.method === 'POST') {
-        let entrauserId = request.params.userid;
-        let url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_entra_dat_users?$filter=crf7f_name eq '${entrauserId}'`;
-        let response = await axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: 'application/json',
-            Prefer: 'odata.include-annotations="OData.Community.Display.V1.FormattedValue"'
-          }
-        });
-        rowId = response.data["value"][0]["crf7f_ois_asset_entra_dat_userid"];
-
+        let userId = request.params.userid;
+        let rowId = await giveMeRowId(userId);
         var body = {
           "crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind": `crf7f_ois_asset_entra_dat_users(${rowId})`,
           "crf7f_asset_item_status": 0
