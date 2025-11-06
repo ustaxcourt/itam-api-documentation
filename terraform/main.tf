@@ -105,13 +105,5 @@ resource "azurerm_linux_function_app" "function" {
     application_stack {
       node_version = "22"
     }
-
-    cors {
-      allowed_origins = [
-        "https://portal.azure.com",
-        "https://ustc-itam-apis.azurewebsites.net"
-      ]
-      support_credentials = false
-    }
   }
 }
