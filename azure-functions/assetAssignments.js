@@ -26,7 +26,7 @@ app.http('assignments', {
 
       const assetId = request.params.assetid;
       let userId;
-      let body;
+      var rowId;
 
       if (request.method === 'POST') {
         let entrauserId = request.params.userid;
@@ -38,24 +38,23 @@ app.http('assignments', {
             Prefer: 'odata.include-annotations="OData.Community.Display.V1.FormattedValue"'
           }
         });
-        let rowId = response.data["value"][0]["crf7f_ois_asset_entra_dat_userid"];
+        rowId = response.data["value"][0]["crf7f_ois_asset_entra_dat_userid"];
 
-        body = `crf7f_ois_asset_entra_dat_users(${rowId})`
+        var body = {
+          "crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind": `crf7f_ois_asset_entra_dat_users(${rowId})`,
+          "crf7f_asset_item_status": 0
+        };
       }
       else {
-        body = null;
+        var body = {
+          "crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind": null
+
+        };
       }
 
-
-
-
-
       let url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs(${assetId})`;
-
       let response = await axios.patch(url,
-        {
-          "crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind": body
-        },
+        body,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -64,7 +63,6 @@ app.http('assignments', {
             'If-Match': '*'
           }
         });
-
 
       return {
         status: 200,
