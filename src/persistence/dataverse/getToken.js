@@ -2,9 +2,15 @@ import axios from 'axios';
 
 console.log('oauth loaded');
 
+let cachedToken;
 
 export async function getToken() {
-  const { CLIENT_ID, TENANT_ID, DATAVERSE_INTERNAL, DATAVERSE_URL, SCOPE } = process.env;
+  // TODO: don't know if this cachedToken logic is correct. is `expiry` a property of the token?
+  if (cachedToken && cachedToken.expiry > Date.now()) {
+    return cachedToken.access_token;
+  }
+
+  const { CLIENT_ID, TENANT_ID, DATAVERSE_INTERNAL, SCOPE } = process.env;
 
   const tokenUrl = `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token`;
 
@@ -16,9 +22,14 @@ export async function getToken() {
 
   try {
     const response = await axios.post(tokenUrl, params);
+    cachedToken = response.data;
+    console.log('OAuth token received:\n', response.data);
     return response.data.access_token;
   } catch (error) {
-    console.error('Error getting OAuth token:', error.response?.data || error.message);
+    console.error(
+      'Error getting OAuth token:',
+      error.response?.data || error.message,
+    );
     throw error;
   }
 }
