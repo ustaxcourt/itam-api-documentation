@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken } from '../oauth.js';
+import { getToken } from '../../src/persistence/dataverse/getToken.js';
 
 const { DATAVERSE_URL } = process.env;
 
@@ -11,9 +11,10 @@ export async function giveMeRowId(userid) {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: 'application/json',
-      Prefer: 'odata.include-annotations="OData.Community.Display.V1.FormattedValue"'
-    }
+      Prefer:
+        'odata.include-annotations="OData.Community.Display.V1.FormattedValue"',
+    },
   });
-  let rowId = response.data["value"][0]["crf7f_ois_asset_entra_dat_userid"];
-  return rowId
+  let rowId = response.data['value'][0]['crf7f_ois_asset_entra_dat_userid'];
+  return rowId;
 }

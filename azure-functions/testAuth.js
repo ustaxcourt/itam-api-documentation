@@ -1,6 +1,6 @@
 // testAuth.js
 import { app } from '@azure/functions';
-import { getToken } from './oauth.js';
+import { getToken } from '../src/persistence/dataverse/getToken.js';
 
 console.log('Function testauth loaded');
 
@@ -14,8 +14,8 @@ app.http('testAuth', {
         status: 200,
         jsonBody: {
           message: 'OAuth token retrieved successfully.',
-          token
-        }
+          token,
+        },
       };
     } catch (error) {
       context.error('OAuth error:', error);
@@ -23,9 +23,9 @@ app.http('testAuth', {
         status: 500,
         jsonBody: {
           error: 'Failed to retrieve token',
-          details: error.message
-        }
+          details: error.message,
+        },
       };
     }
-  }
+  },
 });
