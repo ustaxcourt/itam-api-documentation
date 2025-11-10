@@ -24,11 +24,20 @@ jobs:
     - name: Install dependencies from root
       run: npm ci
 
-    - name: Copy node_modules into azure-functions
-      run: cp -R node_modules azure-functions/
+    - name: Prepare function app package
+      run: |
+        mkdir functionapp
+        cp host.json functionapp/
+        cp azure-functions/index.js functionapp/
+        cp azure-functions/function.js functionapp/
+        find azure-functions -type f -name "*.js" ! -name "*.test.js" -exec cp {} functionapp/ \;
+        cp package.json functionapp/
+        cp -R node_modules functionapp/
 
-    - name: Zip function app including host.json
-      run: zip -r functionapp.zip azure-functions host.json
+    - name: Zip function app
+      run: |
+        cd functionapp
+        zip -r ../functionapp.zip .
 
     - name: Deploy to Azure Functions
       uses: Azure/functions-action@v1
@@ -37,5 +46,5 @@ jobs:
         package: functionapp.zip
         publish-profile: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Clean up node_modules from azure-functions
-      run: rm -rf azure-functions/node_modules
+    - name: Clean up temporary functionapp folder
+      run: rm -rf functionapp
