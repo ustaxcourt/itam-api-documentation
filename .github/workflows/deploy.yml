@@ -21,15 +21,16 @@ jobs:
       with:
         node-version: '22.18.0'
 
-    - name: Install dependencies
+    - name: Install dependencies from root
       run: npm ci
 
-    - name: Zip function app
+    - name: Copy node_modules into azure-functions
+      run: cp -R node_modules azure-functions/
+
+    - name: Zip function app contents
       run: |
         cd azure-functions
-        mv ../node_modules ./
         zip -r ../functionapp.zip .
-        mv ./node_modules ../
 
     - name: Deploy to Azure Functions
       uses: Azure/functions-action@v1
@@ -37,3 +38,6 @@ jobs:
         app-name: ${{ secrets.AZURE_FUNCTIONAPP_NAME }}
         package: functionapp.zip
         publish-profile: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Clean up node_modules from azure-functions
+      run: rm -rf azure-functions/node_modules
