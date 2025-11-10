@@ -27,10 +27,8 @@ jobs:
     - name: Copy node_modules into azure-functions
       run: cp -R node_modules azure-functions/
 
-    - name: Zip function app contents
-      run: |
-        cd azure-functions
-        zip -r ../functionapp.zip .
+    - name: Zip function app including host.json
+      run: zip -r functionapp.zip azure-functions host.json
 
     - name: Deploy to Azure Functions
       uses: Azure/functions-action@v1
