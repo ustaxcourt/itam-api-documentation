@@ -16,12 +16,6 @@
   "devDependencies": {
     "nodemon": "^3.0.1"
   },
-  "jest": {
-    "transform": {
-      "^.+\\.js$": "babel-jest"
-    },
-    "testEnvironment": "node"
-  },
   "author": "Sharlet Claros",
   "license": "MIT"
 }
