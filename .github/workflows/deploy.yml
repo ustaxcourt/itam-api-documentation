@@ -32,7 +32,6 @@ jobs:
         cp -R azure-functions functionapp/
         cp -R node_modules functionapp/
 
-
     - name: Zip function app
       run: |
         cd functionapp
