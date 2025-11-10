@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node --env-file=.env src/index.js",
     "dev": "nodemon --env-file=.env src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "dependencies": {
     "@azure/data-tables": "^13.3.1",
@@ -15,6 +15,12 @@
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "testEnvironment": "node"
   },
   "author": "Sharlet Claros",
   "license": "MIT"
