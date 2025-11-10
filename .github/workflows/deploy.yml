@@ -23,12 +23,13 @@ jobs:
 
     - name: Install dependencies
       run: npm ci
-      working-directory: ./azure-functions
 
     - name: Zip function app
       run: |
         cd azure-functions
+        mv ../node_modules ./
         zip -r ../functionapp.zip .
+        mv ./node_modules ../
 
     - name: Deploy to Azure Functions
       uses: Azure/functions-action@v1

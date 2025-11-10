@@ -2,10 +2,9 @@
   "name": "ustc-itam-api",
   "version": "1.0.0",
   "description": "Dataverse Web API connect to ITAM data",
-  "main": "src/index.js",
+  "main": "./azure-functions/index.js",
   "scripts": {
-    "start": "node --env-file=.env src/index.js",
-    "dev": "nodemon --env-file=.env src/index.js",
+    "start": "func start",
     "test": "jest"
   },
   "dependencies": {
