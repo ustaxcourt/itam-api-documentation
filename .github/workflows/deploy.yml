@@ -28,10 +28,10 @@ jobs:
       run: |
         mkdir functionapp
         cp host.json functionapp/
-        cp azure-functions/index.js functionapp/
-        find azure-functions -type f -name "*.js" ! -name "*.test.js" -exec cp {} functionapp/ \;
         cp package.json functionapp/
+        cp -R azure-functions functionapp/
         cp -R node_modules functionapp/
+
 
     - name: Zip function app
       run: |
