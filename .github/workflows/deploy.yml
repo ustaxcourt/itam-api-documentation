@@ -29,7 +29,6 @@ jobs:
         mkdir functionapp
         cp host.json functionapp/
         cp azure-functions/index.js functionapp/
-        cp azure-functions/function.js functionapp/
         find azure-functions -type f -name "*.js" ! -name "*.test.js" -exec cp {} functionapp/ \;
         cp package.json functionapp/
         cp -R node_modules functionapp/
