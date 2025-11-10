@@ -8,6 +8,7 @@ import './assetAssignments.js';
 import './queryAsset.js';
 import './authTest.js';
 
+
 app.setup({
   enableHttpStream: true
 });

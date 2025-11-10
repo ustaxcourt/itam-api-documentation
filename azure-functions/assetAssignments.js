@@ -3,7 +3,6 @@ import axios from 'axios';
 import { getToken } from './oauth.js';
 
 import { giveMeRowId } from './helperFunctions/userHelpers.js';
-
 const { DATAVERSE_URL } = process.env;
 
 
