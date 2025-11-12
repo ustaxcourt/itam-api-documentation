@@ -1,6 +1,7 @@
 import { app } from '@azure/functions';
 import axios from 'axios';
 import { getToken } from './oauth.js';
+
 import { giveMeRowId } from './helperFunctions/userHelpers.js';
 const { DATAVERSE_URL } = process.env;
 
@@ -34,17 +35,11 @@ app.http('assignments', {
           "crf7f_asset_item_status": 0
         };
       }
-      else if (request.method === 'DELETE') {
+      else {
         var body = {
           "crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind": null,
           "crf7f_asset_item_status": 1
 
-        };
-      }
-      else {
-        return {
-          status: 404,
-          jsonBody: "Invalid request"
         };
       }
 
