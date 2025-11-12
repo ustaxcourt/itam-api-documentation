@@ -34,3 +34,28 @@ output "scope" {
   description = "Scope used for Dataverse API access"
   value       = var.scope
 }
+
+output "function_auth_app_id" {
+  description = "The Application (client) ID of the Function Auth App Registration"
+  value       = azuread_application.function_auth_app.client_id
+}
+
+output "function_auth_object_id" {
+  description = "The Object ID of the Function Auth App Registration"
+  value       = azuread_application.function_auth_app.id
+}
+
+output "function_auth_sp_id" {
+  description = "The Object ID of the Service Principal for the Function Auth App"
+  value       = azuread_service_principal.function_auth_sp.id
+}
+
+output "function_auth_redirect_uris" {
+  description = "Redirect URIs configured for the Function Auth App"
+  value       = azuread_application.function_auth_app.web[0].redirect_uris
+}
+
+output "function_auth_tenant_id" {
+  description = "Tenant ID used for the Function Auth App Registration"
+  value       = var.auth_tenant_id
+}
