@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "func start",
-    "test": "jest"
+    "test": "jest",
+    "prepare": "husky"
   },
   "dependencies": {
     "@azure/data-tables": "^13.3.1",
@@ -18,10 +19,16 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.28.5",
+    "@eslint/js": "^9.39.1",
     "@jest/globals": "^30.2.0",
     "babel-jest": "^30.2.0",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0",
+    "husky": "^9.1.7",
     "jest": "^30.2.0",
-    "nodemon": "^3.0.1"
+    "lint-staged": "^16.2.6",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.6.2"
   },
   "author": "Sharlet Claros",
   "license": "MIT"
