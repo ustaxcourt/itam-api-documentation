@@ -1,8 +1,8 @@
 import { app } from '@azure/functions';
 import axios from 'axios';
 import { getToken } from './oauth.js';
-
 import { giveMeRowId } from './helperFunctions/userHelpers.js';
+
 const { DATAVERSE_URL } = process.env;
 
 
@@ -35,13 +35,21 @@ app.http('assignments', {
           "crf7f_asset_item_status": 0
         };
       }
-      else {
+      else if (request.method === 'DELETE') {
         var body = {
           "crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind": null,
           "crf7f_asset_item_status": 1
 
         };
       }
+
+      else {
+        return {
+          status: 404,
+          jsonBody: "Invalid REST Method"
+        };
+      }
+
 
       let url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs(${assetId})`;
       let response = await axios.patch(url,
