@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Dataverse Web API connect to ITAM data",
   "main": "./azure-functions/index.js",
+  "type": "module",
   "scripts": {
     "start": "func start",
     "test": "jest"
