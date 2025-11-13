@@ -61,4 +61,3 @@ Azure App Settings: Store CLIENT_ID, TENANT_ID, DATAVERSE_URL, and SCOPE in Azur
 
 .. then also the vscode extensions for devs
 
-Test
