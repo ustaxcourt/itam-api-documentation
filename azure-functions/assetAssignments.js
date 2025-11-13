@@ -14,8 +14,8 @@ export async function assignmentsHandler(request, context) {
         status: 403,
         jsonBody: {
           error: 'Unauthorized',
-          details: 'Dataverse internal token is missing or invalid.'
-        }
+          details: 'Dataverse internal token is missing or invalid.',
+        },
       };
     }
 
@@ -27,13 +27,18 @@ export async function assignmentsHandler(request, context) {
       const userId = request.params.userid;
       rowId = await giveMeRowId(userId);
       body = {
-        "crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind": `crf7f_ois_asset_entra_dat_users(${rowId})`,
-        "crf7f_asset_item_status": 0
+        'crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind': `crf7f_ois_asset_entra_dat_users(${rowId})`,
+        crf7f_asset_item_status: 0,
+      };
+    } else if (request.method === 'DELETE') {
+      body = {
+        'crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind': null,
+        crf7f_asset_item_status: 1,
       };
     } else {
-      body = {
-        "crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind": null,
-        "crf7f_asset_item_status": 1
+      return {
+        status: 404,
+        jsonBody: 'Invalid REST Method',
       };
     }
 
@@ -42,25 +47,33 @@ export async function assignmentsHandler(request, context) {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: 'application/json',
-        Prefer: 'odata.include-annotations="OData.Community.Display.V1.FormattedValue"',
-        'If-Match': '*'
-      }
+        Prefer:
+          'odata.include-annotations="OData.Community.Display.V1.FormattedValue"',
+        'If-Match': '*',
+      },
     });
 
     return {
       status: 200,
-      jsonBody: "Successfully to updated item assignment"
+      jsonBody: 'Successfully to updated item assignment',
     };
   } catch (error) {
-    const status = error.response?.status === 400 ? 404 : error.response?.status || 500;
-    context.error('Unable to update assignments', error.response?.data || error.message);
+    const status =
+      error.response?.status === 400 ? 404 : error.response?.status || 500;
+    context.error(
+      'Unable to update assignments',
+      error.response?.data || error.message,
+    );
 
     return {
       status,
       jsonBody: {
         error: 'Unable to update assignment',
-        details: (status === 404 ? 'invalid itemId or userId' : error.response?.data?.error?.message) || error.message
-      }
+        details:
+          (status === 404
+            ? 'invalid itemId or userId'
+            : error.response?.data?.error?.message) || error.message,
+      },
     };
   }
 }
@@ -69,5 +82,5 @@ app.http('assignments', {
   methods: ['POST', 'DELETE'],
   authLevel: 'anonymous',
   route: 'v1/assets/{assetid}/assignments/{userid?}',
-  handler: assignmentsHandler
+  handler: assignmentsHandler,
 });
