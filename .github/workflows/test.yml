@@ -1,11 +1,11 @@
 name: Test Azure Function App (JavaScript ESM)
 
 on:
-  pull_request: # Runs on PRs for these branches
+  pull_request:
     branches:
       - main
       - deployTest
-  workflow_dispatch: # Manual trigger option
+  workflow_dispatch:
 
 jobs:
   run-tests:
@@ -13,10 +13,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '22.18.0'
 
@@ -30,7 +30,7 @@ jobs:
       run: npm test -- --coverage
 
     - name: Upload coverage report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-report
         path: coverage
