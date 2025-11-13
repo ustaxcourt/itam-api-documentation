@@ -10,3 +10,23 @@ node_modules/
 
 # Azure Functions artifacts
 local.settings.json
+
+# Terraform working directory and state
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.exe
+
+# Terraform variable files (sensitive)
+*.tfvars
+*.tfvars.json
+
+# Terraform override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform CLI config
+.terraformrc
+terraform.rc
