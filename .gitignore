@@ -1,41 +1,12 @@
-# Node.js dependencies
-node_modules/
-
-# Environment variables
-.env
-
 # Logs
+logs
 *.log
 
-# OS-specific files
-.DS_Store
-Thumbs.db
+# Coverage directory used by tools like istanbul
+coverage
 
-# Terraform working directory and state
-.terraform/
-*.tfstate
-*.tfstate.backup
-*.exe
+# Dependency directories
+node_modules/
 
-# Terraform variable files (sensitive)
-*.tfvars
-*.tfvars.json
-
-# Terraform override files
-override.tf
-override.tf.json
-*_override.tf
-*_override.tf.json
-
-# Terraform CLI config
-.terraformrc
-terraform.rc
-
-# Executables
-terraform.exe
-
-# IDE/editor folders
-.vscode/
-.idea/
-*.swp
-*.swo
+# Azure Functions artifacts
+local.settings.json

@@ -60,3 +60,4 @@ Add piece on storing variables in azure portal app settings maybe
 Azure App Settings: Store CLIENT_ID, TENANT_ID, DATAVERSE_URL, and SCOPE in Azure Function App Settings.
 
 .. then also the vscode extensions for devs
+
