@@ -3,18 +3,15 @@ import axios from 'axios';
 import { getToken } from './oauth.js';
 import { giveMeRowId } from './helperFunctions/userHelpers.js';
 
-
 const { DATAVERSE_URL } = process.env;
 
 
 app.http('assignments', {
-  methods: ['POST'],
+  methods: ['POST', 'DELETE'],
   authLevel: 'anonymous',
-  route: 'v1/assets/{assetid}/assignments/{userid}',
+  route: 'v1/assets/{assetid}/assignments/{userid?}',
   handler: async (request, context) => {
-
     try {
-
       const token = await getToken();
       if (!token) {
         return {
@@ -32,18 +29,27 @@ app.http('assignments', {
 
       if (request.method === 'POST') {
         let userId = request.params.userid;
-        let rowId = await giveMeRowId(userId);
+        rowId = await giveMeRowId(userId);
         var body = {
           "crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind": `crf7f_ois_asset_entra_dat_users(${rowId})`,
           "crf7f_asset_item_status": 0
         };
       }
-      else {
+      else if (request.method === 'DELETE') {
         var body = {
-          "crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind": null
+          "crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind": null,
+          "crf7f_asset_item_status": 1
 
         };
       }
+
+      else {
+        return {
+          status: 404,
+          jsonBody: "Invalid REST Method"
+        };
+      }
+
 
       let url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs(${assetId})`;
       let response = await axios.patch(url,
