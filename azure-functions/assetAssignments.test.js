@@ -2,7 +2,7 @@ import { assignmentsHandler } from './assetAssignments.js';
 import axios from 'axios';
 import { getToken } from './oauth';
 import { giveMeRowId } from './helperFunctions/userHelpers';
-import { afterAll } from '@jest/globals';
+
 
 jest.mock('axios');
 jest.mock('./oauth');
