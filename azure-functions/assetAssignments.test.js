@@ -2,19 +2,31 @@ import { assignmentsHandler } from './assetAssignments.js';
 import axios from 'axios';
 import { getToken } from './oauth';
 import { giveMeRowId } from './helperFunctions/userHelpers';
+import { afterAll } from '@jest/globals';
 
 jest.mock('axios');
 jest.mock('./oauth');
 jest.mock('./helperFunctions/userHelpers');
+
+let dataverseStorage;
 
 describe('assignmentsHandler', () => {
   const context = {
     error: jest.fn()
   };
 
+  beforeAll(function () {
+    dataverseStorage = process.env.DATAVERSE_URL;
+    process.env.DATAVERSE_URL = 'https://fake.dataverse.url';
+  });
+
+  afterAll(function () {
+    process.env.DATAVERSE_URL = dataverseStorage
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
-    process.env.DATAVERSE_URL = 'https://fake.dataverse.url';
+
   });
 
   it('should return 403 if token is missing', async () => {

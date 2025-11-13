@@ -3,13 +3,33 @@ import axios from 'axios';
 
 jest.mock('axios');
 
+let clientIDStorage;
+let tenantIDStorage;
+let dataverseStorage;
+let scopeStorage;
+
 describe('getToken', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
+
+  beforeAll(function () {
+    clientIDStorage = process.env.CLIENT_ID;
+    tenantIDStorage = process.env.TENANT_ID;
+    dataverseStorage = process.env.DATAVERSE_INTERNAL;
+    scopeStorage = process.env.SCOPE;
     process.env.CLIENT_ID = 'test-client-id';
     process.env.TENANT_ID = 'test-tenant-id';
     process.env.DATAVERSE_INTERNAL = 'test-secret';
     process.env.SCOPE = 'https://example.com/.default';
+  });
+
+  afterAll(function () {
+    process.env.CLIENT_ID = clientIDStorage
+    process.env.TENANT_ID = tenantIDStorage
+    process.env.DATAVERSE_INTERNAL = dataverseStorage
+    process.env.SCOPE = scopeStorage
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should return access token when API call succeeds', async () => {
