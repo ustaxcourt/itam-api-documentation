@@ -81,7 +81,12 @@ describe('assignmentsHandler', () => {
     axios.patch.mockRejectedValue({
       response: {
         status: 400,
-        data: { error: { message: 'Bad Request' } }
+        data: {
+          "error": {
+            "code": "0x80060888",
+            "message": "')' or ',' expected at position 5 in '(b7b9-f011-bbd2-000d3a56dc3a)'."
+          }
+        }
       }
     });
 
