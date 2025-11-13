@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - deployTest
-  workflow_dispatch:
+  workflow_dispatch: # This is supposed to generate a run on click button for this action once deplyed to main
 
 jobs:
   run-tests:
