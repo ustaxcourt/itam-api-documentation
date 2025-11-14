@@ -33,6 +33,12 @@
     "nodemon": "^3.0.1",
     "prettier": "^3.6.2"
   },
+  "overrides": {
+    "js-yaml": "4.1.1"
+  },
+  "engines": {
+    "node": "22.18.0"
+  },
   "author": "Sharlet Claros",
   "license": "MIT"
 }
