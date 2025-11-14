@@ -1,7 +1,8 @@
 import { app } from '@azure/functions';
-import axios from 'axios';
 import { giveMeRowId } from './useCases/userHelpers.js';
 import { tokenHandler } from './apiController/getTokenHandler.js';
+import { dataverseCall } from './persistance/dataverseCall.js';
+import { buildResponse } from './useCases/returnResponse.js';
 
 const { DATAVERSE_URL } = process.env;
 
@@ -34,20 +35,13 @@ export async function assignmentsHandler(request, context) {
     }
 
     const url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs(${assetId})`;
-    await axios.patch(url, body, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-        Prefer:
-          'odata.include-annotations="OData.Community.Display.V1.FormattedValue"',
-        'If-Match': '*',
-      },
-    });
+    let response = await dataverseCall(token, url, 'PATCH', body);
 
-    return {
-      status: 200,
-      jsonBody: 'Successfully to updated item assignment',
-    };
+    return await buildResponse(
+      200,
+      'Successfully to updated item assignment',
+      response,
+    );
   } catch (error) {
     const status =
       error.response?.status === 400 ? 404 : error.response?.status || 500;
