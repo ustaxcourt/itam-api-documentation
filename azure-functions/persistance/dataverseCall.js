@@ -11,6 +11,7 @@ export async function dataverseCall(token, url, method, body = null) {
         'If-Match': '*',
       },
     });
+
     return response;
   } else if (method == 'GET') {
     const response = await axios.get(url, {
@@ -21,6 +22,7 @@ export async function dataverseCall(token, url, method, body = null) {
           'odata.include-annotations="OData.Community.Display.V1.FormattedValue"',
       },
     });
+
     return response;
   }
 }
