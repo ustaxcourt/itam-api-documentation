@@ -1,10 +1,9 @@
 import { app } from '@azure/functions';
 import axios from 'axios';
 import { getToken } from './oauth.js';
-import { filterDictionary } from './helperFunctions/filterDict.js';
+import { filterDictionary } from './persistance/filterDict.js';
 
 const { DATAVERSE_URL } = process.env;
-
 
 app.http('queryAsset', {
   methods: ['GET'],
@@ -19,8 +18,8 @@ app.http('queryAsset', {
           status: 403,
           jsonBody: {
             error: 'Unauthorized',
-            details: 'Dataverse internal token is missing or invalid.'
-          }
+            details: 'Dataverse internal token is missing or invalid.',
+          },
         };
       }
 
@@ -30,37 +29,41 @@ app.http('queryAsset', {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: 'application/json',
-          Prefer: 'odata.include-annotations="OData.Community.Display.V1.FormattedValue"'
-        }
+          Prefer:
+            'odata.include-annotations="OData.Community.Display.V1.FormattedValue"',
+        },
       });
 
-      const dictionary = filterDictionary(response.data["value"][0]);
+      const dictionary = filterDictionary(response.data['value'][0]);
 
       if (Object.keys(dictionary).length === 0) {
         return {
           status: 404,
           jsonBody: {
             error: 'Dataverse query failed',
-            details: "Resource Not Found"
-          }
+            details: 'Resource Not Found',
+          },
         };
       }
 
       return {
         status: 200,
-        jsonBody: dictionary
+        jsonBody: dictionary,
       };
     } catch (error) {
       const status = error.response?.status || 500;
-      context.error('Dataverse query error:', error.response?.data || error.message);
+      context.error(
+        'Dataverse query error:',
+        error.response?.data || error.message,
+      );
 
       return {
         status,
         jsonBody: {
           error: 'Dataverse query failed',
-          details: error.response?.data?.error?.message || error.message
-        }
+          details: error.response?.data?.error?.message || error.message,
+        },
       };
     }
-  }
+  },
 });

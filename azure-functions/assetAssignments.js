@@ -1,7 +1,7 @@
 import { app } from '@azure/functions';
 import axios from 'axios';
 import { getToken } from './oauth.js';
-import { giveMeRowId } from './helperFunctions/userHelpers.js';
+import { giveMeRowId } from './useCases/userHelpers.js';
 
 const { DATAVERSE_URL } = process.env;
 

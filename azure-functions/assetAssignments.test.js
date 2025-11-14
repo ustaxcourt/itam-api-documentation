@@ -1,18 +1,17 @@
 import { assignmentsHandler } from './assetAssignments.js';
 import axios from 'axios';
 import { getToken } from './oauth';
-import { giveMeRowId } from './helperFunctions/userHelpers';
-
+import { giveMeRowId } from './useCases/userHelpers';
 
 jest.mock('axios');
 jest.mock('./oauth');
-jest.mock('./helperFunctions/userHelpers');
+jest.mock('./useCases/userHelpers');
 
 let dataverseStorage;
 
 describe('assignmentsHandler', () => {
   const context = {
-    error: jest.fn()
+    error: jest.fn(),
   };
 
   beforeAll(function () {
@@ -21,12 +20,11 @@ describe('assignmentsHandler', () => {
   });
 
   afterAll(function () {
-    process.env.DATAVERSE_URL = dataverseStorage
+    process.env.DATAVERSE_URL = dataverseStorage;
   });
 
   beforeEach(() => {
     jest.clearAllMocks();
-
   });
 
   it('should return 403 if token is missing', async () => {
@@ -34,7 +32,7 @@ describe('assignmentsHandler', () => {
 
     const request = {
       method: 'POST',
-      params: { assetid: '123', userid: '456' }
+      params: { assetid: '123', userid: '456' },
     };
 
     const response = await assignmentsHandler(request, context);
@@ -50,7 +48,7 @@ describe('assignmentsHandler', () => {
 
     const request = {
       method: 'POST',
-      params: { assetid: '123', userid: '456' }
+      params: { assetid: '123', userid: '456' },
     };
 
     const response = await assignmentsHandler(request, context);
@@ -66,7 +64,7 @@ describe('assignmentsHandler', () => {
 
     const request = {
       method: 'DELETE',
-      params: { assetid: '123' }
+      params: { assetid: '123' },
     };
 
     const response = await assignmentsHandler(request, context);
@@ -82,17 +80,18 @@ describe('assignmentsHandler', () => {
       response: {
         status: 400,
         data: {
-          "error": {
-            "code": "0x80060888",
-            "message": "')' or ',' expected at position 5 in '(b7b9-f011-bbd2-000d3a56dc3a)'."
-          }
-        }
-      }
+          error: {
+            code: '0x80060888',
+            message:
+              "')' or ',' expected at position 5 in '(b7b9-f011-bbd2-000d3a56dc3a)'.",
+          },
+        },
+      },
     });
 
     const request = {
       method: 'POST',
-      params: { assetid: '123', userid: '456' }
+      params: { assetid: '123', userid: '456' },
     };
 
     const response = await assignmentsHandler(request, context);
