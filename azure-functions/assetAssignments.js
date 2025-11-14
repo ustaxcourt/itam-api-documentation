@@ -43,23 +43,35 @@ export async function assignmentsHandler(request, context) {
       response,
     );
   } catch (error) {
-    const status =
-      error.response?.status === 400 ? 404 : error.response?.status || 500;
+    //const status = error.response?.status === 400 ? 404 : error.response?.status || 500;
+
     context.error(
       'Unable to update assignments',
       error.response?.data || error.message,
     );
+    if (error.response?.status == 400) {
+      return await buildResponse(404, 'Unable to update assignment');
+    } else if (error.response?.status == 401) {
+      return await buildResponse(403, 'Unauthorized');
+    } else {
+      return await buildResponse(
+        error.response?.status,
+        'Unable to update assignment',
+      );
+    }
+    /*
 
-    return {
-      status,
-      jsonBody: {
-        error: 'Unable to update assignment',
-        details:
-          (status === 404
-            ? 'invalid itemId or userId'
-            : error.response?.data?.error?.message) || error.message,
-      },
-    };
+        return {
+          status,
+          jsonBody: {
+            error: 'Unable to update assignment',
+            details:
+              (status === 404
+                ? 'invalid itemId or userId'
+                : error.response?.data?.error?.message) || error.message,
+          },
+        };
+        */
   }
 }
 

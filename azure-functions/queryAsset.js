@@ -22,6 +22,8 @@ app.http('queryAsset', {
       const dictionary = filterDictionary(response.data['value'][0]);
 
       if (Object.keys(dictionary).length === 0) {
+        return await buildResponse(404, 'Dataverse query failed');
+        /*
         return {
           status: 404,
           jsonBody: {
@@ -29,6 +31,7 @@ app.http('queryAsset', {
             details: 'Resource Not Found',
           },
         };
+        */
       }
 
       return await buildResponse(200, 'Success', dictionary);
