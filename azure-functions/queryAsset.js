@@ -1,7 +1,8 @@
 import { app } from '@azure/functions';
 import axios from 'axios';
-import { getToken } from './oauth.js';
 import { filterDictionary } from './persistance/filterDict.js';
+
+import { tokenHandler } from './apiController/getTokenHandler.js';
 
 const { DATAVERSE_URL } = process.env;
 
@@ -12,16 +13,7 @@ app.http('queryAsset', {
   handler: async (request, context) => {
     try {
       const id = request.params.itemid;
-      const token = await getToken();
-      if (!token) {
-        return {
-          status: 403,
-          jsonBody: {
-            error: 'Unauthorized',
-            details: 'Dataverse internal token is missing or invalid.',
-          },
-        };
-      }
+      let token = await tokenHandler();
 
       let url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs?$filter=crf7f_ois_asset_rela_item_orgid eq '${id}'&$expand=crf7f_ois_asset_entra_dat_userCurrentOw($select=crf7f_email,crf7f_jobtitle,crf7f_name,crf7f_isactive,crf7f_iscontractor, crf7f_entra_object_id,crf7f_phone, crf7f_location)`;
 

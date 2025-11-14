@@ -1,23 +1,14 @@
 import { app } from '@azure/functions';
 import axios from 'axios';
-import { getToken } from './oauth.js';
 import { giveMeRowId } from './useCases/userHelpers.js';
+import { tokenHandler } from './apiController/getTokenHandler.js';
 
 const { DATAVERSE_URL } = process.env;
 
 // ✅ Pulled-out named handler function
 export async function assignmentsHandler(request, context) {
   try {
-    const token = await getToken();
-    if (!token) {
-      return {
-        status: 403,
-        jsonBody: {
-          error: 'Unauthorized',
-          details: 'Dataverse internal token is missing or invalid.',
-        },
-      };
-    }
+    let token = await tokenHandler();
 
     const assetId = request.params.assetid;
     let rowId;
