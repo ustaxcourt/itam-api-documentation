@@ -1,7 +1,7 @@
 import { assignmentsHandler } from './assetAssignments.js';
 import axios from 'axios';
 import { getToken } from './oauth';
-import { giveMeRowId } from './useCases/userHelpers';
+import { giveMeRowId } from './persistance/getUserById.js';
 
 jest.mock('axios');
 jest.mock('./oauth');

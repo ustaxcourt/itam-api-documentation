@@ -1,8 +1,8 @@
 import { app } from '@azure/functions';
-import { giveMeRowId } from './useCases/userHelpers.js';
+import { getUserById } from './persistance/getUserById.js';
 import { tokenHandler } from './apiController/getTokenHandler.js';
 import { dataverseCall } from './persistance/dataverseCall.js';
-import { buildResponse } from './useCases/returnResponse.js';
+import { buildResponse } from './apiController/returnResponse.js';
 
 const { DATAVERSE_URL } = process.env;
 
@@ -18,7 +18,8 @@ export async function assignmentsHandler(request, context) {
 
     if (request.method === 'POST') {
       const userId = request.params.userid;
-      rowId = await giveMeRowId(userId);
+      rowId = await getUserById(userId);
+      console.log(rowId);
 
       body = {
         'crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind': `crf7f_ois_asset_entra_dat_users(${rowId})`,
@@ -34,6 +35,7 @@ export async function assignmentsHandler(request, context) {
     }
 
     const url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs(${assetId})`;
+
     await dataverseCall(token, url, 'PATCH', body);
 
     return await buildResponse(
