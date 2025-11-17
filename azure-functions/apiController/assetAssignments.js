@@ -1,15 +1,15 @@
 import { app } from '@azure/functions';
-import { getUserById } from './persistance/getUserById.js';
-import { tokenHandler } from './apiController/getTokenHandler.js';
-import { dataverseCall } from './persistance/dataverseCall.js';
-import { buildResponse } from './apiController/returnResponse.js';
+import { getUserById } from '../persistence/getUserById.js';
+import { dataverseTokenHandler } from './getDataverseTokenHandler.js';
+import { dataverseCall } from '../persistence/dataverseCall.js';
+import { buildResponse } from '../apiController/returnResponse.js';
 
 const { DATAVERSE_URL } = process.env;
 
 // ✅ Pulled-out named handler function
 export async function assignmentsHandler(request, context) {
   try {
-    let token = await tokenHandler();
+    let token = await dataverseTokenHandler();
     const assetId = request.params.assetid;
     console.log(assetId);
 
