@@ -1,6 +1,6 @@
 import { app } from '@azure/functions';
 import { getAssetDetails } from '../useCases/getAssetDetails.js';
-import { buildResponse } from './returnResponse.js';
+import { buildResponse } from './buildResponse.js';
 
 app.http('queryAsset', {
   methods: ['GET'],

@@ -1,4 +1,4 @@
-export async function buildResponse(status, message, data = null) {
+export function buildResponse(status, message, data = null) {
   let response = {
     status: status,
     jsonBody: {

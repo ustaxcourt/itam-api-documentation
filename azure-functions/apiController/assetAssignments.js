@@ -1,5 +1,5 @@
 import { app } from '@azure/functions';
-import { buildResponse } from '../apiController/returnResponse.js';
+import { buildResponse } from './buildResponse.js';
 import { assignAssetToUser } from '../useCases/assignAssetToUser.js';
 import { unassignAsset } from '../useCases/unassignAsset.js';
 
@@ -17,11 +17,7 @@ export async function assignmentsHandler(request, context) {
       throw new Error('Invalid REST Method');
     }
 
-    return await buildResponse(
-      200,
-      'Successfully updated item assignment',
-      assetId,
-    );
+    return buildResponse(200, 'Successfully updated item assignment', assetId);
   } catch (error) {
     context.error(
       'Unable to update assignments',
@@ -29,14 +25,14 @@ export async function assignmentsHandler(request, context) {
     );
 
     if (error.response?.status === 400 || error.response?.status === 204) {
-      return await buildResponse(
+      return buildResponse(
         404,
         'Unable to update assignment due to invalid assetid or userid',
       );
     } else if (error.response?.status === 401) {
-      return await buildResponse(403, 'Unauthorized');
+      return buildResponse(403, 'Unauthorized');
     } else {
-      return await buildResponse(
+      return buildResponse(
         error.response?.status,
         'Unable to update assignment',
       );
