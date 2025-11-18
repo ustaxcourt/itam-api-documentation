@@ -1,15 +1,5 @@
-import { dataverseCall } from '../persistence/dataverseCall.js';
-import { dataverseTokenHandler } from '../apiController/getDataverseTokenHandler.js';
+import { unassignAssetOwner } from '../persistence/unassignAssetOwner.js';
 
 export async function unassignAsset(assetId) {
-  const { DATAVERSE_URL } = process.env;
-
-  const body = {
-    'crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind': null,
-    crf7f_asset_item_status: 1,
-  };
-
-  const url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs(${assetId})`;
-  const token = await dataverseTokenHandler();
-  await dataverseCall(token, url, 'PATCH', body);
+  await unassignAssetOwner(assetId);
 }
