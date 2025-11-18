@@ -1,37 +1,40 @@
 import { app } from '@azure/functions';
 import { buildResponse } from '../apiController/returnResponse.js';
-import { updateAssignment } from '../useCases/updateAssignment.js';
+import { assignAssetToUser } from '../useCases/assignAssetToUser.js';
+import { unassignAsset } from '../useCases/unassignAsset.js';
 
 // ✅ Pulled-out named handler function
 export async function assignmentsHandler(request, context) {
   try {
-    await updateAssignment(request);
+    const assetId = request.params.assetid;
+
+    if (request.method === 'POST') {
+      const userId = request.params.userid;
+      await assignAssetToUser(userId, assetId);
+    } else if (request.method === 'DELETE') {
+      await unassignAsset(assetId);
+    } else {
+      throw new Error('Invalid REST Method');
+    }
 
     return await buildResponse(
       200,
       'Successfully updated item assignment',
-      request.params.assetid,
+      assetId,
     );
   } catch (error) {
     context.error(
       'Unable to update assignments',
       error.response?.data || error.message,
     );
-    //wrong userid or asset and we return a 404
-    if (error.response?.status == 400) {
-      return await buildResponse(
-        404,
-        'Unable to update assignment due to inavlid assetid or userid',
-      );
-    } else if (error.response?.status == 401) {
-      return await buildResponse(403, 'Unauthorized');
-    }
 
-    if (error.response?.status == 204) {
+    if (error.response?.status === 400 || error.response?.status === 204) {
       return await buildResponse(
         404,
-        'Unable to update assignment due to inavlid assetid or userid boop',
+        'Unable to update assignment due to invalid assetid or userid',
       );
+    } else if (error.response?.status === 401) {
+      return await buildResponse(403, 'Unauthorized');
     } else {
       return await buildResponse(
         error.response?.status,
