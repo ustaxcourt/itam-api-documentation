@@ -1,5 +1,4 @@
 import { dataverseCall } from '../persistence/dataverseCall.js';
-import { dataverseTokenHandler } from '../apiController/getDataverseTokenHandler.js';
 
 export async function unassignAssetOwner(assetId) {
   const { DATAVERSE_URL } = process.env;
@@ -10,6 +9,5 @@ export async function unassignAssetOwner(assetId) {
   };
 
   const url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs(${assetId})`;
-  const token = await dataverseTokenHandler();
-  await dataverseCall(token, url, 'PATCH', body);
+  await dataverseCall(url, 'PATCH', body);
 }

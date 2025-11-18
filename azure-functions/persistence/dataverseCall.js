@@ -1,28 +1,25 @@
 import axios from 'axios';
+import { dataverseTokenHandler } from '../apiController/getDataverseTokenHandler.js';
 
-export async function dataverseCall(token, url, method, body = null) {
-  if (method == 'PATCH') {
-    const response = await axios.patch(url, body, {
+export async function dataverseCall(url, method, body = null) {
+  // Centralized token retrieval
+  const token = await dataverseTokenHandler();
+
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    Accept: 'application/json',
+    Prefer:
+      'odata.include-annotations="OData.Community.Display.V1.FormattedValue"',
+  };
+
+  if (method === 'PATCH') {
+    return axios.patch(url, body, {
       headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-        Prefer:
-          'odata.include-annotations="OData.Community.Display.V1.FormattedValue"',
+        ...headers,
         'If-Match': '*',
       },
     });
-
-    return response;
-  } else if (method == 'GET') {
-    const response = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-        Prefer:
-          'odata.include-annotations="OData.Community.Display.V1.FormattedValue"',
-      },
-    });
-
-    return response;
+  } else if (method === 'GET') {
+    return axios.get(url, { headers });
   }
 }
