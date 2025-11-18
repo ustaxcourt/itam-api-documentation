@@ -1,9 +1,11 @@
 import axios from 'axios';
-import { dataverseTokenHandler } from '../apiController/getDataverseTokenHandler.js';
+import { getToken } from '../oauth.js';
 
 export async function dataverseCall(url, method, body = null) {
-  // Centralized token retrieval
-  const token = await dataverseTokenHandler();
+  const token = await getToken();
+  if (!token) {
+    throw new Error('No token found');
+  }
 
   const headers = {
     Authorization: `Bearer ${token}`,
