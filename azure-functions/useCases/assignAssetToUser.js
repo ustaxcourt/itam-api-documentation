@@ -1,18 +1,5 @@
-import { getUserById } from '../persistence/getUserById.js';
-import { dataverseCall } from '../persistence/dataverseCall.js';
-import { dataverseTokenHandler } from '../apiController/getDataverseTokenHandler.js';
+import { assignAssetOwner } from '../persistence/assignAssetOwner.js';
 
 export async function assignAssetToUser(userId, assetId) {
-  const { DATAVERSE_URL } = process.env;
-
-  const rowId = await getUserById(userId);
-
-  const body = {
-    'crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind': `crf7f_ois_asset_entra_dat_users(${rowId})`,
-    crf7f_asset_item_status: 0,
-  };
-
-  const url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs(${assetId})`;
-  const token = await dataverseTokenHandler();
-  await dataverseCall(token, url, 'PATCH', body);
+  await assignAssetOwner(userId, assetId);
 }
