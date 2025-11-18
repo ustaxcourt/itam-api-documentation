@@ -1,47 +1,16 @@
 import { app } from '@azure/functions';
-import { getUserById } from '../persistence/getUserById.js';
-import { dataverseTokenHandler } from './getDataverseTokenHandler.js';
-import { dataverseCall } from '../persistence/dataverseCall.js';
 import { buildResponse } from '../apiController/returnResponse.js';
-
-const { DATAVERSE_URL } = process.env;
+import { updateAssignment } from '../useCases/updateAssignment.js';
 
 // ✅ Pulled-out named handler function
 export async function assignmentsHandler(request, context) {
   try {
-    let token = await dataverseTokenHandler();
-    const assetId = request.params.assetid;
-    console.log(assetId);
-
-    let rowId;
-    let body;
-
-    if (request.method === 'POST') {
-      const userId = request.params.userid;
-      rowId = await getUserById(userId);
-      console.log(rowId);
-
-      body = {
-        'crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind': `crf7f_ois_asset_entra_dat_users(${rowId})`,
-        crf7f_asset_item_status: 0,
-      };
-    } else if (request.method === 'DELETE') {
-      body = {
-        'crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind': null,
-        crf7f_asset_item_status: 1,
-      };
-    } else {
-      return buildResponse(404, 'Invalid REST Method');
-    }
-
-    const url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs(${assetId})`;
-
-    await dataverseCall(token, url, 'PATCH', body);
+    await updateAssignment(request);
 
     return await buildResponse(
       200,
       'Successfully updated item assignment',
-      assetId,
+      request.params.assetid,
     );
   } catch (error) {
     context.error(
