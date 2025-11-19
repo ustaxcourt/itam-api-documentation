@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken } from '../oauth.js';
+import { getToken } from './oauth.js';
 
 export async function dataverseCall(url, method, body = null) {
   const token = await getToken();

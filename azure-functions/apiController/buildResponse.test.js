@@ -13,6 +13,30 @@ describe('buildResponse', () => {
     });
   });
 
+  it('should return correct structure for 401 Unauthorized', () => {
+    const result = buildResponse(401, 'Unauthorized');
+
+    expect(result).toEqual({
+      status: 401,
+      jsonBody: {
+        message: 'Unauthorized',
+        data: null,
+      },
+    });
+  });
+
+  it('should return correct structure for 403 Forbidden', () => {
+    const result = buildResponse(403, 'Forbidden');
+
+    expect(result).toEqual({
+      status: 403,
+      jsonBody: {
+        message: 'Forbidden',
+        data: null,
+      },
+    });
+  });
+
   it('should return null data when not provided', () => {
     const result = buildResponse(404, 'Not Found');
 
@@ -32,18 +56,6 @@ describe('buildResponse', () => {
       status: 500,
       jsonBody: {
         message: '',
-        data: null,
-      },
-    });
-  });
-
-  it('should handle undefined data explicitly', () => {
-    const result = buildResponse(201, 'Created', undefined);
-
-    expect(result).toEqual({
-      status: 201,
-      jsonBody: {
-        message: 'Created',
         data: null,
       },
     });

@@ -9,7 +9,6 @@ let dataverseStorage;
 let scopeStorage;
 
 describe('getToken', () => {
-
   beforeAll(function () {
     clientIDStorage = process.env.CLIENT_ID;
     tenantIDStorage = process.env.TENANT_ID;
@@ -22,10 +21,10 @@ describe('getToken', () => {
   });
 
   afterAll(function () {
-    process.env.CLIENT_ID = clientIDStorage
-    process.env.TENANT_ID = tenantIDStorage
-    process.env.DATAVERSE_INTERNAL = dataverseStorage
-    process.env.SCOPE = scopeStorage
+    process.env.CLIENT_ID = clientIDStorage;
+    process.env.TENANT_ID = tenantIDStorage;
+    process.env.DATAVERSE_INTERNAL = dataverseStorage;
+    process.env.SCOPE = scopeStorage;
   });
 
   beforeEach(() => {
@@ -35,8 +34,8 @@ describe('getToken', () => {
   it('should return access token when API call succeeds', async () => {
     axios.post.mockResolvedValue({
       data: {
-        access_token: 'mocked-access-token'
-      }
+        access_token: 'mocked-access-token',
+      },
     });
 
     const token = await getToken();
@@ -50,9 +49,9 @@ describe('getToken', () => {
       response: {
         data: {
           error: 'invalid_client',
-          error_description: 'Client authentication failed.'
-        }
-      }
+          error_description: 'Client authentication failed.',
+        },
+      },
     };
 
     axios.post.mockRejectedValue(errorResponse);
