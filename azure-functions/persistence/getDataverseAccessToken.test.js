@@ -1,5 +1,5 @@
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
-import { getToken } from './getToken.js';
+import { getDataverseAccessToken } from './getDataverseAccessToken.js';
 
 import axios from 'axios';
 
@@ -10,7 +10,7 @@ let tenantIDStorage;
 let dataverseStorage;
 let scopeStorage;
 
-describe('getToken', () => {
+describe('getDatavereAccessToken', () => {
   beforeAll(function () {
     clientIDStorage = process.env.CLIENT_ID;
     tenantIDStorage = process.env.TENANT_ID;
@@ -40,7 +40,7 @@ describe('getToken', () => {
       },
     });
 
-    const token = await getToken();
+    const token = await getDataverseAccessToken();
 
     expect(token).toBe('mocked-access-token');
     expect(axios.post).toHaveBeenCalled();
@@ -58,7 +58,7 @@ describe('getToken', () => {
 
     axios.post.mockRejectedValueOnce(errorResponse);
 
-    await expect(getToken()).rejects.toEqual(
+    await expect(getDataverseAccessToken()).rejects.toEqual(
       new DataverseTokenError(
         'Error attempting to retrieve token from Identity Provider',
       ),
@@ -74,7 +74,7 @@ describe('getToken', () => {
 
     axios.post.mockResolvedValueOnce(invalidResponse);
 
-    await expect(getToken()).rejects.toEqual(
+    await expect(getDataverseAccessToken()).rejects.toEqual(
       new DataverseTokenError(
         'Error attempting to retrieve token from Identity Provider',
       ),

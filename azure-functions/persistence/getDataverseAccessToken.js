@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 
-export async function getToken() {
+export async function getDataverseAccessToken() {
   const { CLIENT_ID, TENANT_ID, DATAVERSE_INTERNAL, SCOPE } = process.env;
 
   const tokenUrl = `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token`;
