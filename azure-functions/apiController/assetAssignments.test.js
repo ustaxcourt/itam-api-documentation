@@ -66,10 +66,10 @@ describe('assignmentsHandler', () => {
 
     expect(context.error).toHaveBeenCalled();
     expect(buildResponse).toHaveBeenCalledWith(
-      500,
+      404,
       'Unable to update assignment',
     );
-    expect(result).toEqual({ status: 500, message: 'Error' });
+    expect(result).toEqual({ status: 404, message: 'Error' });
   });
 
   it('should handle 401 error gracefully', async () => {
