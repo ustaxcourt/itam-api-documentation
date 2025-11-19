@@ -193,12 +193,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: userid
-          in: query
-          description: entra id of user
-          required: true
-          schema:
-            type: string
 
       responses:
         "200":

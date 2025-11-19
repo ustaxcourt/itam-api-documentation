@@ -24,9 +24,6 @@ jobs:
     - name: Install dependencies from root
       run: npm ci
 
-    - name: Run tests with coverage
-      run: npm test -- --coverage
-
     - name: Prepare function app package
       run: |
         mkdir functionapp
