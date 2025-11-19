@@ -1,7 +1,3 @@
-import axios from 'axios';
-
-console.log('oauth loaded');
-
 export async function getToken() {
   const { CLIENT_ID, TENANT_ID, DATAVERSE_INTERNAL, SCOPE } = process.env;
 
@@ -14,12 +10,25 @@ export async function getToken() {
   params.append('scope', SCOPE);
 
   try {
-    const response = await axios.post(tokenUrl, params);
-    return response.data.access_token;
+    const response = await fetch(tokenUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params.toString(),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(`Error getting OAuth token: ${errorData}`);
+    }
+
+    const data = await response.json();
+    return data.access_token;
   } catch (error) {
     console.error(
       'Error getting OAuth token:',
-      error.response?.data || error.message,
+      error.message || error.response?.data,
     );
     throw error;
   }
