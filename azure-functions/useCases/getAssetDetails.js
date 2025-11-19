@@ -1,8 +1,8 @@
-import { getAssetById } from '../persistence/getAssetByID.js';
+import { getAssetByID } from '../persistence/getAssetByID.js';
 
 export async function getAssetDetails(id) {
   // From persistence layer
-  const asset = await getAssetById(id);
+  const asset = await getAssetByID(id);
 
   return asset;
 }
