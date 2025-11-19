@@ -11,6 +11,7 @@ describe('unassignAsset', () => {
     jest.clearAllMocks();
   });
 
+  //extremely basic test suite placeholder
   it('tests unassignAsset using a given asset and user', async () => {
     await unassignAsset('asset123');
 
