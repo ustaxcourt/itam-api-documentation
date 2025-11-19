@@ -18,4 +18,17 @@ describe('unassignAsset', () => {
     expect(unassignAssetOwner).toHaveBeenCalledTimes(1);
     expect(unassignAssetOwner).toHaveBeenCalledWith('asset123');
   });
+
+  //Basic tests for expected failure modes
+  it('throws errors like unassignAssetOwner', async () => {
+    unassignAssetOwner.mockRejectedValue(new Error('XXX: asset not found'));
+    await expect(unassignAsset('asset123')).rejects.toThrow(
+      'XXX: asset not found',
+    );
+  });
+
+  it('handles empty calls', async () => {
+    unassignAssetOwner.mockRejectedValue(new Error('XXX: asset not found'));
+    await expect(unassignAsset()).rejects.toThrow('XXX: asset not found');
+  });
 });
