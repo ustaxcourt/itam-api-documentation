@@ -66,7 +66,7 @@ describe('assignmentsHandler', () => {
 
     expect(context.error).toHaveBeenCalled();
     expect(buildResponse).toHaveBeenCalledWith(
-      undefined,
+      500,
       'Unable to update assignment',
     );
     expect(result).toEqual({ status: 500, message: 'Error' });

@@ -32,7 +32,7 @@ export async function assignmentsHandler(request, context) {
       return buildResponse(403, 'Unauthorized');
     } else {
       return buildResponse(
-        error.response?.status,
+        error.response?.status || 500,
         'Unable to update assignment',
       );
     }
