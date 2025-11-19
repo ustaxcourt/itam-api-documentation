@@ -23,87 +23,92 @@ paths:
               schema:
                 type: object
                 properties:
-                  activation:
-                    type: boolean
-                    nullable: true
-                    example: null
-                    enum:
-                      - true
-                      - false
-                      - null
-                  assetName:
-                    type: string
-                    example: "HP EliteDisplay E241i #166"
-                    nullable: false
-                  condition:
-                    type: string
-                    example: "Good"
-                    nullable: false
-                    enum:
-                      - Excellent
-                      - Good
-                      - Poor
-                      - Garbage
-                      - Damaged
-                      - New
-                  itemStatus:
-                    type: string
-                    example: "Available"
-                    nullable: false
-                    enum:
-                      - Assigned
-                      - Available
-                      - Kiosk
-                      - Recycled
-                      - Decommissioned
-                      - Repair
-                      - Inoperative
-                      - Unknown
-                      - Excess in Depot
-                  location:
-                    type: string
-                    example: "G47"
-                    nullable: true
-                  phone:
-                    type: string
-                    nullable: true
-                    example: null
-                  user:
+                  message:
+                    example: "Success"
+                  data:
                     type: object
                     properties:
-                      email:
-                        type: string
-                        format: email
-                        example: "matthew.hung@example.com"
-                      isActive:
+                      activation:
                         type: boolean
-                        example: true
-                      isContractor:
-                        type: boolean
-                        example: true
-                      phone:
+                        nullable: true
+                        example: null
+                        enum:
+                          - true
+                          - false
+                          - null
+                      assetName:
                         type: string
-                        example: "+1-555-123-4567"
-                      jobTitle:
+                        example: "HP EliteDisplay E241i #166"
+                        nullable: false
+                      condition:
                         type: string
-                        example: "Office 365 Engineer"
+                        example: "Good"
+                        nullable: false
+                        enum:
+                          - Excellent
+                          - Good
+                          - Poor
+                          - Garbage
+                          - Damaged
+                          - New
+                      itemStatus:
+                        type: string
+                        example: "Available"
+                        nullable: false
+                        enum:
+                          - Assigned
+                          - Available
+                          - Kiosk
+                          - Recycled
+                          - Decommissioned
+                          - Repair
+                          - Inoperative
+                          - Unknown
+                          - Excess in Depot
                       location:
                         type: string
-                        example: "Arden, California"
-                      name:
+                        example: "G47"
+                        nullable: true
+                      osVersion:
                         type: string
-                        example: "Matthew Hung"
+                        nullable: true
+                        example: Windows 11 23H2
+                        enum:
+                          - Windows 11 23H2
+                          - Windows 11 24H2
+                          - Windows 10
+                          - null
+                      phone:
+                        type: string
+                        nullable: true
+                        example: null
+                      user:
+                        type: object
+                        properties:
+                          email:
+                            type: string
+                            format: email
+                            example: "matthew.hung@example.com"
+                          isActive:
+                            type: boolean
+                            example: true
+                          isContractor:
+                            type: boolean
+                            example: true
+                          phone:
+                            type: string
+                            example: "+1-555-123-4567"
+                          jobTitle:
+                            type: string
+                            example: "Office 365 Engineer"
+                          location:
+                            type: string
+                            example: "Arden, California"
+                          name:
+                            type: string
+                            example: "Matthew Hung"
 
-                    nullable: true
-                  osVersion:
-                    type: string
-                    nullable: true
-                    example: Windows 11 23H2
-                    enum:
-                      - Windows 11 23H2
-                      - Windows 11 24H2
-                      - Windows 10
-                      - null
+                        nullable: true
 
         "401":
           description: Unauthorized – Authentication required
@@ -112,8 +117,8 @@ paths:
               schema:
                 type: object
               example:
-                error: "Missing client secret"
-                details: "Please provide x-client-secret in the request headers."
+                message: "Missing client secret"
+                data: null
         "400":
           description: Bad Request
           content:
@@ -121,8 +126,8 @@ paths:
               schema:
                 type: object
               example:
-                error: "Dataverse query failed"
-                details: "error"
+                message: "Dataverse query failed"
+                data: "Request failed with status code 400"
         "404":
           description: Resource Not Found
           content:
@@ -130,8 +135,8 @@ paths:
               schema:
                 type: object
               example:
-                error: "Dataverse query failed"
-                details: "Resource Not Found"
+                message: "Dataverse query failed"
+                data: null
         "403":
           description: Forbidden
           content:
@@ -139,8 +144,8 @@ paths:
               schema:
                 type: object
               example:
-                error: "Dataverse query failed"
-                details: "Request failed with invalid authorization status code 403"
+                message: "Request failed with invalid authorization status code 403"
+                data: null
   /v1/assets/{assetid}/assignments/{userid}:
     post:
       parameters:
@@ -163,8 +168,10 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-              example: "Successfully to updated item assignment"
+                type: object
+                example:
+                  message: "Successfully updated item assignment"
+                  data: "77727f32-b7b9-f011-bbd3-7c1e52177972"
         "404":
           description: Not Found
           content:
@@ -172,8 +179,8 @@ paths:
               schema:
                 type: object
               example:
-                error: "Unable to update assignment"
-                details: "invalid itemId or userId"
+                message: "Unable to update assignment due to invalid assetid or userid"
+                data: null
 
         "403":
           description: Forbidden
@@ -182,8 +189,8 @@ paths:
               schema:
                 type: object
               example:
-                error: "Dataverse query failed"
-                details: "Request failed with invalid authorization status code 403"
+                message: "Unauthorized"
+                data: null
   /v1/assets/{assetid}/assignments/:
     delete:
       parameters:
@@ -200,8 +207,10 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-              example: "Successfully to updated item assignment"
+                type: object
+                example:
+                  message: "Successfully updated item assignment"
+                  data: "77727f32-b7b9-f011-bbd3-7c1e52177972"
         "404":
           description: Not Found
           content:
@@ -209,8 +218,8 @@ paths:
               schema:
                 type: object
               example:
-                error: "Unable to update assignment"
-                details: "invalid itemId or userId"
+                message: "Unable to update assignment due to invalid assetid or userid"
+                data: null
 
         "403":
           description: Forbidden
@@ -219,5 +228,5 @@ paths:
               schema:
                 type: object
               example:
-                error: "Dataverse query failed"
-                details: "Request failed with invalid authorization status code 403"
+                message: "Unauthorized"
+                data: null
