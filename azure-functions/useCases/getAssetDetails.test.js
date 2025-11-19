@@ -1,4 +1,3 @@
-import { describe, beforeEach, it, expect, jest } from '@jest/globals';
 import { getAssetByID } from '../persistence/getAssetByID.js';
 import { getAssetDetails } from './getAssetDetails.js';
 
