@@ -3,7 +3,6 @@ import { buildResponse } from './buildResponse.js';
 import { assignAssetToUser } from '../useCases/assignAssetToUser.js';
 import { unassignAsset } from '../useCases/unassignAsset.js';
 
-// ✅ Pulled-out named handler function
 export async function assignmentsHandler(request, context) {
   try {
     const assetId = request.params.assetid;

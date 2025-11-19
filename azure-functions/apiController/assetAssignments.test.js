@@ -1,104 +1,91 @@
 import { assignmentsHandler } from './assetAssignments.js';
-import axios from 'axios';
-import { getToken } from './oauth';
-import { giveMeRowId } from './persistance/getUserById.js';
+import { buildResponse } from './buildResponse.js';
+import { assignAssetToUser } from '../useCases/assignAssetToUser.js';
+import { unassignAsset } from '../useCases/unassignAsset.js';
 
-jest.mock('axios');
-jest.mock('./oauth');
-jest.mock('./useCases/userHelpers');
-
-let dataverseStorage;
+jest.mock('./buildResponse.js');
+jest.mock('../useCases/assignAssetToUser.js');
+jest.mock('../useCases/unassignAsset.js');
 
 describe('assignmentsHandler', () => {
-  const context = {
-    error: jest.fn(),
-  };
-
-  beforeAll(function () {
-    dataverseStorage = process.env.DATAVERSE_URL;
-    process.env.DATAVERSE_URL = 'https://fake.dataverse.url';
-  });
-
-  afterAll(function () {
-    process.env.DATAVERSE_URL = dataverseStorage;
-  });
+  const context = { error: jest.fn() };
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should return 403 if token is missing', async () => {
-    getToken.mockResolvedValue(null);
-
-    const request = {
-      method: 'POST',
-      params: { assetid: '123', userid: '456' },
-    };
-
-    const response = await assignmentsHandler(request, context);
-
-    expect(response.status).toBe(403);
-    expect(response.jsonBody.error).toBe('Unauthorized');
-  });
-
   it('should handle POST request successfully', async () => {
-    getToken.mockResolvedValue('fake-token');
-    giveMeRowId.mockResolvedValue('row-id');
-    axios.patch.mockResolvedValue({});
+    assignAssetToUser.mockResolvedValue();
+    buildResponse.mockReturnValue({ status: 200, message: 'OK' });
 
     const request = {
       method: 'POST',
-      params: { assetid: '123', userid: '456' },
+      params: { assetid: 'asset123', userid: 'user456' },
     };
 
-    const response = await assignmentsHandler(request, context);
+    const result = await assignmentsHandler(request, context);
 
-    expect(axios.patch).toHaveBeenCalled();
-    expect(response.status).toBe(200);
-    expect(response.jsonBody).toBe('Successfully to updated item assignment');
+    expect(assignAssetToUser).toHaveBeenCalledWith('user456', 'asset123');
+    expect(buildResponse).toHaveBeenCalledWith(
+      200,
+      'Successfully updated item assignment',
+      'asset123',
+    );
+    expect(result).toEqual({ status: 200, message: 'OK' });
   });
 
   it('should handle DELETE request successfully', async () => {
-    getToken.mockResolvedValue('fake-token');
-    axios.patch.mockResolvedValue({});
+    unassignAsset.mockResolvedValue();
+    buildResponse.mockReturnValue({ status: 200, message: 'OK' });
 
     const request = {
       method: 'DELETE',
-      params: { assetid: '123' },
+      params: { assetid: 'asset123' },
     };
 
-    const response = await assignmentsHandler(request, context);
+    const result = await assignmentsHandler(request, context);
 
-    expect(axios.patch).toHaveBeenCalled();
-    expect(response.status).toBe(200);
-    expect(response.jsonBody).toBe('Successfully to updated item assignment');
+    expect(unassignAsset).toHaveBeenCalledWith('asset123');
+    expect(buildResponse).toHaveBeenCalledWith(
+      200,
+      'Successfully updated item assignment',
+      'asset123',
+    );
+    expect(result).toEqual({ status: 200, message: 'OK' });
   });
 
-  it('should handle errors gracefully', async () => {
-    getToken.mockResolvedValue('fake-token');
-    axios.patch.mockRejectedValue({
-      response: {
-        status: 400,
-        data: {
-          error: {
-            code: '0x80060888',
-            message:
-              "')' or ',' expected at position 5 in '(b7b9-f011-bbd2-000d3a56dc3a)'.",
-          },
-        },
-      },
-    });
+  it('should return error for invalid method', async () => {
+    buildResponse.mockReturnValue({ status: 500, message: 'Error' });
+
+    const request = {
+      method: 'GET',
+      params: { assetid: 'asset123' },
+    };
+
+    const result = await assignmentsHandler(request, context);
+
+    expect(context.error).toHaveBeenCalled();
+    expect(buildResponse).toHaveBeenCalledWith(
+      undefined,
+      'Unable to update assignment',
+    );
+    expect(result).toEqual({ status: 500, message: 'Error' });
+  });
+
+  it('should handle 401 error gracefully', async () => {
+    const error = { response: { status: 401 } };
+    assignAssetToUser.mockRejectedValue(error);
+    buildResponse.mockReturnValue({ status: 403, message: 'Unauthorized' });
 
     const request = {
       method: 'POST',
-      params: { assetid: '123', userid: '456' },
+      params: { assetid: 'asset123', userid: 'user456' },
     };
 
-    const response = await assignmentsHandler(request, context);
+    const result = await assignmentsHandler(request, context);
 
     expect(context.error).toHaveBeenCalled();
-    expect(response.status).toBe(404);
-    expect(response.jsonBody.error).toBe('Unable to update assignment');
-    expect(response.jsonBody.details).toBe('invalid itemId or userId');
+    expect(buildResponse).toHaveBeenCalledWith(403, 'Unauthorized');
+    expect(result).toEqual({ status: 403, message: 'Unauthorized' });
   });
 });

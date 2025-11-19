@@ -18,6 +18,6 @@ describe('index.js setup', () => {
     });
 
     // Check that HTTP routes were registered
-    expect(azureFunctions.app.http).toHaveBeenCalledTimes(4); // number of imports
+    expect(azureFunctions.app.http).toHaveBeenCalledTimes(3); // number of imports
   });
 });
