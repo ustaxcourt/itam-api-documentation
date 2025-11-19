@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - deployTest
+  workflow_dispatch: # verified that this does generate an on call button in actions page
 
 jobs:
   build-and-deploy:
