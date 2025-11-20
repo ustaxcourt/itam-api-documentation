@@ -12,7 +12,7 @@ export async function getId(table, column, value) {
     if (error.passUp) {
       throw error;
     } else {
-      throw new AppError(404, 'Location not found', true);
+      throw new AppError(404, 'ID not found', true);
     }
   }
 }
