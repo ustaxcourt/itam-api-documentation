@@ -8,8 +8,15 @@ export async function assignmentsHandler(request, context) {
   try {
     const assetId = request.params.assetid;
 
+    if (!assetId) {
+      throw new BadRequest('Missing asset ID');
+    }
+
     if (request.method === 'POST') {
       const userId = request.params.userid;
+      if (!userId) {
+        throw new BadRequest('Missing user ID for assignment');
+      }
       await assignAssetToUser(userId, assetId);
     } else if (request.method === 'DELETE') {
       await unassignAsset(assetId);
@@ -28,19 +35,17 @@ export async function assignmentsHandler(request, context) {
       return buildResponse(error.statusCode, error.message);
     }
 
-    if (error.response?.status === 400 || error.response?.status === 204) {
+    const status = error.response?.status || 500;
+    if (status === 400 || status === 404) {
       return buildResponse(
         404,
         'Unable to update assignment due to invalid assetid or userid',
       );
-    } else if (error.response?.status === 401) {
+    } else if (status === 401) {
       return buildResponse(403, 'Unauthorized');
-    } else {
-      return buildResponse(
-        error.response?.status || 500,
-        'Unable to update assignment',
-      );
     }
+
+    return buildResponse(status, 'Unable to update assignment');
   }
 }
 

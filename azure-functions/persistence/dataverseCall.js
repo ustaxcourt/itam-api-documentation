@@ -1,11 +1,8 @@
-import axios from 'axios';
 import { getDataverseAccessToken } from './getDataverseAccessToken.js';
 
 export async function dataverseCall(url, method, body = null) {
   const token = await getDataverseAccessToken();
-  if (!token) {
-    throw new Error('No token found');
-  }
+  if (!token) throw new Error('No token found');
 
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -14,14 +11,33 @@ export async function dataverseCall(url, method, body = null) {
       'odata.include-annotations="OData.Community.Display.V1.FormattedValue"',
   };
 
+  const options = { method, headers };
+
+  if (method === 'PATCH' || method === 'POST') {
+    options.headers['Content-Type'] = 'application/json';
+    options.body = JSON.stringify(body);
+  }
   if (method === 'PATCH') {
-    return axios.patch(url, body, {
-      headers: {
-        ...headers,
-        'If-Match': '*',
-      },
-    });
-  } else if (method === 'GET') {
-    return axios.get(url, { headers });
+    options.headers['If-Match'] = '*';
+  }
+
+  try {
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('Dataverse API error:', errorData);
+      throw new Error(`Dataverse call failed with status ${response.status}`);
+    }
+
+    // ✅ Handle empty body (204 No Content)
+    if (response.status === 204) {
+      return null;
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Fetch error in dataverseCall:', error.message);
+    throw error;
   }
 }

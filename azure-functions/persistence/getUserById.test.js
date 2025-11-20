@@ -20,9 +20,7 @@ describe('getUserById', () => {
 
   it('should return rowId when user exists', async () => {
     dataverseCall.mockResolvedValue({
-      data: {
-        value: [{ crf7f_ois_asset_entra_dat_userid: 'row-123' }],
-      },
+      value: [{ crf7f_ois_asset_entra_dat_userid: 'row-123' }],
     });
 
     const result = await getUserById('test-user');
@@ -33,14 +31,14 @@ describe('getUserById', () => {
   });
 
   it('should return null when response has empty value array', async () => {
-    dataverseCall.mockResolvedValue({ data: { value: [] } });
+    dataverseCall.mockResolvedValue({ value: [] });
 
     const result = await getUserById('test-user');
     expect(result).toBeNull();
   });
 
   it('should return null when response structure is malformed', async () => {
-    dataverseCall.mockResolvedValue({ data: {} });
+    dataverseCall.mockResolvedValue({});
 
     const result = await getUserById('test-user');
     expect(result).toBeNull();
@@ -53,11 +51,12 @@ describe('getUserById', () => {
     expect(result).toBeNull();
   });
 
-  it('should throw if DATAVERSE_URL is missing', async () => {
+  it('should return null if DATAVERSE_URL is missing', async () => {
     process.env.DATAVERSE_URL = undefined;
 
     const result = await getUserById('test-user');
     expect(result).toBeNull();
+
     process.env.DATAVERSE_URL = 'https://fake.dataverse.url'; // restores for additional testing
   });
 });
