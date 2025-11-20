@@ -3,6 +3,7 @@ import { app } from '@azure/functions';
 import './apiController/assetAssignments.js';
 import './apiController/queryAsset.js';
 import './apiController/authTest.js';
+import './apiController/locationAssignment.js';
 
 app.setup({
   enableHttpStream: true,
