@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { getToken } from './oauth.js';
+import { getDataverseAccessToken } from './getDataverseAccessToken.js';
 
 export async function dataverseCall(url, method, body = null) {
-  const token = await getToken();
+  const token = await getDataverseAccessToken();
   if (!token) {
     throw new Error('No token found');
   }

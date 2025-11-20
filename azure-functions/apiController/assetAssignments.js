@@ -2,6 +2,7 @@ import { app } from '@azure/functions';
 import { buildResponse } from './buildResponse.js';
 import { assignAssetToUser } from '../useCases/assignAssetToUser.js';
 import { unassignAsset } from '../useCases/unassignAsset.js';
+import { BadRequest } from '../errors/BadRequest.js';
 
 export async function assignmentsHandler(request, context) {
   try {
@@ -13,7 +14,7 @@ export async function assignmentsHandler(request, context) {
     } else if (request.method === 'DELETE') {
       await unassignAsset(assetId);
     } else {
-      throw new Error('Invalid REST Method');
+      throw new BadRequest('Invalid REST Method');
     }
 
     return buildResponse(200, 'Successfully updated item assignment', assetId);
@@ -22,6 +23,10 @@ export async function assignmentsHandler(request, context) {
       'Unable to update assignments',
       error.response?.data || error.message,
     );
+
+    if (error instanceof BadRequest) {
+      return buildResponse(error.statusCode, error.message);
+    }
 
     if (error.response?.status === 400 || error.response?.status === 204) {
       return buildResponse(

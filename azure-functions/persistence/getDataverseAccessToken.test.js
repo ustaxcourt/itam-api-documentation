@@ -1,4 +1,6 @@
-import { getToken } from './oauth.js';
+import { DataverseTokenError } from '../errors/DataverseTokenError.js';
+import { getDataverseAccessToken } from './getDataverseAccessToken.js';
+
 import axios from 'axios';
 
 jest.mock('axios');
@@ -8,7 +10,7 @@ let tenantIDStorage;
 let dataverseStorage;
 let scopeStorage;
 
-describe('getToken', () => {
+describe('getDatavereAccessToken', () => {
   beforeAll(function () {
     clientIDStorage = process.env.CLIENT_ID;
     tenantIDStorage = process.env.TENANT_ID;
@@ -28,17 +30,17 @@ describe('getToken', () => {
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
   });
 
   it('should return access token when API call succeeds', async () => {
-    axios.post.mockResolvedValue({
+    axios.post.mockResolvedValueOnce({
       data: {
         access_token: 'mocked-access-token',
       },
     });
 
-    const token = await getToken();
+    const token = await getDataverseAccessToken();
 
     expect(token).toBe('mocked-access-token');
     expect(axios.post).toHaveBeenCalled();
@@ -54,8 +56,28 @@ describe('getToken', () => {
       },
     };
 
-    axios.post.mockRejectedValue(errorResponse);
+    axios.post.mockRejectedValueOnce(errorResponse);
 
-    await expect(getToken()).rejects.toEqual(errorResponse);
+    await expect(getDataverseAccessToken()).rejects.toEqual(
+      new DataverseTokenError(
+        'Error attempting to retrieve token from Identity Provider',
+      ),
+    );
+  });
+
+  it('should throw an error when API does not receive a token value', async () => {
+    const invalidResponse = {
+      data: {
+        foo: 'bar',
+      },
+    };
+
+    axios.post.mockResolvedValueOnce(invalidResponse);
+
+    await expect(getDataverseAccessToken()).rejects.toEqual(
+      new DataverseTokenError(
+        'Error attempting to retrieve token from Identity Provider',
+      ),
+    );
   });
 });
