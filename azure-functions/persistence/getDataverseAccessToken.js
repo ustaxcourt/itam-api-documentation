@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 
 export async function getDataverseAccessToken() {
@@ -13,17 +12,30 @@ export async function getDataverseAccessToken() {
   params.append('scope', SCOPE);
 
   try {
-    const response = await axios.post(tokenUrl, params);
-    if (response.data.access_token) {
-      return response.data.access_token;
+    const response = await fetch(tokenUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params.toString(),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('Error getting OAuth token:', errorData);
+      throw new DataverseTokenError(
+        'Error attempting to retrieve token from Identity Provider',
+      );
+    }
+
+    const data = await response.json();
+    if (data.access_token) {
+      return data.access_token;
     }
 
     throw new DataverseTokenError('Unable to get token from Identity Provider');
   } catch (error) {
-    console.error(
-      'Error getting OAuth token:',
-      error.response?.data || error.message,
-    );
+    console.error('Fetch error:', error.message);
     throw new DataverseTokenError(
       'Error attempting to retrieve token from Identity Provider',
     );
