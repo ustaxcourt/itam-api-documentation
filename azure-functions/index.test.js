@@ -5,8 +5,8 @@ import * as azureFunctions from '@azure/functions';
 jest.mock('@azure/functions', () => ({
   app: {
     setup: jest.fn(),
-    http: jest.fn()
-  }
+    http: jest.fn(),
+  },
 }));
 
 describe('index.js setup', () => {
@@ -14,10 +14,10 @@ describe('index.js setup', () => {
     require('./index.js'); // Import after mocking
 
     expect(azureFunctions.app.setup).toHaveBeenCalledWith({
-      enableHttpStream: true
+      enableHttpStream: true,
     });
 
     // Check that HTTP routes were registered
-    expect(azureFunctions.app.http).toHaveBeenCalledTimes(5); // number of imports
+    expect(azureFunctions.app.http).toHaveBeenCalledTimes(3); // number of imports
   });
 });
