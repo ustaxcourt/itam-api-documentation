@@ -1,9 +1,7 @@
 import { assignmentsHandler } from './assetAssignments.js';
-import { buildResponse } from './buildResponse.js';
 import { assignAssetToUser } from '../useCases/assignAssetToUser.js';
 import { unassignAsset } from '../useCases/unassignAsset.js';
 
-jest.mock('./buildResponse.js');
 jest.mock('../useCases/assignAssetToUser.js');
 jest.mock('../useCases/unassignAsset.js');
 
@@ -16,7 +14,6 @@ describe('assignmentsHandler', () => {
 
   it('should handle POST request successfully', async () => {
     assignAssetToUser.mockResolvedValue();
-    buildResponse.mockReturnValue({ status: 200, message: 'OK' });
 
     const request = {
       method: 'POST',
@@ -26,17 +23,17 @@ describe('assignmentsHandler', () => {
     const result = await assignmentsHandler(request, context);
 
     expect(assignAssetToUser).toHaveBeenCalledWith('user456', 'asset123');
-    expect(buildResponse).toHaveBeenCalledWith(
-      200,
-      'Successfully updated item assignment',
-      'asset123',
-    );
-    expect(result).toEqual({ status: 200, message: 'OK' });
+    expect(result).toEqual({
+      status: 200,
+      jsonBody: {
+        data: 'asset123',
+        message: 'Successfully updated item assignment',
+      },
+    });
   });
 
   it('should handle DELETE request successfully', async () => {
     unassignAsset.mockResolvedValue();
-    buildResponse.mockReturnValue({ status: 200, message: 'OK' });
 
     const request = {
       method: 'DELETE',
@@ -46,17 +43,16 @@ describe('assignmentsHandler', () => {
     const result = await assignmentsHandler(request, context);
 
     expect(unassignAsset).toHaveBeenCalledWith('asset123');
-    expect(buildResponse).toHaveBeenCalledWith(
-      200,
-      'Successfully updated item assignment',
-      'asset123',
-    );
-    expect(result).toEqual({ status: 200, message: 'OK' });
+    expect(result).toEqual({
+      status: 200,
+      jsonBody: {
+        data: 'asset123',
+        message: 'Successfully updated item assignment',
+      },
+    });
   });
 
   it('should return error for invalid method', async () => {
-    buildResponse.mockReturnValue({ status: 500, message: 'Error' });
-
     const request = {
       method: 'GET',
       params: { assetid: 'asset123' },
@@ -65,17 +61,18 @@ describe('assignmentsHandler', () => {
     const result = await assignmentsHandler(request, context);
 
     expect(context.error).toHaveBeenCalled();
-    expect(buildResponse).toHaveBeenCalledWith(
-      500,
-      'Unable to update assignment',
-    );
-    expect(result).toEqual({ status: 500, message: 'Error' });
+    expect(result).toEqual({
+      status: 400,
+      jsonBody: {
+        data: null,
+        message: 'Invalid REST Method',
+      },
+    });
   });
 
   it('should handle 401 error gracefully', async () => {
     const error = { response: { status: 401 } };
     assignAssetToUser.mockRejectedValue(error);
-    buildResponse.mockReturnValue({ status: 403, message: 'Unauthorized' });
 
     const request = {
       method: 'POST',
@@ -85,7 +82,12 @@ describe('assignmentsHandler', () => {
     const result = await assignmentsHandler(request, context);
 
     expect(context.error).toHaveBeenCalled();
-    expect(buildResponse).toHaveBeenCalledWith(403, 'Unauthorized');
-    expect(result).toEqual({ status: 403, message: 'Unauthorized' });
+    expect(result).toEqual({
+      status: 403,
+      jsonBody: {
+        data: null,
+        message: 'Unauthorized',
+      },
+    });
   });
 });
