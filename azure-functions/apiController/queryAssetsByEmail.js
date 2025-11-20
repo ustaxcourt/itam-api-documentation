@@ -16,6 +16,10 @@ export async function queryAssetsByEmail(request) {
   }
 
   const assets = await getAssetsByEmail(email);
+  if (assets.length === 0) {
+    return buildResponse(404, `No assets found for provided email: ${email}`);
+  }
+
   return buildResponse(200, 'Success', assets);
 }
 
