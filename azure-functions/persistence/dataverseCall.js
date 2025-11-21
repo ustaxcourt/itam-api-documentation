@@ -2,7 +2,6 @@ import { getDataverseAccessToken } from './getDataverseAccessToken.js';
 
 export async function dataverseCall(url, method, body = null) {
   const token = await getDataverseAccessToken();
-  if (!token) throw new Error('No token found');
 
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -30,7 +29,7 @@ export async function dataverseCall(url, method, body = null) {
       throw new Error(`Dataverse call failed with status ${response.status}`);
     }
 
-    // ✅ Handle empty body (204 No Content)
+    // Handle empty body (204 No Content)
     if (response.status === 204) {
       return null;
     }

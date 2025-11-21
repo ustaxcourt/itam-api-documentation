@@ -41,7 +41,7 @@ describe('getAssetByID', () => {
     dataverseCall.mockResolvedValue({ value: [] });
 
     await expect(getAssetByID('asset123')).rejects.toThrow(
-      'No asset found for given ID',
+      /^No asset found for ID: .+$/,
     );
   });
 

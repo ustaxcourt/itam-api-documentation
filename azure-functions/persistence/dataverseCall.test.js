@@ -1,5 +1,6 @@
 import { dataverseCall } from './dataverseCall.js';
 import { getDataverseAccessToken } from './getDataverseAccessToken.js';
+import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 
 jest.mock('./getDataverseAccessToken.js');
 
@@ -85,11 +86,15 @@ describe('dataverseCall', () => {
     ).rejects.toThrow('Network failure');
   });
 
-  it('should throw an error when no token is returned', async () => {
-    getDataverseAccessToken.mockResolvedValue(null);
+  it('should throw DataverseTokenError when token retrieval fails', async () => {
+    getDataverseAccessToken.mockRejectedValue(
+      new DataverseTokenError(
+        'Error attempting to retrieve token from Identity Provider',
+      ),
+    );
 
     await expect(
       dataverseCall('https://fake.dataverse.url', 'GET'),
-    ).rejects.toThrow('No token found');
+    ).rejects.toThrow(DataverseTokenError);
   });
 });
