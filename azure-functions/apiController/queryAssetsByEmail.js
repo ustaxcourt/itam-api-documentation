@@ -6,6 +6,7 @@ import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 
 export async function queryAssetsByEmail(request) {
   //Authenticated requests should contain the client principal header
+  //Bypass this to test properly as anon strips header sent in
   const validToken = request.headers['x-ms-client-principal'];
   if (!validToken) {
     throw new DataverseTokenError('Unauthorized');

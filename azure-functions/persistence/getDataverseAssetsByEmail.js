@@ -1,7 +1,7 @@
-import { BadRequest } from '../errors/BadRequest';
-import { DataverseTokenError } from '../errors/DataverseTokenError';
-import { dataverseCall } from './dataverseCall';
-import { filterDictionary } from './filterDict';
+import { BadRequest } from '../errors/BadRequest.js';
+import { DataverseTokenError } from '../errors/DataverseTokenError.js';
+import { dataverseCall } from './dataverseCall.js';
+import { filterDictionary } from './filterDict.js';
 
 export async function getDataverseAssetsByEmail(email) {
   try {
