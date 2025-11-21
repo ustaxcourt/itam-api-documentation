@@ -1,7 +1,7 @@
 import { BadRequest } from '../errors/BadRequest.js';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 import { dataverseCall } from './dataverseCall.js';
-import { filterDictionary } from './filterDict.js';
+import { filterDictionaryByList } from './filterDictbyList.js';
 
 export async function getDataverseAssetsByEmail(email) {
   try {
@@ -12,7 +12,8 @@ export async function getDataverseAssetsByEmail(email) {
       `&$expand=crf7f_ois_asset_entra_dat_userCurrentOw($select=crf7f_email,crf7f_jobtitle,crf7f_name,crf7f_isactive,crf7f_iscontractor,crf7f_location)`;
 
     const data = await dataverseCall(url, 'GET');
-    const assets = filterDictionary(data);
+    const assets = filterDictionaryByList(data['data']['value']);
+
     return assets;
   } catch (error) {
     if (error instanceof BadRequest || error instanceof DataverseTokenError) {
