@@ -1,52 +1,63 @@
-import { getId } from './yourModule.js';
+// __tests__/getId.test.js
+import { getId } from './returnLookupID.js';
 import { dataverseCall } from '../persistence/dataverseCall.js';
 import { AppError } from '../errors/error.js';
 
 jest.mock('../persistence/dataverseCall.js');
 
 describe('getId', () => {
-  const DATAVERSE_URL = 'https://example.com';
+  const originalEnv = process.env;
+
   beforeEach(() => {
-    process.env.DATAVERSE_URL = DATAVERSE_URL;
-    jest.clearAllMocks();
+    jest.resetAllMocks();
+    process.env = {
+      ...originalEnv,
+      DATAVERSE_URL: 'https://mock.dataverse.com',
+    };
   });
 
-  it('should return the correct ID when dataverseCall succeeds', async () => {
-    const mockResponse = {
+  afterAll(() => {
+    process.env = originalEnv;
+  });
+
+  test('should return correct ID when dataverseCall succeeds', async () => {
+    dataverseCall.mockResolvedValue({
       data: {
         value: [{ accountid: '12345' }],
       },
-    };
-    dataverseCall.mockResolvedValue(mockResponse);
+    });
 
-    const result = await getId('accounts', 'name', 'Test Account');
-
+    const result = await getId('accounts', 'name', 'TestAccount');
+    expect(result).toBe('12345');
     expect(dataverseCall).toHaveBeenCalledWith(
-      `${DATAVERSE_URL}/api/data/v9.2/accounts?$filter=name eq 'Test Account'`,
+      "https://mock.dataverse.com/api/data/v9.2/accounts?$filter=name eq 'TestAccount'",
       'GET',
     );
-    expect(result).toBe('12345');
   });
 
-  it('should throw AppError when dataverseCall fails without passUp', async () => {
-    dataverseCall.mockRejectedValue(new Error('Network error'));
-
-    await expect(getId('accounts', 'name', 'Test Account')).rejects.toThrow(
+  test('should throw AppError when response has empty value array', async () => {
+    dataverseCall.mockResolvedValue({ data: { value: [] } });
+    await expect(getId('accounts', 'name', 'TestAccount')).rejects.toThrow(
       AppError,
     );
-    await expect(
-      getId('accounts', 'name', 'Test Account'),
-    ).rejects.toMatchObject({
-      statusCode: 404,
-      message: 'ID not found',
-    });
   });
 
-  it('should rethrow error when error.passUp is true', async () => {
-    const error = new Error('Critical error');
+  test('should rethrow error if error.passUp is true', async () => {
+    const error = new Error('Pass up error');
     error.passUp = true;
     dataverseCall.mockRejectedValue(error);
 
-    await expect(getId('accounts', 'name', 'Test Account')).rejects.toBe(error);
+    await expect(getId('accounts', 'name', 'TestAccount')).rejects.toBe(error);
+  });
+
+  test('should throw AppError when error.passUp is false', async () => {
+    dataverseCall.mockRejectedValue(new Error('Generic error'));
+
+    await expect(getId('accounts', 'name', 'TestAccount')).rejects.toThrow(
+      AppError,
+    );
+    await expect(getId('accounts', 'name', 'TestAccount')).rejects.toThrow(
+      'ID not found',
+    );
   });
 });

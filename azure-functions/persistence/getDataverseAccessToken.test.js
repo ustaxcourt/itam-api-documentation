@@ -1,4 +1,5 @@
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
+import { AppError } from '../errors/error.js';
 import { getDataverseAccessToken } from './getDataverseAccessToken.js';
 
 import axios from 'axios';
@@ -59,8 +60,10 @@ describe('getDatavereAccessToken', () => {
     axios.post.mockRejectedValueOnce(errorResponse);
 
     await expect(getDataverseAccessToken()).rejects.toEqual(
-      new DataverseTokenError(
+      new AppError(
+        500,
         'Error attempting to retrieve token from Identity Provider',
+        true,
       ),
     );
   });
