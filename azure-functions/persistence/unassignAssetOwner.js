@@ -6,6 +6,6 @@ export async function unassignAssetOwner(assetId) {
     crf7f_asset_item_status: 1,
   };
 
-  const query = `v9.2/crf7f_ois_asset_rela_item_orgs(${assetId})`;
+  const query = `crf7f_ois_asset_rela_item_orgs(${assetId})`;
   await dataverseCall({ query, method: 'PATCH', body });
 }
