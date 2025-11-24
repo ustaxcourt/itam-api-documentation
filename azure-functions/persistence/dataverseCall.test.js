@@ -1,13 +1,25 @@
 import { dataverseCall } from './dataverseCall.js';
 import { getDataverseAccessToken } from './getDataverseAccessToken.js';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
+import { beforeAll } from '@jest/globals';
+import { InternalServerError } from '../errors/InternalServerError.js';
 
 jest.mock('./getDataverseAccessToken.js');
+let originalEnv;
 
 describe('dataverseCall', () => {
+  beforeAll(() => {
+    originalEnv = process.env.DATAVERSE_URL;
+  });
+
+  afterAll(() => {
+    process.env.DATAVERSE_URL = originalEnv;
+  });
+
   beforeEach(() => {
     jest.resetAllMocks();
     global.fetch = jest.fn();
+    process.env.DATAVERSE_URL = 'https://fake.dataverse.url/api/data/v9.2';
   });
 
   it('should call fetch with correct URL, method, headers, and body for PATCH', async () => {
@@ -18,14 +30,14 @@ describe('dataverseCall', () => {
       json: async () => ({ success: true }),
     });
 
-    const url = 'https://fake.dataverse.url/api/data/v9.2/assets(asset123)';
+    const query = 'assets(asset123)';
     const body = { name: 'Updated Asset' };
 
-    const result = await dataverseCall(url, 'PATCH', body);
+    const result = await dataverseCall({ query, method: 'PATCH', body });
 
     expect(result).toEqual({ success: true });
     expect(global.fetch).toHaveBeenCalledWith(
-      url,
+      `${process.env.DATAVERSE_URL}/${query}`,
       expect.objectContaining({
         method: 'PATCH',
         headers: expect.objectContaining({
@@ -45,13 +57,12 @@ describe('dataverseCall', () => {
       ok: true,
       json: async () => ({ data: 'test' }),
     });
-
-    const url = 'https://fake.dataverse.url/api/data/v9.2/assets';
-    const result = await dataverseCall(url, 'GET');
+    const query = 'assets';
+    const result = await dataverseCall({ query, method: 'GET' });
 
     expect(result).toEqual({ data: 'test' });
     expect(global.fetch).toHaveBeenCalledWith(
-      url,
+      `${process.env.DATAVERSE_URL}/${query}`,
       expect.objectContaining({
         method: 'GET',
         headers: expect.objectContaining({
@@ -72,7 +83,7 @@ describe('dataverseCall', () => {
     });
 
     await expect(
-      dataverseCall('https://fake.dataverse.url', 'GET'),
+      dataverseCall({ query: 'foo', method: 'GET' }),
     ).rejects.toThrow('Dataverse call failed with status 400');
   });
 
@@ -82,7 +93,7 @@ describe('dataverseCall', () => {
     global.fetch.mockRejectedValueOnce(new Error('Network failure'));
 
     await expect(
-      dataverseCall('https://fake.dataverse.url', 'GET'),
+      dataverseCall({ query: 'foo', method: 'GET' }),
     ).rejects.toThrow('Network failure');
   });
 
@@ -94,7 +105,15 @@ describe('dataverseCall', () => {
     );
 
     await expect(
-      dataverseCall('https://fake.dataverse.url', 'GET'),
+      dataverseCall({ query: 'foo', method: 'GET' }),
     ).rejects.toThrow(DataverseTokenError);
+  });
+
+  it('should throw an error when DATAVERSE_URL is empty', async () => {
+    process.env.DATAVERSE_URL = '';
+
+    await expect(
+      dataverseCall({ query: 'foo', method: 'GET' }),
+    ).rejects.toThrow(new InternalServerError('DATAVERSE_URL is missing'));
   });
 });
