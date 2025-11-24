@@ -41,7 +41,7 @@ describe('getUserById', () => {
     );
   });
 
-  it('should propigate the error when dataverseCall throws an error', async () => {
+  it('should propagate the error when dataverseCall throws an error', async () => {
     dataverseCall.mockRejectedValue(new Error('Network failure'));
 
     await expect(getUserById('test-user')).rejects.toThrow(
