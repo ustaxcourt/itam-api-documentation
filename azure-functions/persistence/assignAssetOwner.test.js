@@ -5,21 +5,10 @@ import { dataverseCall } from './dataverseCall.js';
 jest.mock('./getUserById.js');
 jest.mock('./dataverseCall.js');
 
-let originalEnv;
-
 describe('assignAssetOwner', () => {
-  beforeAll(() => {
-    originalEnv = process.env.DATAVERSE_URL;
-  });
-
   beforeEach(() => {
-    process.env.DATAVERSE_URL = 'https://fake.dataverse.url/api/data/v9.2';
     jest.resetAllMocks();
     getUserById.mockResolvedValue('row-123');
-  });
-
-  afterAll(() => {
-    process.env.DATAVERSE_URL = originalEnv;
   });
 
   it('should call dataverseCall with correct URL, method, and body', async () => {

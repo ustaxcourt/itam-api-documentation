@@ -6,20 +6,9 @@ import { NotFoundError } from '../errors/NotFoundError.js';
 jest.mock('./dataverseCall.js');
 jest.mock('./filterDict.js');
 
-let originalEnv;
-
 describe('getAssetByID', () => {
-  beforeAll(() => {
-    originalEnv = process.env.DATAVERSE_URL;
-  });
-
-  afterAll(() => {
-    process.env.DATAVERSE_URL = originalEnv;
-  });
-
   beforeEach(() => {
     jest.resetAllMocks();
-    process.env.DATAVERSE_URL = 'https://fake.dataverse.url'; // restores for other tests
   });
 
   it('should call dataverseCall with correct URL and return filtered data', async () => {
@@ -54,11 +43,5 @@ describe('getAssetByID', () => {
     dataverseCall.mockRejectedValue(new Error('Network failure'));
 
     await expect(getAssetByID('asset123')).rejects.toThrow('Network failure');
-  });
-
-  it('should handle missing DATAVERSE_URL gracefully', async () => {
-    process.env.DATAVERSE_URL = undefined;
-
-    await expect(getAssetByID('asset123')).rejects.toThrow();
   });
 });

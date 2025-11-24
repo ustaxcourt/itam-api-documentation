@@ -5,19 +5,8 @@ import { InternalServerError } from '../errors/InternalServerError.js';
 
 jest.mock('./dataverseCall.js');
 
-let originalEnv;
-
 describe('getUserById', () => {
-  beforeAll(() => {
-    originalEnv = process.env.DATAVERSE_URL;
-  });
-
-  afterAll(() => {
-    process.env.DATAVERSE_URL = originalEnv;
-  });
-
   beforeEach(() => {
-    process.env.DATAVERSE_URL = 'https://fake.dataverse.url';
     jest.resetAllMocks();
   });
 

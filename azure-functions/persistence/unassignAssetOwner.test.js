@@ -4,16 +4,6 @@ import { dataverseCall } from '../persistence/dataverseCall.js';
 jest.mock('../persistence/dataverseCall.js');
 
 describe('unassignAssetOwner', () => {
-  const originalEnv = process.env.DATAVERSE_URL;
-
-  beforeAll(() => {
-    process.env.DATAVERSE_URL = 'https://fake.dataverse.url';
-  });
-
-  afterAll(() => {
-    process.env.DATAVERSE_URL = originalEnv;
-  });
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
