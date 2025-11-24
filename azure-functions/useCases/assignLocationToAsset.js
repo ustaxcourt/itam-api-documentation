@@ -10,8 +10,12 @@ export async function assignLocationToAsset(assetId, locationid) {
       'crf7f_fac_asset_ref_locationid',
       locationid,
     );
-  } catch {
-    throw new AppError(404, 'Location ID not found', true);
+  } catch (error) {
+    if (error.passUp) {
+      throw error;
+    } else {
+      throw new AppError(404, 'Location ID not found', true);
+    }
   }
   try {
     await assignLocationAsset(assetId, locationId);
