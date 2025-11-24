@@ -1,7 +1,6 @@
 import { dataverseCall } from './dataverseCall.js';
 import { getDataverseAccessToken } from './getDataverseAccessToken.js';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
-import { beforeAll } from '@jest/globals';
 import { InternalServerError } from '../errors/InternalServerError.js';
 
 jest.mock('./getDataverseAccessToken.js');
