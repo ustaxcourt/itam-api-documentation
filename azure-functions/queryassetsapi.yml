@@ -231,7 +231,7 @@ paths:
                 message: "Unauthorized"
                 data: null
 
-  /v1/assets/{assetid}/location/{locationname}:
+  /v1/assets/{assetid}/location/{locationId}:
     post:
       parameters:
         - name: assetid
@@ -240,9 +240,9 @@ paths:
           required: true
           schema:
             type: string
-        - name: locationName
+        - name: locationId
           in: query
-          description: Name of Location
+          description: Id of Location
           required: true
           schema:
             type: string

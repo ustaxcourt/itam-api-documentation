@@ -6,9 +6,10 @@ import { AppError } from '../errors/error.js';
 export async function locationAssignmentsHandler(request, context) {
   try {
     const assetId = request.params.assetid;
-    const locationName = request.params.locationname;
+    const locationId = request.params.locationid;
+
     if (request.method === 'POST') {
-      await assignLocationToAsset(assetId, locationName);
+      await assignLocationToAsset(assetId, locationId);
     } else {
       throw new AppError(400, 'Invalid REST Method');
     }
@@ -26,6 +27,6 @@ export async function locationAssignmentsHandler(request, context) {
 app.http('locationassignments', {
   methods: ['POST'],
   authLevel: 'anonymous',
-  route: 'v1/assets/{assetid}/location/{locationname}',
+  route: 'v1/assets/{assetid}/location/{locationid}',
   handler: locationAssignmentsHandler,
 });

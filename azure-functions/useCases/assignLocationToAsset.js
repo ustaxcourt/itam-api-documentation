@@ -2,13 +2,13 @@ import { AppError } from '../errors/error.js';
 import { assignLocationAsset } from '../persistence/assignAssetLocation.js';
 import { getId } from '../useCases/returnLookupID.js';
 
-export async function assignLocationToAsset(assetId, locationName) {
+export async function assignLocationToAsset(assetId, locationid) {
   let locationId;
   try {
     locationId = await getId(
       'crf7f_fac_asset_ref_locations',
-      'crf7f_name',
-      locationName,
+      'crf7f_fac_asset_ref_locationid',
+      locationid,
     );
   } catch {
     throw new AppError(404, 'Location ID not found', true);

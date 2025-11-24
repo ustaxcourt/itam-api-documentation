@@ -13,7 +13,7 @@ describe('locationAssignmentsHandler', () => {
 
   beforeEach(() => {
     request = {
-      params: { assetid: 'asset123', locationname: 'locationABC' },
+      params: { assetid: 'asset123', locationid: 'locationABC' },
       method: 'POST',
     };
     context = {
