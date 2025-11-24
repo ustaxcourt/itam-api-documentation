@@ -8,7 +8,7 @@ export async function dataverseCall({ query, method, body = null }) {
     throw new InternalServerError('DATAVERSE_URL is missing');
   }
 
-  const url = `${process.env.DATAVERSE_URL}/api/data/v9.2/${query}`;
+  const url = `${process.env.DATAVERSE_URL}/${query}`;
 
   const headers = {
     Authorization: `Bearer ${token}`,
