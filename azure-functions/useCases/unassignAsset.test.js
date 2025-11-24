@@ -7,7 +7,7 @@ jest.mock('../persistence/unassignAssetOwner.js', () => ({
 
 describe('unassignAsset', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
   });
 
   //extremely basic test suite placeholder
