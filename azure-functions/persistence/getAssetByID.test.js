@@ -1,15 +1,16 @@
 import { getAssetByID } from './getAssetByID.js';
 import { dataverseCall } from './dataverseCall.js';
 import { filterDictionary } from './filterDict.js';
+import { NotFoundError } from '../errors/NotFoundError.js';
 
 jest.mock('./dataverseCall.js');
 jest.mock('./filterDict.js');
 
-describe('getAssetByID', () => {
-  const originalEnv = process.env.DATAVERSE_URL;
+let originalEnv;
 
+describe('getAssetByID', () => {
   beforeAll(() => {
-    process.env.DATAVERSE_URL = 'https://fake.dataverse.url';
+    originalEnv = process.env.DATAVERSE_URL;
   });
 
   afterAll(() => {
@@ -17,7 +18,8 @@ describe('getAssetByID', () => {
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
+    process.env.DATAVERSE_URL = 'https://fake.dataverse.url'; // restores for other tests
   });
 
   it('should call dataverseCall with correct URL and return filtered data', async () => {
@@ -30,9 +32,12 @@ describe('getAssetByID', () => {
     const assetId = 'asset123';
     const result = await getAssetByID(assetId);
 
-    const expectedUrl = `https://fake.dataverse.url/api/data/v9.2/crf7f_ois_asset_rela_item_orgs?$filter=crf7f_ois_asset_rela_item_orgid eq '${assetId}'&$expand=crf7f_ois_asset_entra_dat_userCurrentOw($select=crf7f_email,crf7f_jobtitle,crf7f_name,crf7f_isactive,crf7f_iscontractor,crf7f_entra_object_id,crf7f_phone,crf7f_location)`;
+    const expectedQuery = `crf7f_ois_asset_rela_item_orgs?$filter=crf7f_ois_asset_rela_item_orgid eq '${assetId}'&$expand=crf7f_ois_asset_entra_dat_userCurrentOw($select=crf7f_email,crf7f_jobtitle,crf7f_name,crf7f_isactive,crf7f_iscontractor,crf7f_entra_object_id,crf7f_phone,crf7f_location)`;
 
-    expect(dataverseCall).toHaveBeenCalledWith(expectedUrl, 'GET');
+    expect(dataverseCall).toHaveBeenCalledWith({
+      query: expectedQuery,
+      method: 'GET',
+    });
     expect(filterDictionary).toHaveBeenCalledWith(mockResponse.value[0]);
     expect(result).toEqual({ id: 'asset123', name: 'Laptop' });
   });
@@ -41,7 +46,7 @@ describe('getAssetByID', () => {
     dataverseCall.mockResolvedValue({ value: [] });
 
     await expect(getAssetByID('asset123')).rejects.toThrow(
-      /^No asset found for ID: .+$/,
+      new NotFoundError('No asset found for ID: asset123'),
     );
   });
 
@@ -55,6 +60,5 @@ describe('getAssetByID', () => {
     process.env.DATAVERSE_URL = undefined;
 
     await expect(getAssetByID('asset123')).rejects.toThrow();
-    process.env.DATAVERSE_URL = 'https://fake.dataverse.url'; // restores for other tests
   });
 });
