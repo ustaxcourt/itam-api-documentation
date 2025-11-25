@@ -32,24 +32,19 @@ describe('queryAssetsByEmail', () => {
     expect(result.jsonBody.data).toEqual(testArray);
   });
 
-  it('returns NotFoundError response (404) when no assets are found', async () => {
+  it('still returns a success response when no assets are found', async () => {
     getAssetsByEmail.mockResolvedValue([]);
     buildResponse.mockReturnValue({
-      status: 404,
-      jsonBody: { message: `No assets found for provided email: ${testEmail}` },
+      status: 200,
+      jsonBody: { message: 'Success', data: [] },
     });
 
     const result = await queryAssetsByEmail(request);
 
-    expect(buildResponse).toHaveBeenLastCalledWith(
-      404,
-      `No assets found for provided email: ${testEmail}`,
-    );
-    expect(result.status).toBe(404);
-    expect(result.jsonBody.message).toBe(
-      `No assets found for provided email: ${testEmail}`,
-    );
-    expect(result.jsonBody.data).toEqual(undefined); // nothing is passed so this should be undef
+    expect(buildResponse).toHaveBeenLastCalledWith(200, 'Success', []);
+    expect(result.status).toBe(200);
+    expect(result.jsonBody.message).toBe('Success');
+    expect(result.jsonBody.data).toEqual([]);
   });
 
   it('returns InternalServerError response when thrown by dataverseCall', async () => {

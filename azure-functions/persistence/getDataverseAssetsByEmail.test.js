@@ -1,9 +1,9 @@
 import { dataverseCall } from './dataverseCall.js';
 import { filterDictionaryByList } from './filterDictbyList.js';
-import { BadRequest } from '../errors/BadRequest.js';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 import { getDataverseAssetsByEmail } from './getDataverseAssetsByEmail.js';
 import { expect } from '@jest/globals';
+import { InternalServerError } from '../errors/InternalServerError.js';
 
 jest.mock('./dataverseCall.js', () => ({
   dataverseCall: jest.fn(),
@@ -20,7 +20,7 @@ describe('getDataverseAssetsByEmail', () => {
     { assetName: 'test2', user: { email: 'test@test.test' } },
   ];
   const validURL =
-    `TEST_URL/api/data/v9.2/crf7f_ois_asset_rela_item_orgs` +
+    `TEST_URL/crf7f_ois_asset_rela_item_orgs` +
     `?$filter=crf7f_ois_asset_entra_dat_userCurrentOw/crf7f_email eq 'test@test.test'` +
     `&$expand=crf7f_ois_asset_entra_dat_userCurrentOw($select=crf7f_email,crf7f_jobtitle,crf7f_name,crf7f_isactive,crf7f_iscontractor,crf7f_location)`;
 
@@ -55,10 +55,10 @@ describe('getDataverseAssetsByEmail', () => {
     expect(result).toEqual(testArray);
   });
 
-  it('throws BadRequest', async () => {
-    dataverseCall.mockRejectedValue(new BadRequest());
+  it('throws InternalServerError', async () => {
+    dataverseCall.mockRejectedValue(new InternalServerError());
     await expect(getDataverseAssetsByEmail('test@test.test')).rejects.toThrow(
-      BadRequest,
+      InternalServerError,
     );
   });
 
