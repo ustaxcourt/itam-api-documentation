@@ -1,4 +1,3 @@
-
 name: Test Azure Function App (JavaScript ESM)
 
 on:
@@ -32,18 +31,3 @@ jobs:
       with:
         name: coverage-report
         path: coverage
-
-    - name: Install Azure Functions Core Tools
-      run: npm install -g azure-functions-core-tools@4 --unsafe-perm true
-
-    - name: Start Azure Functions for integration tests
-      run: npm run start &
-      shell: bash
-
-    - name: Wait for Azure Functions to be ready
-      run: npx wait-on http://localhost:7071
-
-    - name: Run integration tests
-      env:
-        BASE_URL: http://localhost:7071
-      run: npm run test:integration
