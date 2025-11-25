@@ -2,7 +2,7 @@ const baseUrl = 'http://localhost:7071';
 const existingAssetId = '6aa09331-b7b9-f011-bbd2-000d3a56dc3a';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
 const existingUserId = 'c0181fd9-fdc4-4578-945d-aaae011feec7';
-// const nonExistentUserId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
+const nonExistentUserId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
 
 describe('Integration testing for ITAM Project', () => {
   it('should fetch an existing asset successfully', async () => {
@@ -24,7 +24,7 @@ describe('Integration testing for ITAM Project', () => {
     });
     expect(res.status).toBe(404);
     const body = await res.json();
-    expect(body.message).toMatch(/No asset found for ID:/i);
+    expect(body.message).toBe(`No asset found for ID: ${nonExistentAssetId}`);
   });
 
   it('should assign an asset to an existing user successfully', async () => {
@@ -62,6 +62,19 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toHaveProperty('user');
     expect(body.data).toHaveProperty('user.email');
     expect(body.data).toHaveProperty('user.name');
+  });
+
+  it('should return 404 when trying to assign a user that does not exist', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${nonExistentUserId}`,
+      {
+        method: 'POST',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.message).toBe(`User ${nonExistentAssetId} not found`);
   });
 
   it('should remove assignment successfully', async () => {

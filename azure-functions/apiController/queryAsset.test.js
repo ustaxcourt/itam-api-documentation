@@ -32,13 +32,16 @@ describe('queryAssetHandler', () => {
     getAssetDetails.mockResolvedValue({});
     buildResponse.mockReturnValue({
       status: 404,
-      jsonBody: { message: 'Dataverse query failed' },
+      jsonBody: { message: 'Asset ${request.params.itemid} not found' },
     });
 
     const request = { params: { itemid: 'asset123' } };
     const result = await queryAssetHandler(request, context);
 
-    expect(buildResponse).toHaveBeenCalledWith(404, 'Dataverse query failed');
+    expect(buildResponse).toHaveBeenCalledWith(
+      404,
+      `Asset ${request.params.itemid} not found`,
+    );
     expect(result.status).toBe(404);
   });
 
