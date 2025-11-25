@@ -77,4 +77,25 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.message).toMatch(/Successfully updated item assignment/);
     expect(body.data).toBe(existingAssetId);
   });
+
+  it('should display proper assignment information in query after new unassignment', async () => {
+    const unassignRes = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/`,
+      {
+        method: 'DELETE',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+    expect(unassignRes.status).toBe(200);
+    const res = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
+      method: 'GET',
+      headers: { Authorization: 'Bearer mocked-token' },
+    });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body).toHaveProperty('message', 'Success');
+    expect(body.data).toHaveProperty('assetName');
+    expect(body.data).toHaveProperty('itemStatus');
+    expect(body.data.user).toBeNull();
+  });
 });
