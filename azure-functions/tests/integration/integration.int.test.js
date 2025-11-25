@@ -1,7 +1,7 @@
 const baseUrl = 'http://localhost:7071';
 const existingAssetId = '6aa09331-b7b9-f011-bbd2-000d3a56dc3a';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
-// const existingUserId = '12345678-aaaa-bbbb-cccc-1234567890ab';
+const existingUserId = 'c0181fd9-fdc4-4578-945d-aaae011feec7';
 // const nonExistentUserId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
 
 describe('Integration for ITAM Project', () => {
@@ -27,6 +27,20 @@ describe('Integration for ITAM Project', () => {
     expect(body.message).toMatch(/No asset found for ID:/i);
   });
 
+  it('assigns an asset to an existing user successfully', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${existingUserId}`,
+      {
+        method: 'POST',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.message).toMatch(/Successfully updated item assignment/);
+    expect(body.data).toBe(existingAssetId);
+  });
+
   it('should remove assignment successfully', async () => {
     const res = await fetch(
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments`,
@@ -38,5 +52,6 @@ describe('Integration for ITAM Project', () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.message).toMatch(/Successfully updated item assignment/);
+    expect(body.data).toBe(existingAssetId);
   });
 });
