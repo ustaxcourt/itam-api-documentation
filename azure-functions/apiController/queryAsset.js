@@ -20,8 +20,12 @@ export async function queryAssetHandler(request, context) {
       return buildResponse(404, error.message);
     }
 
-    if (error.response?.status === 404) {
-      return buildResponse(404, 'Dataverse query failed');
+    if (error.response?.status) {
+      return buildResponse(
+        error.response.status,
+        'Dataverse query failed',
+        error.message,
+      );
     }
 
     return buildResponse(500, 'Dataverse query failed', error.message);
