@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - deployTest
-  workflow_dispatch: # This is supposed to generate a run on click button for this action once deplyed to main
+  workflow_dispatch:
 
 jobs:
   run-tests:
@@ -24,7 +24,7 @@ jobs:
       run: npm ci
 
     - name: Run unit tests with coverage
-      run: npm test -- --coverage
+      run: npm run test:unit -- --coverage
 
     - name: Upload coverage report
       uses: actions/upload-artifact@v4
