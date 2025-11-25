@@ -13,8 +13,13 @@ describe('Integration testing for ITAM Project', () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body).toHaveProperty('message', 'Success');
+    expect(body.data).toHaveProperty('activation');
     expect(body.data).toHaveProperty('assetName');
     expect(body.data).toHaveProperty('itemStatus');
+    expect(body.data).toHaveProperty('location');
+    expect(body.data).toHaveProperty('osVersion');
+    expect(body.data).toHaveProperty('phone');
+    expect(body.data).toHaveProperty('user');
   });
 
   it('should return 404 when querying for a non-existent asset', async () => {
@@ -57,8 +62,12 @@ describe('Integration testing for ITAM Project', () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body).toHaveProperty('message', 'Success');
+    expect(body.data).toHaveProperty('activation');
     expect(body.data).toHaveProperty('assetName');
     expect(body.data).toHaveProperty('itemStatus');
+    expect(body.data).toHaveProperty('location');
+    expect(body.data).toHaveProperty('osVersion');
+    expect(body.data).toHaveProperty('phone');
     expect(body.data).toHaveProperty('user');
     expect(body.data).toHaveProperty('user.email');
     expect(body.data).toHaveProperty('user.name');
@@ -107,8 +116,13 @@ describe('Integration testing for ITAM Project', () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body).toHaveProperty('message', 'Success');
+    expect(body.data).toHaveProperty('activation');
     expect(body.data).toHaveProperty('assetName');
     expect(body.data).toHaveProperty('itemStatus');
+    expect(body.data).toHaveProperty('location');
+    expect(body.data).toHaveProperty('osVersion');
+    expect(body.data).toHaveProperty('phone');
+    expect(body.data).toHaveProperty('user');
     expect(body.data.user).toBeNull();
   });
 });
