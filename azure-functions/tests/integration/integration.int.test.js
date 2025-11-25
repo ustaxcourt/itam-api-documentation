@@ -4,7 +4,7 @@ const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
 const existingUserId = 'c0181fd9-fdc4-4578-945d-aaae011feec7';
 // const nonExistentUserId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
 
-describe('Integration for ITAM Project', () => {
+describe('Integration testing for ITAM Project', () => {
   it('should fetch an existing asset successfully', async () => {
     const res = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
       method: 'GET',
@@ -17,7 +17,7 @@ describe('Integration for ITAM Project', () => {
     expect(body.data).toHaveProperty('itemStatus');
   });
 
-  it('should return 404 for non-existent asset', async () => {
+  it('should return 404 when querying for a non-existent asset', async () => {
     const res = await fetch(`${baseUrl}/api/v1/assets/${nonExistentAssetId}`, {
       method: 'GET',
       headers: { Authorization: 'Bearer mocked-token' },
@@ -27,7 +27,7 @@ describe('Integration for ITAM Project', () => {
     expect(body.message).toMatch(/No asset found for ID:/i);
   });
 
-  it('assigns an asset to an existing user successfully', async () => {
+  it('should assign an asset to an existing user successfully', async () => {
     const res = await fetch(
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${existingUserId}`,
       {
@@ -39,6 +39,29 @@ describe('Integration for ITAM Project', () => {
     const body = await res.json();
     expect(body.message).toMatch(/Successfully updated item assignment/);
     expect(body.data).toBe(existingAssetId);
+  });
+
+  it('should display proper user assignment information in query after new assignment', async () => {
+    const assignRes = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${existingUserId}`,
+      {
+        method: 'POST',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+    expect(assignRes.status).toBe(200);
+    const res = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
+      method: 'GET',
+      headers: { Authorization: 'Bearer mocked-token' },
+    });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body).toHaveProperty('message', 'Success');
+    expect(body.data).toHaveProperty('assetName');
+    expect(body.data).toHaveProperty('itemStatus');
+    expect(body.data).toHaveProperty('user');
+    expect(body.data).toHaveProperty('user.email');
+    expect(body.data).toHaveProperty('user.name');
   });
 
   it('should remove assignment successfully', async () => {
