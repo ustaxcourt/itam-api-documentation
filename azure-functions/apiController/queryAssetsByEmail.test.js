@@ -14,68 +14,63 @@ describe('queryAssetsByEmail', () => {
     { assetName: 'test2', user: { email: 'test@test.test' } },
   ];
   const request = { params: { email: testEmail } };
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    buildResponse.mockImplementation((status, message, data) => ({
+      status,
+      jsonBody: { message, data },
+    }));
+  });
 
   it('returns a 200 success and assets if email has assigned assets', async () => {
     getAssetsByEmail.mockResolvedValue(testArray);
-    buildResponse.mockReturnValue({
-      status: 200,
-      jsonBody: { message: 'Success', data: testArray },
-    });
 
     const result = await queryAssetsByEmail(request);
 
     expect(getAssetsByEmail).toHaveBeenCalledWith(testEmail);
     expect(buildResponse).toHaveBeenLastCalledWith(200, 'Success', testArray);
+
     expect(result.status).toBe(200);
-    expect(result.jsonBody.message).toBe('Success');
-    expect(result.jsonBody.data).toEqual(testArray);
+    expect(result.jsonBody).toEqual({ message: 'Success', data: testArray });
   });
 
   it('still returns a success response when no assets are found', async () => {
     getAssetsByEmail.mockResolvedValue([]);
-    buildResponse.mockReturnValue({
-      status: 200,
-      jsonBody: { message: 'Success', data: [] },
-    });
 
     const result = await queryAssetsByEmail(request);
 
     expect(buildResponse).toHaveBeenLastCalledWith(200, 'Success', []);
+
     expect(result.status).toBe(200);
-    expect(result.jsonBody.message).toBe('Success');
-    expect(result.jsonBody.data).toEqual([]);
+    expect(result.jsonBody).toEqual({ message: 'Success', data: [] });
   });
 
   it('returns InternalServerError response when thrown by dataverseCall', async () => {
     const error = new InternalServerError('DATAVERSE_URL is missing');
-
     getAssetsByEmail.mockRejectedValue(error);
-    buildResponse.mockReturnValue({
-      status: 500,
-      jsonBody: { message: error.message },
-    });
 
     const result = await queryAssetsByEmail(request);
 
-    expect(buildResponse).toHaveBeenLastCalledWith(500, error.message);
+    expect(buildResponse).toHaveBeenLastCalledWith(
+      500,
+      'DATAVERSE_URL is missing',
+    );
     expect(result.status).toBe(500);
-    expect(result.jsonBody.message).toBe(error.message);
+    expect(result.jsonBody.message).toBe('DATAVERSE_URL is missing');
   });
 
   it('returns generic error response when encountered', async () => {
     const error = new Error('Something went wrong!');
-
     getAssetsByEmail.mockRejectedValue(error);
-    buildResponse.mockReturnValue({
-      status: undefined,
-      jsonBody: { message: error.message },
-    });
 
     const result = await queryAssetsByEmail(request);
 
-    expect(buildResponse).toHaveBeenLastCalledWith(undefined, error.message);
+    expect(buildResponse).toHaveBeenLastCalledWith(
+      undefined,
+      'Something went wrong!',
+    );
     expect(result.status).toBeUndefined(); // May be improved with future error handling
-    expect(result.jsonBody.message).toBe(error.message);
+    expect(result.jsonBody.message).toBe('Something went wrong!');
   });
 });

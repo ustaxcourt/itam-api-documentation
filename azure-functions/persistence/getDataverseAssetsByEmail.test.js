@@ -55,24 +55,26 @@ describe('getDataverseAssetsByEmail', () => {
     expect(result).toEqual(testArray);
   });
 
-  it('throws InternalServerError', async () => {
+  it('bubbles up InternalServerError from dataverseCall', async () => {
     dataverseCall.mockRejectedValue(new InternalServerError());
     await expect(getDataverseAssetsByEmail('test@test.test')).rejects.toThrow(
       InternalServerError,
     );
   });
 
-  it('throws DataverseTokenError', async () => {
+  it('bubbles up DataverseTokenError from dataverseCall', async () => {
     dataverseCall.mockRejectedValue(new DataverseTokenError());
     await expect(getDataverseAssetsByEmail('test@test.test')).rejects.toThrow(
       DataverseTokenError,
     );
   });
 
-  it('throws generic Error', async () => {
-    dataverseCall.mockRejectedValue(new Error());
+  it('throws its own InternalServerError if it encounters a problem', async () => {
+    dataverseCall.mockRejectedValue(
+      new Error('The problem is not with dataverseCall but this function'),
+    );
     await expect(getDataverseAssetsByEmail('test@test.test')).rejects.toThrow(
-      Error,
+      InternalServerError,
     );
   });
 });
