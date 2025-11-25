@@ -74,7 +74,7 @@ describe('Integration testing for ITAM Project', () => {
     );
     expect(res.status).toBe(404);
     const body = await res.json();
-    expect(body.message).toBe(`User ${nonExistentAssetId} not found`);
+    expect(body.message).toBe(`User ${nonExistentUserId} not found`);
   });
 
   it('should remove assignment successfully', async () => {
