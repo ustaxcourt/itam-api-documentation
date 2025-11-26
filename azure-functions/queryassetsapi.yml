@@ -1,7 +1,7 @@
-openapi: "3.0.3"
+openapi: '3.0.3'
 info:
   title: Query Assets
-  version: "1.0"
+  version: '1.0'
 servers:
   - url: /api
 paths:
@@ -16,7 +16,7 @@ paths:
             type: string
 
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -24,7 +24,7 @@ paths:
                 type: object
                 properties:
                   message:
-                    example: "Success"
+                    example: 'Success'
                   data:
                     type: object
                     properties:
@@ -38,11 +38,11 @@ paths:
                           - null
                       assetName:
                         type: string
-                        example: "HP EliteDisplay E241i #166"
+                        example: 'HP EliteDisplay E241i #166'
                         nullable: false
                       condition:
                         type: string
-                        example: "Good"
+                        example: 'Good'
                         nullable: false
                         enum:
                           - Excellent
@@ -53,7 +53,7 @@ paths:
                           - New
                       itemStatus:
                         type: string
-                        example: "Available"
+                        example: 'Available'
                         nullable: false
                         enum:
                           - Assigned
@@ -67,7 +67,7 @@ paths:
                           - Excess in Depot
                       location:
                         type: string
-                        example: "G47"
+                        example: 'G47'
                         nullable: true
                       osVersion:
                         type: string
@@ -88,7 +88,7 @@ paths:
                           email:
                             type: string
                             format: email
-                            example: "matthew.hung@example.com"
+                            example: 'matthew.hung@example.com'
                           isActive:
                             type: boolean
                             example: true
@@ -97,54 +97,54 @@ paths:
                             example: true
                           phone:
                             type: string
-                            example: "+1-555-123-4567"
+                            example: '+1-555-123-4567'
                           jobTitle:
                             type: string
-                            example: "Office 365 Engineer"
+                            example: 'Office 365 Engineer'
                           location:
                             type: string
-                            example: "Arden, California"
+                            example: 'Arden, California'
                           name:
                             type: string
-                            example: "Matthew Hung"
+                            example: 'Matthew Hung'
 
                         nullable: true
 
-        "401":
+        '401':
           description: Unauthorized – Authentication required
           content:
             application/json:
               schema:
                 type: object
               example:
-                message: "Missing client secret"
+                message: 'Missing client secret'
                 data: null
-        "400":
+        '400':
           description: Bad Request
           content:
             application/json:
               schema:
                 type: object
               example:
-                message: "Dataverse query failed"
-                data: "Request failed with status code 400"
-        "404":
+                message: 'Dataverse query failed'
+                data: 'Request failed with status code 400'
+        '404':
           description: Resource Not Found
           content:
             application/json:
               schema:
                 type: object
               example:
-                message: "Dataverse query failed"
+                message: 'Dataverse query failed'
                 data: null
-        "403":
+        '403':
           description: Forbidden
           content:
             application/json:
               schema:
                 type: object
               example:
-                message: "Request failed with invalid authorization status code 403"
+                message: 'Request failed with invalid authorization status code 403'
                 data: null
   /v1/assets/{assetid}/assignments/{userid}:
     post:
@@ -163,33 +163,33 @@ paths:
             type: string
 
       responses:
-        "200":
+        '200':
           description: Successful update
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: "Successfully updated item assignment"
-                  data: "77727f32-b7b9-f011-bbd3-7c1e52177972"
-        "404":
+                  message: 'Successfully updated item assignment'
+                  data: '77727f32-b7b9-f011-bbd3-7c1e52177972'
+        '404':
           description: Not Found
           content:
             application/json:
               schema:
                 type: object
               example:
-                message: "Unable to update assignment due to invalid assetid or userid"
+                message: 'Unable to update assignment due to invalid assetid or userid'
                 data: null
 
-        "403":
+        '403':
           description: Forbidden
           content:
             application/json:
               schema:
                 type: object
               example:
-                message: "Unauthorized"
+                message: 'Unauthorized'
                 data: null
   /v1/assets/{assetid}/assignments/:
     delete:
@@ -202,31 +202,69 @@ paths:
             type: string
 
       responses:
-        "200":
+        '200':
           description: Successful update
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: "Successfully updated item assignment"
-                  data: "77727f32-b7b9-f011-bbd3-7c1e52177972"
-        "404":
+                  message: 'Successfully updated item assignment'
+                  data: '77727f32-b7b9-f011-bbd3-7c1e52177972'
+        '404':
           description: Not Found
           content:
             application/json:
               schema:
                 type: object
               example:
-                message: "Unable to update assignment due to invalid assetid or userid"
+                message: 'Unable to update assignment due to invalid assetid or userid'
                 data: null
 
-        "403":
+        '403':
           description: Forbidden
           content:
             application/json:
               schema:
                 type: object
               example:
-                message: "Unauthorized"
+                message: 'Unauthorized'
                 data: null
+  v1/users/email/{email}/assets:
+    get:
+      parameters:
+        - name: email
+          in: query
+          description: full email address of target user
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns all assets assigned to a user (empty array if none found)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                example:
+                  message: 'Success'
+                  data: []
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: 'Dataverse asset lookup failed: '
