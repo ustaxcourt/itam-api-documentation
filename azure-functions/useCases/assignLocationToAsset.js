@@ -1,4 +1,4 @@
-import { BadRequest } from '../errors/BadRequest.js';
+import { NotFoundError } from '../errors/NotFoundError.js';
 import { assignLocationAsset } from '../persistence/assignAssetLocation.js';
 import { getId } from '../useCases/returnLookupID.js';
 
@@ -11,12 +11,12 @@ export async function assignLocationToAsset(assetId, locationid) {
       locationid,
     );
   } catch {
-    throw new BadRequest('Location ID not found');
+    throw new NotFoundError('Location ID not found');
   }
 
   try {
     await assignLocationAsset(assetId, locationId);
   } catch {
-    throw new BadRequest('Asset ID not found');
+    throw new NotFoundError('Asset ID not found');
   }
 }

@@ -1,7 +1,7 @@
 import { locationAssignmentsHandler } from '../apiController/locationAssignment.js';
 import { assignLocationToAsset } from '../useCases/assignLocationToAsset.js';
 import { buildResponse } from '../apiController/buildResponse.js';
-import { BadRequest } from '../errors/BadRequest.js';
+import { NotFoundError } from '../errors/NotFoundError.js';
 
 jest.mock('../useCases/assignLocationToAsset.js');
 jest.mock('../apiController/buildResponse.js');
@@ -56,7 +56,7 @@ describe('locationAssignmentsHandler', () => {
 
   it('should handle BadRequest when Asset ID is not found', async () => {
     assignLocationToAsset.mockRejectedValue(
-      new BadRequest('Asset ID not found'),
+      new NotFoundError('Asset ID not found'),
     );
     await expect(
       assignLocationToAsset('asset123', 'invalidLoc'),

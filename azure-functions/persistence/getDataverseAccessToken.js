@@ -33,7 +33,7 @@ export async function getDataverseAccessToken() {
       return data.access_token;
     }
 
-    throw new BadRequest('Unable to get token from Identity Provider');
+    throw new DataverseTokenError('Unable to get token from Identity Provider');
   } catch (error) {
     console.error('Fetch error:', error.message);
     throw new DataverseTokenError(

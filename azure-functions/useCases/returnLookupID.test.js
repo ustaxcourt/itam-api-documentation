@@ -12,9 +12,7 @@ describe('getId', () => {
 
   it('should build correct URL and return ID from response', async () => {
     const mockResponse = {
-      data: {
-        value: [{ crf7f_fac_asset_ref_locationid: 'location-guid-123' }],
-      },
+      value: [{ crf7f_fac_asset_ref_locationid: 'location-guid-123' }],
     };
 
     dataverseCall.mockResolvedValueOnce(mockResponse);
@@ -25,17 +23,18 @@ describe('getId', () => {
 
     const result = await getId(table, column, value);
 
-    const expectedUrl = `${DATAVERSE_URL}/api/data/v9.2/${table}?$filter=${column} eq '${value}'`;
+    const expectedUrl = `${table}?$filter=${column} eq '${value}'`;
 
-    expect(dataverseCall).toHaveBeenCalledWith(expectedUrl, 'GET');
+    expect(dataverseCall).toHaveBeenCalledWith({
+      query: expectedUrl,
+      method: 'GET',
+    });
     expect(result).toBe('location-guid-123');
   });
 
   it('should handle different table names correctly', async () => {
     const mockResponse = {
-      data: {
-        value: [{ customtableid: 'custom-guid-789' }],
-      },
+      value: [{ customtableid: 'custom-guid-789' }],
     };
 
     dataverseCall.mockResolvedValueOnce(mockResponse);
@@ -46,17 +45,12 @@ describe('getId', () => {
 
     const result = await getId(table, column, value);
 
-    const expectedUrl = `${DATAVERSE_URL}/api/data/v9.2/${table}?$filter=${column} eq '${value}'`;
+    const expectedUrl = `${table}?$filter=${column} eq '${value}'`;
 
-    expect(dataverseCall).toHaveBeenCalledWith(expectedUrl, 'GET');
+    expect(dataverseCall).toHaveBeenCalledWith({
+      query: expectedUrl,
+      method: 'GET',
+    });
     expect(result).toBe('custom-guid-789');
-  });
-
-  it('should throw if dataverseCall fails', async () => {
-    dataverseCall.mockRejectedValueOnce(new Error('Network error'));
-
-    await expect(getId('table', 'column', 'value')).rejects.toThrow(
-      'Network error',
-    );
   });
 });

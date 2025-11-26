@@ -19,13 +19,14 @@ describe('assignLocationAsset', () => {
 
     const result = await assignLocationAsset(assetId, locationId);
 
-    expect(dataverseCall).toHaveBeenCalledWith(
-      `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs(${assetId})`,
-      'PATCH',
-      {
-        'crf7f_fac_asset_ref_locationLookup@odata.bind': `crf7f_fac_asset_ref_locations(${locationId})`,
+    expect(dataverseCall).toHaveBeenCalledWith({
+      body: {
+        'crf7f_fac_asset_ref_locationLookup@odata.bind':
+          'crf7f_fac_asset_ref_locations(location456)',
       },
-    );
+      method: 'PATCH',
+      query: 'crf7f_ois_asset_rela_item_orgs(asset123)',
+    });
     expect(result).toEqual({ success: true });
   });
 
