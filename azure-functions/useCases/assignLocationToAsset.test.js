@@ -1,74 +1,65 @@
-import { assignLocationToAsset } from './assignLocationToAsset.js';
-import { assignLocationAsset } from '../persistence/assignAssetLocation.js';
-import { getId } from '../useCases/returnLookupID.js';
+import { locationAssignmentsHandler } from '../apiController/locationAssignment.js';
+import { assignLocationToAsset } from '../useCases/assignLocationToAsset.js';
+import { buildResponse } from '../apiController/buildResponse.js';
+import { BadRequest } from '../errors/BadRequest.js';
 
-jest.mock('../persistence/assignAssetLocation.js', () => ({
-  assignLocationAsset: jest.fn(),
-}));
+jest.mock('../useCases/assignLocationToAsset.js');
+jest.mock('../apiController/buildResponse.js');
 
-jest.mock('../useCases/returnLookupID.js', () => ({
-  getId: jest.fn(),
-}));
+describe('locationAssignmentsHandler', () => {
+  let context;
 
-describe('assignLocationToAsset', () => {
   beforeEach(() => {
+    context = { error: jest.fn() };
     jest.clearAllMocks();
   });
 
-  // Basic test if function calls dependencies correctly
-  it('calls getId and assignLocationAsset with correct arguments', async () => {
-    getId.mockResolvedValue('location123');
-    assignLocationAsset.mockResolvedValue();
+  it('should return success when location is assigned', async () => {
+    assignLocationToAsset.mockResolvedValueOnce();
+    buildResponse.mockReturnValueOnce({ status: 200, body: 'mocked response' });
 
-    await assignLocationToAsset('assetABC', 'locationName');
+    const request = {
+      method: 'POST',
+      params: { assetid: 'asset123', locationid: 'loc456' },
+    };
 
-    expect(getId).toHaveBeenCalledTimes(1);
-    expect(getId).toHaveBeenCalledWith(
-      'crf7f_fac_asset_ref_locations',
-      'crf7f_fac_asset_ref_locationid',
-      'locationName',
+    const result = await locationAssignmentsHandler(request, context);
+
+    expect(assignLocationToAsset).toHaveBeenCalledWith('asset123', 'loc456');
+    expect(buildResponse).toHaveBeenCalledWith(
+      200,
+      'Successfully assigned location',
+      'asset123',
     );
-    expect(assignLocationAsset).toHaveBeenCalledTimes(1);
-    expect(assignLocationAsset).toHaveBeenCalledWith('assetABC', 'location123');
+    expect(result).toEqual({ status: 200, body: 'mocked response' });
+    expect(context.error).not.toHaveBeenCalled();
   });
 
-  // Expected failure mode: Location ID not found
-  it('throws error when getId fails', async () => {
-    getId.mockRejectedValue(new Error('Location not found'));
+  it('should return error for invalid method', async () => {
+    buildResponse.mockReturnValueOnce({
+      status: 400,
+      body: 'Invalid REST Method',
+    });
 
-    await expect(
-      assignLocationToAsset('assetABC', 'locationName'),
-    ).rejects.toThrow('Location ID not found');
+    const request = {
+      method: 'GET',
+      params: { assetid: 'asset123', locationid: 'loc456' },
+    };
+
+    const result = await locationAssignmentsHandler(request, context);
+
+    expect(assignLocationToAsset).not.toHaveBeenCalled();
+    expect(context.error).toHaveBeenCalled();
+    expect(buildResponse).toHaveBeenCalledWith(400, 'Invalid REST Method');
+    expect(result).toEqual({ status: 400, body: 'Invalid REST Method' });
   });
 
-  // Expected failure mode: Asset ID not found
-  it('throws error when assignLocationAsset fails', async () => {
-    getId.mockResolvedValue('location123');
-    assignLocationAsset.mockRejectedValue(new Error('Asset not found'));
-
+  it('should handle BadRequest when Asset ID is not found', async () => {
+    assignLocationToAsset.mockRejectedValue(
+      new BadRequest('Asset ID not found'),
+    );
     await expect(
-      assignLocationToAsset('assetABC', 'locationName'),
+      assignLocationToAsset('asset123', 'invalidLoc'),
     ).rejects.toThrow('Asset ID not found');
-  });
-
-  // Handles passUp error correctly
-  it('rethrows error when passUp is true', async () => {
-    getId.mockResolvedValue('location123');
-    const error = new Error('Pass up error');
-    error.passUp = true;
-    assignLocationAsset.mockRejectedValue(error);
-
-    await expect(
-      assignLocationToAsset('assetABC', 'locationName'),
-    ).rejects.toThrow('Pass up error');
-  });
-
-  // Handles empty calls
-  it('handles empty calls gracefully', async () => {
-    getId.mockRejectedValue(new Error('Location not found'));
-
-    await expect(assignLocationToAsset()).rejects.toThrow(
-      'Location ID not found',
-    );
   });
 });

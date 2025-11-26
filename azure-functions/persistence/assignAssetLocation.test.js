@@ -1,6 +1,6 @@
 import { assignLocationAsset } from './assignAssetLocation.js';
 import { dataverseCall } from './dataverseCall.js';
-import { AppError } from '../errors/error.js';
+import { BadRequest } from '../errors/BadRequest.js';
 
 jest.mock('./dataverseCall.js');
 
@@ -29,13 +29,13 @@ describe('assignLocationAsset', () => {
     expect(result).toEqual({ success: true });
   });
 
-  it('should throw AppError when error does not have passUp property', async () => {
+  it('should throw BadRequest when error does not have passUp property', async () => {
     dataverseCall.mockRejectedValue(
-      new AppError(404, 'Unable to retreive from internal database'),
+      new BadRequest('Unable to retreive from internal database'),
     );
 
     await expect(assignLocationAsset(assetId, locationId)).rejects.toThrow(
-      AppError,
+      BadRequest,
     );
     await expect(assignLocationAsset(assetId, locationId)).rejects.toThrow(
       'Unable to retreive from internal database',

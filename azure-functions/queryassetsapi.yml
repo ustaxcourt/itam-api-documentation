@@ -264,7 +264,7 @@ paths:
               schema:
                 type: object
               example:
-                message: "Location not found"
+                message: "Location ID not found"
                 data: null
 
         "403":

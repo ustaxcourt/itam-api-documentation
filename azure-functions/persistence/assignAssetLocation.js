@@ -1,4 +1,4 @@
-import { AppError } from '../errors/error.js';
+import { BadRequest } from '../errors/BadRequest.js';
 import { dataverseCall } from './dataverseCall.js';
 
 export async function assignLocationAsset(assetId, locationId) {
@@ -10,11 +10,7 @@ export async function assignLocationAsset(assetId, locationId) {
 
     const url = `${DATAVERSE_URL}/api/data/v9.2/crf7f_ois_asset_rela_item_orgs(${assetId})`;
     return dataverseCall(url, 'PATCH', body);
-  } catch (error) {
-    if (error.passUp) {
-      throw error;
-    } else {
-      throw new AppError(404, 'Invalid Asset ID');
-    }
+  } catch {
+    throw new BadRequest('Invalid Asset ID');
   }
 }

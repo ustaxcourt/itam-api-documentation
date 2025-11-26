@@ -1,4 +1,4 @@
-import { AppError } from '../errors/error.js';
+import { BadRequest } from '../errors/BadRequest.js';
 import { assignLocationAsset } from '../persistence/assignAssetLocation.js';
 import { getId } from '../useCases/returnLookupID.js';
 
@@ -10,20 +10,13 @@ export async function assignLocationToAsset(assetId, locationid) {
       'crf7f_fac_asset_ref_locationid',
       locationid,
     );
-  } catch (error) {
-    if (error.passUp) {
-      throw error;
-    } else {
-      throw new AppError(404, 'Location ID not found', true);
-    }
+  } catch {
+    throw new BadRequest('Location ID not found');
   }
+
   try {
     await assignLocationAsset(assetId, locationId);
-  } catch (error) {
-    if (error.passUp) {
-      throw error;
-    } else {
-      throw new AppError(404, 'Asset ID not found', true);
-    }
+  } catch {
+    throw new BadRequest('Asset ID not found');
   }
 }

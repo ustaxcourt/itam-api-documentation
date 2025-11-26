@@ -1,12 +1,13 @@
 import axios from 'axios';
 import { getDataverseAccessToken } from './getDataverseAccessToken.js';
-import { AppError } from '../errors/error.js';
+import { DataverseTokenError } from '../errors/DataverseTokenError.js';
+import { BadRequest } from '../errors/BadRequest.js';
 
 export async function dataverseCall(url, method, body = null) {
   try {
     const token = await getDataverseAccessToken();
     if (!token) {
-      throw new AppError(500, 'No token found', true);
+      throw new DataverseTokenError('No token found');
     }
 
     const headers = {
@@ -25,15 +26,7 @@ export async function dataverseCall(url, method, body = null) {
     } else if (method === 'GET') {
       return axios.get(url, { headers });
     }
-  } catch (error) {
-    if (error.passUp) {
-      throw error;
-    } else {
-      throw new AppError(
-        500,
-        'Unable to retreive from internal database',
-        false,
-      );
-    }
+  } catch {
+    throw new BadRequest('Unable to retreive from internal database');
   }
 }

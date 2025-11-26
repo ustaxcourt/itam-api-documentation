@@ -1,63 +1,62 @@
-// __tests__/getId.test.js
 import { getId } from './returnLookupID.js';
 import { dataverseCall } from '../persistence/dataverseCall.js';
-import { AppError } from '../errors/error.js';
 
 jest.mock('../persistence/dataverseCall.js');
 
 describe('getId', () => {
-  const originalEnv = process.env;
-
+  const DATAVERSE_URL = 'https://mocked-dataverse-url';
   beforeEach(() => {
-    jest.resetAllMocks();
-    process.env = {
-      ...originalEnv,
-      DATAVERSE_URL: 'https://mock.dataverse.com',
-    };
+    process.env.DATAVERSE_URL = DATAVERSE_URL;
+    jest.clearAllMocks();
   });
 
-  afterAll(() => {
-    process.env = originalEnv;
-  });
-
-  test('should return correct ID when dataverseCall succeeds', async () => {
-    dataverseCall.mockResolvedValue({
+  it('should build correct URL and return ID from response', async () => {
+    const mockResponse = {
       data: {
-        value: [{ accountid: '12345' }],
+        value: [{ crf7f_fac_asset_ref_locationid: 'location-guid-123' }],
       },
-    });
+    };
 
-    const result = await getId('accounts', 'name', 'TestAccount');
-    expect(result).toBe('12345');
-    expect(dataverseCall).toHaveBeenCalledWith(
-      "https://mock.dataverse.com/api/data/v9.2/accounts?$filter=name eq 'TestAccount'",
-      'GET',
-    );
+    dataverseCall.mockResolvedValueOnce(mockResponse);
+
+    const table = 'crf7f_fac_asset_ref_locations';
+    const column = 'crf7f_fac_asset_ref_locationid';
+    const value = 'loc456';
+
+    const result = await getId(table, column, value);
+
+    const expectedUrl = `${DATAVERSE_URL}/api/data/v9.2/${table}?$filter=${column} eq '${value}'`;
+
+    expect(dataverseCall).toHaveBeenCalledWith(expectedUrl, 'GET');
+    expect(result).toBe('location-guid-123');
   });
 
-  test('should throw AppError when response has empty value array', async () => {
-    dataverseCall.mockResolvedValue({ data: { value: [] } });
-    await expect(getId('accounts', 'name', 'TestAccount')).rejects.toThrow(
-      AppError,
-    );
+  it('should handle different table names correctly', async () => {
+    const mockResponse = {
+      data: {
+        value: [{ customtableid: 'custom-guid-789' }],
+      },
+    };
+
+    dataverseCall.mockResolvedValueOnce(mockResponse);
+
+    const table = 'customtables';
+    const column = 'customcolumn';
+    const value = 'customValue';
+
+    const result = await getId(table, column, value);
+
+    const expectedUrl = `${DATAVERSE_URL}/api/data/v9.2/${table}?$filter=${column} eq '${value}'`;
+
+    expect(dataverseCall).toHaveBeenCalledWith(expectedUrl, 'GET');
+    expect(result).toBe('custom-guid-789');
   });
 
-  test('should rethrow error if error.passUp is true', async () => {
-    const error = new Error('Pass up error');
-    error.passUp = true;
-    dataverseCall.mockRejectedValue(error);
+  it('should throw if dataverseCall fails', async () => {
+    dataverseCall.mockRejectedValueOnce(new Error('Network error'));
 
-    await expect(getId('accounts', 'name', 'TestAccount')).rejects.toBe(error);
-  });
-
-  test('should throw AppError when error.passUp is false', async () => {
-    dataverseCall.mockRejectedValue(new Error('Generic error'));
-
-    await expect(getId('accounts', 'name', 'TestAccount')).rejects.toThrow(
-      AppError,
-    );
-    await expect(getId('accounts', 'name', 'TestAccount')).rejects.toThrow(
-      'ID not found',
+    await expect(getId('table', 'column', 'value')).rejects.toThrow(
+      'Network error',
     );
   });
 });

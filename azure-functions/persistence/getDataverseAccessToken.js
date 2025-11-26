@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AppError } from '../errors/error.js';
+import { BadRequest } from '../errors/BadRequest.js';
 
 export async function getDataverseAccessToken() {
   const { CLIENT_ID, TENANT_ID, DATAVERSE_INTERNAL, SCOPE } = process.env;
@@ -18,16 +18,14 @@ export async function getDataverseAccessToken() {
       return response.data.access_token;
     }
 
-    throw new AppError(500, 'Unable to get token from Identity Provider', true);
+    throw new BadRequest('Unable to get token from Identity Provider');
   } catch (error) {
     console.error(
       'Error getting OAuth token:',
       error.response?.data || error.message,
     );
-    throw new AppError(
-      500,
+    throw new BadRequest(
       'Error attempting to retrieve token from Identity Provider',
-      true,
     );
   }
 }

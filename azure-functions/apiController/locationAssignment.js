@@ -1,7 +1,7 @@
 import { app } from '@azure/functions';
 import { buildResponse } from './buildResponse.js';
 import { assignLocationToAsset } from '../useCases/assignLocationToAsset.js';
-import { AppError } from '../errors/error.js';
+import { BadRequest } from '../errors/BadRequest.js';
 
 export async function locationAssignmentsHandler(request, context) {
   try {
@@ -11,7 +11,7 @@ export async function locationAssignmentsHandler(request, context) {
     if (request.method === 'POST') {
       await assignLocationToAsset(assetId, locationId);
     } else {
-      throw new AppError(400, 'Invalid REST Method');
+      throw new BadRequest('Invalid REST Method');
     }
 
     return buildResponse(200, 'Successfully assigned location', assetId);
@@ -20,7 +20,7 @@ export async function locationAssignmentsHandler(request, context) {
       'Unable to update assignments',
       error.response?.data || error.message,
     );
-    return buildResponse(error.status, error.message);
+    return buildResponse(error.statusCode, error.message);
   }
 }
 
