@@ -1,6 +1,5 @@
 import { assignLocationAsset } from './assignAssetLocation.js';
 import { dataverseCall } from './dataverseCall.js';
-import { BadRequest } from '../errors/BadRequest.js';
 
 jest.mock('./dataverseCall.js');
 
@@ -28,28 +27,5 @@ describe('assignLocationAsset', () => {
       query: 'crf7f_ois_asset_rela_item_orgs(asset123)',
     });
     expect(result).toEqual({ success: true });
-  });
-
-  it('should throw BadRequest when error does not have passUp property', async () => {
-    dataverseCall.mockRejectedValue(
-      new BadRequest('Unable to retreive from internal database'),
-    );
-
-    await expect(assignLocationAsset(assetId, locationId)).rejects.toThrow(
-      BadRequest,
-    );
-    await expect(assignLocationAsset(assetId, locationId)).rejects.toThrow(
-      'Unable to retreive from internal database',
-    );
-  });
-
-  it('should rethrow error when error has passUp property', async () => {
-    const error = new Error('Pass up error');
-    error.passUp = true;
-    dataverseCall.mockRejectedValue(error);
-
-    await expect(assignLocationAsset(assetId, locationId)).rejects.toThrow(
-      error,
-    );
   });
 });

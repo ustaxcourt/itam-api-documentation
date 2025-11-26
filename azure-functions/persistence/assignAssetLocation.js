@@ -1,4 +1,5 @@
-import { BadRequest } from '../errors/BadRequest.js';
+import { InternalServerError } from '../errors/InternalServerError.js';
+import { NotFoundError } from '../errors/NotFoundError.js';
 import { dataverseCall } from './dataverseCall.js';
 
 export async function assignLocationAsset(assetId, locationId) {
@@ -9,7 +10,11 @@ export async function assignLocationAsset(assetId, locationId) {
 
     const url = `crf7f_ois_asset_rela_item_orgs(${assetId})`;
     return dataverseCall({ query: url, method: 'PATCH', body: body });
-  } catch {
-    throw new BadRequest('Invalid Asset ID');
+  } catch (error) {
+    if (error instanceof InternalServerError) {
+      throw error;
+    } else {
+      throw new NotFoundError('Asset ID not found');
+    }
   }
 }

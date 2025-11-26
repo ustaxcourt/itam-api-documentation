@@ -1,3 +1,4 @@
+import { InternalServerError } from '../errors/InternalServerError.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
 import { assignLocationAsset } from '../persistence/assignAssetLocation.js';
 import { getId } from '../useCases/returnLookupID.js';
@@ -16,7 +17,11 @@ export async function assignLocationToAsset(assetId, locationid) {
 
   try {
     await assignLocationAsset(assetId, locationId);
-  } catch {
-    throw new NotFoundError('Asset ID not found');
+  } catch (error) {
+    if (error instanceof InternalServerError) {
+      throw error;
+    } else {
+      throw new NotFoundError('Asset ID not found');
+    }
   }
 }
