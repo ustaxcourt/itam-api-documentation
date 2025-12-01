@@ -9,11 +9,11 @@ describe('locationAssignmentsHandler', () => {
 
   beforeEach(() => {
     context = { error: jest.fn() };
-    jest.clearAllMocks();
+    jest.resetAllMocks();
   });
 
   it('should assign location and return success response for POST', async () => {
-    assignLocationToAsset.mockResolvedValueOnce();
+    assignLocationToAsset.mockResolvedValue();
 
     const request = {
       method: 'POST',
@@ -57,7 +57,7 @@ describe('locationAssignmentsHandler', () => {
 
   it('should handle errors from assignLocationToAsset', async () => {
     const error = new BadRequest('Location ID not found');
-    assignLocationToAsset.mockRejectedValueOnce(error);
+    assignLocationToAsset.mockRejectedValue(error);
 
     const request = {
       method: 'POST',

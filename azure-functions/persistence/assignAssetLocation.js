@@ -1,5 +1,5 @@
+import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
 import { dataverseCall } from './dataverseCall.js';
 
 export async function assignLocationAsset(assetId, locationId) {
@@ -9,12 +9,15 @@ export async function assignLocationAsset(assetId, locationId) {
     };
 
     const url = `crf7f_ois_asset_rela_item_orgs(${assetId})`;
-    return dataverseCall({ query: url, method: 'PATCH', body: body });
+    return await dataverseCall({ query: url, method: 'PATCH', body: body });
   } catch (error) {
-    if (error instanceof InternalServerError) {
+    if (
+      error instanceof InternalServerError ||
+      error instanceof DataverseTokenError
+    ) {
       throw error;
-    } else {
-      throw new NotFoundError('Asset ID not found');
     }
+
+    throw new InternalServerError('Unable to assign Location to Asset');
   }
 }

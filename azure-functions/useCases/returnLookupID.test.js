@@ -21,7 +21,7 @@ describe('getId', () => {
     const column = 'crf7f_fac_asset_ref_locationid';
     const value = 'loc456';
 
-    const result = await getId(table, column, value);
+    const result = await getId({ table: table, column: column, value: value });
 
     const expectedUrl = `${table}?$filter=${column} eq '${value}'`;
 
@@ -43,7 +43,7 @@ describe('getId', () => {
     const column = 'customcolumn';
     const value = 'customValue';
 
-    const result = await getId(table, column, value);
+    const result = await getId({ table: table, column: column, value: value });
 
     const expectedUrl = `${table}?$filter=${column} eq '${value}'`;
 
