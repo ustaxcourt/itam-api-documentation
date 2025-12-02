@@ -75,7 +75,7 @@ describe('locationAssignmentsHandler', () => {
       'Location ID not found',
     );
     expect(result).toEqual({
-      status: 400,
+      status: 404,
       jsonBody: {
         data: null,
         message: 'Location ID not found',
