@@ -1,6 +1,6 @@
 import { locationAssignmentsHandler } from './locationAssignment.js';
 import { assignLocationToAsset } from '../useCases/assignLocationToAsset.js';
-import { BadRequest } from '../errors/BadRequest.js';
+import { NotFoundError } from '../errors/NotFoundError.js';
 
 jest.mock('../useCases/assignLocationToAsset.js');
 
@@ -56,7 +56,7 @@ describe('locationAssignmentsHandler', () => {
   });
 
   it('should handle errors from assignLocationToAsset', async () => {
-    const error = new BadRequest('Location ID not found');
+    const error = new NotFoundError('Location ID not found');
     assignLocationToAsset.mockRejectedValue(error);
 
     const request = {
