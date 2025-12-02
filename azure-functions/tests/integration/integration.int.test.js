@@ -3,6 +3,8 @@ const existingAssetId = '6aa09331-b7b9-f011-bbd2-000d3a56dc3a';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
 const existingUserId = 'c0181fd9-fdc4-4578-945d-aaae011feec7';
 const nonExistentUserId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
+const existinglocationId = '02d494f4-b5b9-f011-bbd2-000d3a56dc3a';
+const nonExistentlocationId = 'ffffffff-ffff-ffff-ffff-ffffffffffes';
 
 describe('Integration testing for ITAM Project', () => {
   it('should fetch an existing asset successfully', async () => {
@@ -124,5 +126,45 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toHaveProperty('phone');
     expect(body.data).toHaveProperty('user');
     expect(body.data.user).toBeNull();
+  });
+
+  //location endpoint
+  it('should assign a location successfully', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/location/${existinglocationId}`,
+      {
+        method: 'POST',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body).toHaveProperty('message', 'Successfully assigned location');
+  });
+
+  it('should return 404 when assigning for a non-existent asset', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${nonExistentAssetId}/location/${existinglocationId}`,
+      {
+        method: 'POST',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.message).toBe(`Asset ID not found`);
+  });
+
+  it('should return 404 when trying to assign a location that does not exist', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/location/${nonExistentlocationId}`,
+      {
+        method: 'POST',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.message).toBe(`Location ID not found`);
   });
 });
