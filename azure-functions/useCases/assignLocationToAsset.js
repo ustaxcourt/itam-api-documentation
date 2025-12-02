@@ -2,13 +2,13 @@ import { InternalServerError } from '../errors/InternalServerError.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 import { assignLocationAsset } from '../persistence/assignAssetLocation.js';
-import { getId } from '../useCases/returnLookupID.js';
+import { getIdOfRowInTableByColumnValue } from '../persistence/getIdOfRowInTableByColumnValue.js';
 
 export async function assignLocationToAsset(assetid, locationid) {
   let locationId;
   let assetId;
   try {
-    locationId = await getId({
+    locationId = await getIdOfRowInTableByColumnValue({
       table: 'crf7f_fac_asset_ref_locations',
       column: 'crf7f_fac_asset_ref_locationid',
       value: locationid,
@@ -26,7 +26,7 @@ export async function assignLocationToAsset(assetid, locationid) {
   }
 
   try {
-    assetId = await getId({
+    assetId = await getIdOfRowInTableByColumnValue({
       table: 'crf7f_ois_asset_rela_item_orgs',
       column: 'crf7f_ois_asset_rela_item_orgid',
       value: assetid,

@@ -15,7 +15,7 @@ describe('locationAssignmentsHandler', () => {
   });
 
   it('should return success when location is assigned', async () => {
-    assignLocationToAsset.mockResolvedValueOnce();
+    assignLocationToAsset.mockResolvedValue();
     buildResponse.mockReturnValueOnce({ status: 200, body: 'mocked response' });
 
     const request = {

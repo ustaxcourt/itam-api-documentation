@@ -1,5 +1,5 @@
-import { getId } from './returnLookupID.js';
-import { dataverseCall } from '../persistence/dataverseCall.js';
+import { getIdOfRowInTableByColumnValue } from './getIdOfRowInTableByColumnValue.js';
+import { dataverseCall } from './dataverseCall.js';
 
 jest.mock('../persistence/dataverseCall.js');
 
@@ -21,7 +21,11 @@ describe('getId', () => {
     const column = 'crf7f_fac_asset_ref_locationid';
     const value = 'loc456';
 
-    const result = await getId({ table: table, column: column, value: value });
+    const result = await getIdOfRowInTableByColumnValue({
+      table: table,
+      column: column,
+      value: value,
+    });
 
     const expectedUrl = `${table}?$filter=${column} eq '${value}'`;
 
@@ -43,7 +47,11 @@ describe('getId', () => {
     const column = 'customcolumn';
     const value = 'customValue';
 
-    const result = await getId({ table: table, column: column, value: value });
+    const result = await getIdOfRowInTableByColumnValue({
+      table: table,
+      column: column,
+      value: value,
+    });
 
     const expectedUrl = `${table}?$filter=${column} eq '${value}'`;
 

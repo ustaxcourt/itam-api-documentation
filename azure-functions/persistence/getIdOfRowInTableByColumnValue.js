@@ -1,7 +1,7 @@
 import { NotFoundError } from '../errors/NotFoundError.js';
-import { dataverseCall } from '../persistence/dataverseCall.js';
+import { dataverseCall } from './dataverseCall.js';
 
-export async function getId({ table, column, value }) {
+export async function getIdOfRowInTableByColumnValue({ table, column, value }) {
   const url = `${table}?$filter=${column} eq '${value}'`;
   const response = await dataverseCall({ query: url, method: 'GET' });
   let notpural = table.slice(0, -1);

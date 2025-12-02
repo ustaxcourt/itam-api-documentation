@@ -1,10 +1,13 @@
+//import { getIdOfRowInTableByColumnValue } from "../../persistence/getIdOfRowInTableByColumnValue.js";
+
 const baseUrl = 'http://localhost:7071';
 const existingAssetId = '6aa09331-b7b9-f011-bbd2-000d3a56dc3a';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
 const existingUserId = 'c0181fd9-fdc4-4578-945d-aaae011feec7';
 const nonExistentUserId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
-const existinglocationId = '02d494f4-b5b9-f011-bbd2-000d3a56dc3a';
-const nonExistentlocationId = 'ffffffff-ffff-ffff-ffff-ffffffffffes';
+const existingLocationId = '04d494f4-b5b9-f011-bbd2-000d3a56dc3a';
+const existingLocationName = '109';
+const nonExistentLocationId = 'ffffffff-ffff-ffff-ffff-ffffffffffes';
 
 describe('Integration testing for ITAM Project', () => {
   it('should fetch an existing asset successfully', async () => {
@@ -129,22 +132,55 @@ describe('Integration testing for ITAM Project', () => {
   });
 
   //location endpoint
-  it('should assign a location successfully', async () => {
-    const res = await fetch(
-      `${baseUrl}/api/v1/assets/${existingAssetId}/location/${existinglocationId}`,
+
+  it('POST Location - should assign a location successfully', async () => {
+    //get and save current location
+    let result = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
+      method: 'GET',
+      headers: { Authorization: 'Bearer mocked-token' },
+    });
+    expect(result.status).toBe(200);
+    let body = await result.json();
+    //const currentLocationId = await getIdOfRowInTableByColumnValue("crf7f_fac_asset_ref_locations", "crf7f_name", body.data.location);
+
+    //run call to change location
+    result = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/location/${existingLocationId}`,
       {
         method: 'POST',
         headers: { Authorization: 'Bearer mocked-token' },
       },
     );
-    expect(res.status).toBe(200);
-    const body = await res.json();
+    expect(result.status).toBe(200);
+    body = await result.json();
     expect(body).toHaveProperty('message', 'Successfully assigned location');
+
+    //check if location name is changed to be expected
+    result = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
+      method: 'GET',
+      headers: { Authorization: 'Bearer mocked-token' },
+    });
+    expect(result.status).toBe(200);
+    body = await result.json();
+    expect(body.data.location).toBe(existingLocationName);
+    /*
+        //change back location to original
+        result = await fetch(
+          `${baseUrl}/api/v1/assets/${existingAssetId}/location/${currentLocationId}`,
+          {
+            method: 'POST',
+            headers: { Authorization: 'Bearer mocked-token' },
+          },
+        );
+        expect(result.status).toBe(200);
+        body = await result.json();
+        expect(body).toHaveProperty('message', 'Successfully assigned location');
+        */
   });
 
-  it('should return 404 when assigning for a non-existent asset', async () => {
+  it('POST Location - should return 404 when assigning for a non-existent asset', async () => {
     const res = await fetch(
-      `${baseUrl}/api/v1/assets/${nonExistentAssetId}/location/${existinglocationId}`,
+      `${baseUrl}/api/v1/assets/${nonExistentAssetId}/location/${existingLocationId}`,
       {
         method: 'POST',
         headers: { Authorization: 'Bearer mocked-token' },
@@ -155,9 +191,9 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.message).toBe(`Asset ID not found`);
   });
 
-  it('should return 404 when trying to assign a location that does not exist', async () => {
+  it('POST Location - should return 404 when trying to assign a location that does not exist', async () => {
     const res = await fetch(
-      `${baseUrl}/api/v1/assets/${existingAssetId}/location/${nonExistentlocationId}`,
+      `${baseUrl}/api/v1/assets/${existingAssetId}/location/${nonExistentLocationId}`,
       {
         method: 'POST',
         headers: { Authorization: 'Bearer mocked-token' },
