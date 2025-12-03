@@ -8,6 +8,7 @@ export function filterDictionary(dict) {
       'assetName',
     '_crf7f_fac_asset_ref_locationlookup_value@OData.Community.Display.V1.FormattedValue':
       'location',
+    _crf7f_fac_asset_ref_locationlookup_value: 'location',
     'crf7f_asset_item_status@OData.Community.Display.V1.FormattedValue':
       'itemStatus',
     crf7f_phone_numbers: 'phone',

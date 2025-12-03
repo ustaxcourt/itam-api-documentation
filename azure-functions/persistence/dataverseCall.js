@@ -3,13 +3,11 @@ import { InternalServerError } from '../errors/InternalServerError.js';
 
 export async function dataverseCall({ query, method, body = null }) {
   const token = await getDataverseAccessToken();
-
   if (!process.env.DATAVERSE_URL) {
     throw new InternalServerError('DATAVERSE_URL is missing');
   }
 
   const url = `${process.env.DATAVERSE_URL}/${query}`;
-
   const headers = {
     Authorization: `Bearer ${token}`,
     Accept: 'application/json',

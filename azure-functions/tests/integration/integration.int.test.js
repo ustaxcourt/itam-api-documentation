@@ -3,6 +3,9 @@ const existingAssetId = '6aa09331-b7b9-f011-bbd2-000d3a56dc3a';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
 const existingUserId = 'c0181fd9-fdc4-4578-945d-aaae011feec7';
 const nonExistentUserId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
+const existingLocationId = '04d494f4-b5b9-f011-bbd2-000d3a56dc3a';
+const existingLocationName = '109';
+const nonExistentLocationId = '04d494f4-b5b9-f011-bbd2-000d3a56dc3b';
 
 describe('Integration testing for ITAM Project', () => {
   it('should fetch an existing asset successfully', async () => {
@@ -124,5 +127,114 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toHaveProperty('phone');
     expect(body.data).toHaveProperty('user');
     expect(body.data.user).toBeNull();
+  });
+
+  //location endpoint
+
+  it('DELETE Location - should display proper assignment information in query after new unassignment', async () => {
+    const unassignRes = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/location/${existingLocationId}`,
+      {
+        method: 'DELETE',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+    expect(unassignRes.status).toBe(200);
+    const res = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
+      method: 'GET',
+      headers: { Authorization: 'Bearer mocked-token' },
+    });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body).toHaveProperty('message', 'Success');
+    expect(body.data).toHaveProperty('activation');
+    expect(body.data).toHaveProperty('assetName');
+    expect(body.data).toHaveProperty('itemStatus');
+    expect(body.data).toHaveProperty('osVersion');
+    expect(body.data).toHaveProperty('phone');
+    expect(body.data).toHaveProperty('user');
+    expect(body.data).toHaveProperty('location');
+    expect(body.data.location).toBeNull();
+  });
+
+  it('POST Location - should assign a location successfully', async () => {
+    //get and save current location
+    let result = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
+      method: 'GET',
+      headers: { Authorization: 'Bearer mocked-token' },
+    });
+    expect(result.status).toBe(200);
+    let body = await result.json();
+
+    //run call to change location
+    result = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/location/${existingLocationId}`,
+      {
+        method: 'POST',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+    expect(result.status).toBe(200);
+    body = await result.json();
+    expect(body).toHaveProperty('message', 'Successfully assigned location');
+
+    //check if location name is changed to be expected
+    result = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
+      method: 'GET',
+      headers: { Authorization: 'Bearer mocked-token' },
+    });
+    expect(result.status).toBe(200);
+    body = await result.json();
+    expect(body).toHaveProperty('message', 'Success');
+    expect(body.data).toHaveProperty('activation');
+    expect(body.data).toHaveProperty('assetName');
+    expect(body.data).toHaveProperty('itemStatus');
+    expect(body.data).toHaveProperty('osVersion');
+    expect(body.data).toHaveProperty('phone');
+    expect(body.data).toHaveProperty('user');
+    expect(body.data).toHaveProperty('location');
+    expect(body.data.location).toBe(existingLocationName);
+
+    //change back location to original - for future
+    /*
+    result = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/location/${currentLocationId}`,
+      {
+        method: 'POST',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+    expect(result.status).toBe(200);
+    body = await result.json();
+    expect(body).toHaveProperty('message', 'Successfully assigned location');
+    */
+  });
+
+  it('POST Location - should return 404 when assigning for a non-existent asset', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${nonExistentAssetId}/location/${existingLocationId}`,
+      {
+        method: 'POST',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.message).toBe(`No asset found for ID: ${nonExistentAssetId}`);
+  });
+
+  it('POST Location - should return 404 when trying to assign a location that does not exist', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/location/${nonExistentLocationId}`,
+      {
+        method: 'POST',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.message).toBe(
+      `No location found for ID: ${nonExistentLocationId}`,
+    );
   });
 });

@@ -208,9 +208,13 @@ paths:
             application/json:
               schema:
                 type: object
-                example:
-                  message: "Successfully updated item assignment"
-                  data: "77727f32-b7b9-f011-bbd3-7c1e52177972"
+                properties:
+                  message:
+                    example: "Successfully updated item assignment"
+                    description: "Success message"
+                  data:
+                    example: "77727f32-b7b9-f011-bbd3-7c1e52177972"
+                    description: "assetid"
         "404":
           description: Not Found
           content:
@@ -219,6 +223,102 @@ paths:
                 type: object
               example:
                 message: "Unable to update assignment due to invalid assetid or userid"
+                data: null
+
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: "Unauthorized"
+                data: null
+
+  /v1/assets/{assetid}/location/{locationId}:
+    post:
+      parameters:
+        - name: assetid
+          in: query
+          description: Guid of AssetId
+          required: true
+          schema:
+            type: string
+        - name: locationId
+          in: query
+          description: Id of Location
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Successful update
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    example: "Successfully assigned location"
+                    description: "Success message"
+                  data:
+                    example: "77727f32-b7b9-f011-bbd3-7c1e52177972"
+                    description: "assetid"
+
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: "No location found for ID: {locationid}"
+                data: null
+
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: "Unauthorized"
+                data: null
+
+  /v1/assets/{assetid}/location/:
+    delete:
+      parameters:
+        - name: assetid
+          in: query
+          description: Guid of AssetId
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Successful update
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    example: "Successfully unassigned location"
+                    description: "Success message"
+                  data:
+                    example: "77727f32-b7b9-f011-bbd3-7c1e52177972"
+                    description: "assetid"
+
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: "No location found for ID: {locationid}"
                 data: null
 
         "403":
