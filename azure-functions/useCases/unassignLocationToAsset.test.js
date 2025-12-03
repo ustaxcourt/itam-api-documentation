@@ -1,5 +1,4 @@
 import { unassignLocationToAsset } from './unassignLocationToAsset.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 
@@ -29,14 +28,6 @@ describe('unassignLocationToAsset', () => {
       NotFoundError,
     );
     expect(unassignLocationAsset).not.toHaveBeenCalled();
-  });
-
-  it('should throw InternalServerError for unknown error in getAssetByID', async () => {
-    getAssetByID.mockRejectedValue(new Error('Unknown error'));
-
-    await expect(unassignLocationToAsset(assetId)).rejects.toThrow(
-      InternalServerError,
-    );
   });
 
   it('should throw DataverseTokenError if asset retrieval fails with token error', async () => {

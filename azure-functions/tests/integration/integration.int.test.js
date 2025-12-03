@@ -1,5 +1,3 @@
-//import { getLocationByName } from "../../persistence/getLocationByName.js";
-
 const baseUrl = 'http://localhost:7071';
 const existingAssetId = '6aa09331-b7b9-f011-bbd2-000d3a56dc3a';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
@@ -167,7 +165,6 @@ describe('Integration testing for ITAM Project', () => {
     });
     expect(result.status).toBe(200);
     let body = await result.json();
-    //const currentLocationId = await getLocationByName({ locationname: body.data.location });
 
     //run call to change location
     result = await fetch(

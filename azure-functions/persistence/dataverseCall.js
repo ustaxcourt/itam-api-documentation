@@ -8,7 +8,6 @@ export async function dataverseCall({ query, method, body = null }) {
   }
 
   const url = `${process.env.DATAVERSE_URL}/${query}`;
-  console.log(url);
   const headers = {
     Authorization: `Bearer ${token}`,
     Accept: 'application/json',

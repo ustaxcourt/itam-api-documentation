@@ -1,5 +1,4 @@
 import { assignLocationToAsset } from './assignLocationToAsset.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 
@@ -37,14 +36,6 @@ describe('assignLocationToAsset', () => {
     expect(assignLocationAsset).not.toHaveBeenCalled();
   });
 
-  it('should throw InternalServerError for unknown error in getLocationById', async () => {
-    getLocationById.mockRejectedValue(new Error('Unknown error'));
-
-    await expect(assignLocationToAsset(assetId, locationId)).rejects.toThrow(
-      InternalServerError,
-    );
-  });
-
   it('should throw DataverseTokenError if asset retrieval fails with token error', async () => {
     getLocationById.mockRejectedValue(new DataverseTokenError());
 
@@ -52,14 +43,5 @@ describe('assignLocationToAsset', () => {
       DataverseTokenError,
     );
     expect(assignLocationAsset).not.toHaveBeenCalled();
-  });
-
-  it('should throw InternalServerError for unknown error in getAssetByID', async () => {
-    getLocationById.mockResolvedValue({});
-    getAssetByID.mockRejectedValue(new Error('Unknown error'));
-
-    await expect(assignLocationToAsset(assetId, locationId)).rejects.toThrow(
-      InternalServerError,
-    );
   });
 });

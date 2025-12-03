@@ -15,7 +15,7 @@ export async function assignLocationAsset(assetId, locationId) {
       error instanceof InternalServerError ||
       error instanceof DataverseTokenError
     ) {
-      console.log(`Encounted error: ${error.message}`);
+      console.error('Encountered error:', error.message);
       throw error;
     }
 
