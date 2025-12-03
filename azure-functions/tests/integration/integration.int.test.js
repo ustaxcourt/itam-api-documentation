@@ -133,6 +133,32 @@ describe('Integration testing for ITAM Project', () => {
 
   //location endpoint
 
+  it('DELETE Location - should display proper assignment information in query after new unassignment', async () => {
+    const unassignRes = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/location/${existingLocationId}`,
+      {
+        method: 'DELETE',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+    expect(unassignRes.status).toBe(200);
+    const res = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
+      method: 'GET',
+      headers: { Authorization: 'Bearer mocked-token' },
+    });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body).toHaveProperty('message', 'Success');
+    expect(body.data).toHaveProperty('activation');
+    expect(body.data).toHaveProperty('assetName');
+    expect(body.data).toHaveProperty('itemStatus');
+    expect(body.data).toHaveProperty('osVersion');
+    expect(body.data).toHaveProperty('phone');
+    expect(body.data).toHaveProperty('user');
+    expect(body.data).toHaveProperty('location');
+    expect(body.data.location).toBeNull();
+  });
+
   it('POST Location - should assign a location successfully', async () => {
     //get and save current location
     let result = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
