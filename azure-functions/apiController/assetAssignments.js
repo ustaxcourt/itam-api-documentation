@@ -3,6 +3,7 @@ import { buildResponse } from './buildResponse.js';
 import { assignAssetToUser } from '../useCases/assignAssetToUser.js';
 import { unassignAsset } from '../useCases/unassignAsset.js';
 import { BadRequest } from '../errors/BadRequest.js';
+import { NotFoundError } from '../errors/NotFoundError.js';
 
 export async function assignmentsHandler(request, context) {
   try {
@@ -33,6 +34,10 @@ export async function assignmentsHandler(request, context) {
 
     if (error instanceof BadRequest) {
       return buildResponse(error.statusCode, error.message);
+    }
+
+    if (error instanceof NotFoundError) {
+      return buildResponse(404, error.message);
     }
 
     const status = error.response?.status || 500;
