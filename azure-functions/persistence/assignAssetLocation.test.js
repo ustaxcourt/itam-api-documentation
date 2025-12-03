@@ -9,10 +9,19 @@ describe('assignLocationAsset', () => {
   const DATAVERSE_URL = 'https://example.com';
   const assetId = 'asset123';
   const locationId = 'location456';
+  let originalEnv;
+
+  beforeAll(() => {
+    originalEnv = process.env.DATAVERSE_URL;
+  });
 
   beforeEach(() => {
     process.env.DATAVERSE_URL = DATAVERSE_URL;
     jest.resetAllMocks();
+  });
+
+  afterAll(() => {
+    process.env.DATAVERSE_URL = originalEnv;
   });
 
   it('should call dataverseCall with correct URL, method, and body', async () => {

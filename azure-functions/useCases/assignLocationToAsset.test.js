@@ -56,10 +56,10 @@ describe('locationAssignmentsHandler', () => {
 
   it('should handle BadRequest when Asset ID is not found', async () => {
     assignLocationToAsset.mockRejectedValue(
-      new NotFoundError('Asset ID not found'),
+      new NotFoundError(`No location found for ID: asset123`),
     );
     await expect(
       assignLocationToAsset('asset123', 'invalidLoc'),
-    ).rejects.toThrow('Asset ID not found');
+    ).rejects.toThrow('No location found for ID: asset123');
   });
 });

@@ -1,4 +1,4 @@
-//import { getIdOfRowInTableByColumnValue } from "../../persistence/getIdOfRowInTableByColumnValue.js";
+//import { getLocationByName } from "../../persistence/getLocationByName.js";
 
 const baseUrl = 'http://localhost:7071';
 const existingAssetId = '6aa09331-b7b9-f011-bbd2-000d3a56dc3a';
@@ -7,7 +7,7 @@ const existingUserId = 'c0181fd9-fdc4-4578-945d-aaae011feec7';
 const nonExistentUserId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
 const existingLocationId = '04d494f4-b5b9-f011-bbd2-000d3a56dc3a';
 const existingLocationName = '109';
-const nonExistentLocationId = 'ffffffff-ffff-ffff-ffff-ffffffffffes';
+const nonExistentLocationId = '04d494f4-b5b9-f011-bbd2-000d3a56dc3b';
 
 describe('Integration testing for ITAM Project', () => {
   it('should fetch an existing asset successfully', async () => {
@@ -141,7 +141,7 @@ describe('Integration testing for ITAM Project', () => {
     });
     expect(result.status).toBe(200);
     let body = await result.json();
-    //const currentLocationId = await getIdOfRowInTableByColumnValue("crf7f_fac_asset_ref_locations", "crf7f_name", body.data.location);
+    //const currentLocationId = await getLocationByName({ locationname: body.data.location });
 
     //run call to change location
     result = await fetch(
@@ -163,19 +163,20 @@ describe('Integration testing for ITAM Project', () => {
     expect(result.status).toBe(200);
     body = await result.json();
     expect(body.data.location).toBe(existingLocationName);
+
+    //change back location to original - for future
     /*
-        //change back location to original
-        result = await fetch(
-          `${baseUrl}/api/v1/assets/${existingAssetId}/location/${currentLocationId}`,
-          {
-            method: 'POST',
-            headers: { Authorization: 'Bearer mocked-token' },
-          },
-        );
-        expect(result.status).toBe(200);
-        body = await result.json();
-        expect(body).toHaveProperty('message', 'Successfully assigned location');
-        */
+    result = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/location/${currentLocationId}`,
+      {
+        method: 'POST',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+    expect(result.status).toBe(200);
+    body = await result.json();
+    expect(body).toHaveProperty('message', 'Successfully assigned location');
+    */
   });
 
   it('POST Location - should return 404 when assigning for a non-existent asset', async () => {
@@ -188,7 +189,7 @@ describe('Integration testing for ITAM Project', () => {
     );
     expect(res.status).toBe(404);
     const body = await res.json();
-    expect(body.message).toBe(`Asset ID not found`);
+    expect(body.message).toBe(`No asset found for ID: ${nonExistentAssetId}`);
   });
 
   it('POST Location - should return 404 when trying to assign a location that does not exist', async () => {
@@ -201,6 +202,8 @@ describe('Integration testing for ITAM Project', () => {
     );
     expect(res.status).toBe(404);
     const body = await res.json();
-    expect(body.message).toBe(`Location ID not found`);
+    expect(body.message).toBe(
+      `No location found for ID: ${nonExistentLocationId}`,
+    );
   });
 });
