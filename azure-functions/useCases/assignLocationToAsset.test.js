@@ -1,65 +1,65 @@
-import { locationAssignmentsHandler } from '../apiController/locationAssignment.js';
-import { assignLocationToAsset } from '../useCases/assignLocationToAsset.js';
-import { buildResponse } from '../apiController/buildResponse.js';
+import { assignLocationToAsset } from './assignLocationToAsset.js';
+import { InternalServerError } from '../errors/InternalServerError.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
+import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 
-jest.mock('../useCases/assignLocationToAsset.js');
-jest.mock('../apiController/buildResponse.js');
+import { assignLocationAsset } from '../persistence/assignAssetLocation.js';
+import { getLocationById } from '../persistence/getLocationById.js';
+import { getAssetByID } from '../persistence/getAssetByID.js';
 
-describe('locationAssignmentsHandler', () => {
-  let context;
+jest.mock('../persistence/assignAssetLocation.js');
+jest.mock('../persistence/getLocationById.js');
+jest.mock('../persistence/getAssetByID.js');
+
+describe('assignLocationToAsset', () => {
+  const assetId = 'asset123';
+  const locationId = 'location456';
 
   beforeEach(() => {
-    context = { error: jest.fn() };
     jest.clearAllMocks();
   });
 
-  it('should return success when location is assigned', async () => {
-    assignLocationToAsset.mockResolvedValue();
-    buildResponse.mockReturnValueOnce({ status: 200, body: 'mocked response' });
+  it('should call getLocationById, getAssetByID, and assignLocationAsset successfully', async () => {
+    await assignLocationToAsset(assetId, locationId);
 
-    const request = {
-      method: 'POST',
-      params: { assetid: 'asset123', locationid: 'loc456' },
-    };
-
-    const result = await locationAssignmentsHandler(request, context);
-
-    expect(assignLocationToAsset).toHaveBeenCalledWith('asset123', 'loc456');
-    expect(buildResponse).toHaveBeenCalledWith(
-      200,
-      'Successfully assigned location',
-      'asset123',
-    );
-    expect(result).toEqual({ status: 200, body: 'mocked response' });
-    expect(context.error).not.toHaveBeenCalled();
+    expect(getLocationById).toHaveBeenCalledWith(locationId);
+    expect(getAssetByID).toHaveBeenCalledWith(assetId);
+    expect(assignLocationAsset).toHaveBeenCalledWith(assetId, locationId);
   });
 
-  it('should return error for invalid method', async () => {
-    buildResponse.mockReturnValueOnce({
-      status: 400,
-      body: 'Invalid REST Method',
-    });
+  it('should throw NotFoundError if location is not found', async () => {
+    getLocationById.mockRejectedValue(new NotFoundError());
 
-    const request = {
-      method: 'GET',
-      params: { assetid: 'asset123', locationid: 'loc456' },
-    };
-
-    const result = await locationAssignmentsHandler(request, context);
-
-    expect(assignLocationToAsset).not.toHaveBeenCalled();
-    expect(context.error).toHaveBeenCalled();
-    expect(buildResponse).toHaveBeenCalledWith(400, 'Invalid REST Method');
-    expect(result).toEqual({ status: 400, body: 'Invalid REST Method' });
+    await expect(assignLocationToAsset(assetId, locationId)).rejects.toThrow(
+      NotFoundError,
+    );
+    expect(getAssetByID).not.toHaveBeenCalled();
+    expect(assignLocationAsset).not.toHaveBeenCalled();
   });
 
-  it('should handle BadRequest when Asset ID is not found', async () => {
-    assignLocationToAsset.mockRejectedValue(
-      new NotFoundError(`No location found for ID: asset123`),
+  it('should throw InternalServerError for unknown error in getLocationById', async () => {
+    getLocationById.mockRejectedValue(new Error('Unknown error'));
+
+    await expect(assignLocationToAsset(assetId, locationId)).rejects.toThrow(
+      InternalServerError,
     );
-    await expect(
-      assignLocationToAsset('asset123', 'invalidLoc'),
-    ).rejects.toThrow('No location found for ID: asset123');
+  });
+
+  it('should throw DataverseTokenError if asset retrieval fails with token error', async () => {
+    getLocationById.mockRejectedValue(new DataverseTokenError());
+
+    await expect(assignLocationToAsset(assetId, locationId)).rejects.toThrow(
+      DataverseTokenError,
+    );
+    expect(assignLocationAsset).not.toHaveBeenCalled();
+  });
+
+  it('should throw InternalServerError for unknown error in getAssetByID', async () => {
+    getLocationById.mockResolvedValue({});
+    getAssetByID.mockRejectedValue(new Error('Unknown error'));
+
+    await expect(assignLocationToAsset(assetId, locationId)).rejects.toThrow(
+      InternalServerError,
+    );
   });
 });

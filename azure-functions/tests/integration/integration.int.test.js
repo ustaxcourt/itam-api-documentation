@@ -188,6 +188,14 @@ describe('Integration testing for ITAM Project', () => {
     });
     expect(result.status).toBe(200);
     body = await result.json();
+    expect(body).toHaveProperty('message', 'Success');
+    expect(body.data).toHaveProperty('activation');
+    expect(body.data).toHaveProperty('assetName');
+    expect(body.data).toHaveProperty('itemStatus');
+    expect(body.data).toHaveProperty('osVersion');
+    expect(body.data).toHaveProperty('phone');
+    expect(body.data).toHaveProperty('user');
+    expect(body.data).toHaveProperty('location');
     expect(body.data.location).toBe(existingLocationName);
 
     //change back location to original - for future

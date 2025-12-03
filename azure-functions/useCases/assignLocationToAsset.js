@@ -10,12 +10,12 @@ export async function assignLocationToAsset(assetid, locationid) {
   try {
     await getLocationById(locationid);
   } catch (error) {
-    console.log(error);
     if (
       error instanceof InternalServerError ||
       error instanceof DataverseTokenError ||
       error instanceof NotFoundError
     ) {
+      console.log(error.message);
       throw error;
     } else {
       throw new InternalServerError('Server Error');
@@ -30,6 +30,7 @@ export async function assignLocationToAsset(assetid, locationid) {
       error instanceof DataverseTokenError ||
       error instanceof NotFoundError
     ) {
+      console.log(error.message);
       throw error;
     } else {
       throw new InternalServerError('Server Error');
