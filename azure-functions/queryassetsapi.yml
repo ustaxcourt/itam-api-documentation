@@ -330,3 +330,42 @@ paths:
               example:
                 message: "Unauthorized"
                 data: null
+
+  v1/users/email/{email}/assets:
+    get:
+      parameters:
+        - name: email
+          in: query
+          description: full email address of target user
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns all assets assigned to a user (empty array if none found)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                example:
+                  message: 'Success'
+                  data: []
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: 'Dataverse asset lookup failed: '
