@@ -154,7 +154,7 @@ paths:
           description: Guid of AssetId
           required: true
           schema:
-            type: string
+
         - name: userid
           in: query
           description: entra id of user
