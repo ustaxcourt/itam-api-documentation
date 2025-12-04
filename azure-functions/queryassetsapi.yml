@@ -188,14 +188,14 @@ paths:
             application/json:
               schema:
                 type: object
-              example:
-                message: "Unauthorized"
-                data: null
+            example:
+              message: "Unauthorized"
+              data: null
   /v1/assets/{assetid}/assignments/:
     delete:
-      parameters:
-        - name: assetid
-          in: query
+parameters:
+  - name: assetid
+    in: query
           description: Guid of AssetId
           required: true
           schema:
