@@ -331,7 +331,7 @@ paths:
                 message: 'Unauthorized'
                 data: null
 
-  v1/users/email/{email}/assets:
+  /v1/users/email/{email}/assets:
     get:
       parameters:
         - name: email
