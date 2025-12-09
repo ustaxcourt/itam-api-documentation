@@ -2,8 +2,22 @@ openapi: '3.0.3'
 info:
   title: Query Assets
   version: '1.0'
+
 servers:
   - url: /api
+
+components:
+  responses:
+    ForbiddenResponse:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+          example:
+            message: 'Unauthorized'
+            data: null
+
 paths:
   /v1/assets/{itemguid}:
     get:
@@ -32,52 +46,37 @@ paths:
                         type: boolean
                         nullable: true
                         example: null
-                        enum:
-                          - true
-                          - false
-                          - null
+                        enum: [true, false, null]
                       assetName:
                         type: string
                         example: 'HP EliteDisplay E241i #166'
-                        nullable: false
                       condition:
                         type: string
                         example: 'Good'
-                        nullable: false
-                        enum:
-                          - Excellent
-                          - Good
-                          - Poor
-                          - Garbage
-                          - Damaged
-                          - New
+                        enum: [Excellent, Good, Poor, Garbage, Damaged, New]
                       itemStatus:
                         type: string
                         example: 'Available'
-                        nullable: false
                         enum:
-                          - Assigned
-                          - Available
-                          - Kiosk
-                          - Recycled
-                          - Decommissioned
-                          - Repair
-                          - Inoperative
-                          - Unknown
-                          - Excess in Depot
+                          [
+                            Assigned,
+                            Available,
+                            Kiosk,
+                            Recycled,
+                            Decommissioned,
+                            Repair,
+                            Inoperative,
+                            Unknown,
+                            'Excess in Depot'
+                          ]
                       location:
                         type: string
-                        example: 'G47'
                         nullable: true
                       osVersion:
                         type: string
                         nullable: true
                         example: Windows 11 23H2
-                        enum:
-                          - Windows 11 23H2
-                          - Windows 11 24H2
-                          - Windows 10
-                          - null
+                        enum: [Windows 11 23H2, Windows 11 24H2, Windows 10, null]
                       phone:
                         type: string
                         nullable: true
@@ -107,7 +106,6 @@ paths:
                           name:
                             type: string
                             example: 'Matthew Hung'
-
                         nullable: true
 
         '401':
@@ -119,6 +117,7 @@ paths:
               example:
                 message: 'Missing client secret'
                 data: null
+
         '400':
           description: Bad Request
           content:
@@ -128,6 +127,7 @@ paths:
               example:
                 message: 'Dataverse query failed'
                 data: 'Request failed with status code 400'
+
         '404':
           description: Resource Not Found
           content:
@@ -137,30 +137,21 @@ paths:
               example:
                 message: 'Dataverse query failed'
                 data: null
+
         '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                message: 'Request failed with invalid authorization status code 403'
-                data: null
+          $ref: '#/components/responses/ForbiddenResponse'
+
   /v1/assets/{assetid}/assignments/{userid}:
     post:
       parameters:
         - name: assetid
           in: query
-          description: Guid of AssetId
           required: true
-          schema:
-            type: string
+          schema: { type: string }
         - name: userid
           in: query
-          description: entra id of user
           required: true
-          schema:
-            type: string
+          schema: { type: string }
 
       responses:
         '200':
@@ -172,6 +163,7 @@ paths:
                 example:
                   message: 'Successfully updated item assignment'
                   data: '77727f32-b7b9-f011-bbd3-7c1e52177972'
+
         '404':
           description: Not Found
           content:
@@ -183,23 +175,15 @@ paths:
                 data: null
 
         '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                message: 'Unauthorized'
-                data: null
+          $ref: '#/components/responses/ForbiddenResponse'
+
   /v1/assets/{assetid}/assignments/:
     delete:
       parameters:
         - name: assetid
           in: query
-          description: Guid of AssetId
           required: true
-          schema:
-            type: string
+          schema: { type: string }
 
       responses:
         '200':
@@ -211,10 +195,9 @@ paths:
                 properties:
                   message:
                     example: 'Successfully updated item assignment'
-                    description: 'Success message'
                   data:
                     example: '77727f32-b7b9-f011-bbd3-7c1e52177972'
-                    description: 'assetid'
+
         '404':
           description: Not Found
           content:
@@ -226,30 +209,19 @@ paths:
                 data: null
 
         '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                message: 'Unauthorized'
-                data: null
+          $ref: '#/components/responses/ForbiddenResponse'
 
   /v1/assets/{assetid}/location/{locationId}:
     post:
       parameters:
         - name: assetid
           in: query
-          description: Guid of AssetId
           required: true
-          schema:
-            type: string
+          schema: { type: string }
         - name: locationId
           in: query
-          description: Id of Location
           required: true
-          schema:
-            type: string
+          schema: { type: string }
 
       responses:
         '200':
@@ -261,10 +233,8 @@ paths:
                 properties:
                   message:
                     example: 'Successfully assigned location'
-                    description: 'Success message'
                   data:
                     example: '77727f32-b7b9-f011-bbd3-7c1e52177972'
-                    description: 'assetid'
 
         '404':
           description: Not Found
@@ -277,24 +247,15 @@ paths:
                 data: null
 
         '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                message: 'Unauthorized'
-                data: null
+          $ref: '#/components/responses/ForbiddenResponse'
 
   /v1/assets/{assetid}/location/:
     delete:
       parameters:
         - name: assetid
           in: query
-          description: Guid of AssetId
           required: true
-          schema:
-            type: string
+          schema: { type: string }
 
       responses:
         '200':
@@ -306,10 +267,8 @@ paths:
                 properties:
                   message:
                     example: 'Successfully unassigned location'
-                    description: 'Success message'
                   data:
                     example: '77727f32-b7b9-f011-bbd3-7c1e52177972'
-                    description: 'assetid'
 
         '404':
           description: Not Found
@@ -318,54 +277,4 @@ paths:
               schema:
                 type: object
               example:
-                message: 'No location found for ID: {locationid}'
-                data: null
-
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                message: 'Unauthorized'
-                data: null
-
-  /v1/users/email/{email}/assets:
-    get:
-      parameters:
-        - name: email
-          in: query
-          description: full email address of target user
-          required: true
-          schema:
-            type: string
-
-      responses:
-        '200':
-          description: Returns all assets assigned to a user (empty array if none found)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  data:
-                    type: array
-                    items:
-                      type: object
-                example:
-                  message: 'Success'
-                  data: []
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: 'Dataverse asset lookup failed: '
+                message: 'No location
