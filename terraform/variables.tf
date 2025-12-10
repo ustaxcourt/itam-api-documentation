@@ -1,3 +1,8 @@
+variable "env" {
+  description = "Environment name (e.g., test, prod)"
+  type        = string
+}
+
 variable "resource_group_name" {
   description = "Name of the existing Azure resource group"
   type        = string
