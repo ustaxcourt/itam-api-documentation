@@ -67,7 +67,7 @@ paths:
                             Repair,
                             Inoperative,
                             Unknown,
-                            'Excess in Depot'
+                            'Excess in Depot',
                           ]
                       location:
                         type: string
@@ -76,7 +76,8 @@ paths:
                         type: string
                         nullable: true
                         example: Windows 11 23H2
-                        enum: [Windows 11 23H2, Windows 11 24H2, Windows 10, null]
+                        enum:
+                          [Windows 11 23H2, Windows 11 24H2, Windows 10, null]
                       phone:
                         type: string
                         nullable: true
@@ -277,4 +278,46 @@ paths:
               schema:
                 type: object
               example:
-                message: 'No location
+                message: 'No location found for ID: {locationid}'
+                data: null
+
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+
+  /v1/users/email/{email}/assets:
+    get:
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema: { type: string }
+
+      responses:
+        '200':
+          description: Returns all assets assigned to a user (empty array if none found)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                example:
+                  message: 'Success'
+                  data: []
+
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: 'Dataverse asset lookup failed: '
