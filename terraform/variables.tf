@@ -24,13 +24,18 @@ variable "subscription_id" {
   sensitive   = true
 }
 
-variable "client_id" {
-  description = "Azure AD Application (Client) ID for OAuth"
+variable "auth_client_id" {
+  description = "Authentication app client ID"
   type        = string
 }
 
-variable "tenant_id" {
-  description = "Azure AD Tenant ID"
+variable "dataverse_client_id" {
+  description = "Dataverse app client ID"
+  type        = string
+}
+
+variable "dataverse_tenant_id" {
+  description = "Dataverse app tenant ID"
   type        = string
 }
 
