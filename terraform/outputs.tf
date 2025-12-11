@@ -55,7 +55,7 @@ output "function_auth_redirect_uris" {
   value       = azuread_application.function_auth_app.web[0].redirect_uris
 }
 
-output "function_auth_tenant_id" {
-  description = "Tenant ID used for the Function Auth App Registration"
-  value       = var.auth_tenant_id
+output "all_tenant_id" {
+  description = "Tenant ID used for all of our applications"
+  value       = var.all_tenant_id
 }

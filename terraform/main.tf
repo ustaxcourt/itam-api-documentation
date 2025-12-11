@@ -58,7 +58,7 @@ resource "azurerm_linux_function_app" "function" {
     # These are the environment variables within the azure function app
     STORAGE_ACCOUNT_NAME                     = data.azurerm_storage_account.storage.name
     CLIENT_ID                                = var.dataverse_client_id
-    TENANT_ID                                = var.dataverse_tenant_id
+    TENANT_ID                                = var.all_tenant_id
     SCOPE                                    = var.scope
     DATAVERSE_URL                            = var.dataverse_url
     DATAVERSE_INTERNAL                       = var.dataverse_internal

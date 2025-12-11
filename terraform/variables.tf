@@ -34,11 +34,6 @@ variable "dataverse_client_id" {
   type        = string
 }
 
-variable "dataverse_tenant_id" {
-  description = "Dataverse app tenant ID"
-  type        = string
-}
-
 variable "scope" {
   description = "Azure App Registry Scope Environment Variable for Dataverse App"
   type        = string
@@ -49,8 +44,8 @@ variable "dataverse_url" {
   type        = string
 }
 
-variable "auth_tenant_id" {
-  description = "Tenant ID for the authentication App Registration"
+variable "all_tenant_id" {
+  description = "Tenant ID for everything since everything is under one tenant"
   type        = string
 }
 

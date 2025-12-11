@@ -1,8 +1,3 @@
-# We are using a separate tenant for the authentication provider
-provider "azuread" {
-  tenant_id = var.auth_tenant_id
-}
-
 resource "azuread_application" "function_auth_app" {
   display_name     = "${var.function_app_name}-authentication"
   identifier_uris  = [var.auth_identifier_uri]
