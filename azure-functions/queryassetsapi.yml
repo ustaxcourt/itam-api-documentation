@@ -8,7 +8,38 @@ servers:
 
 components:
   responses:
-    ForbiddenResponse:
+    SuccessResponse:
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data: {}
+
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+          example:
+            message: 'Dataverse query failed'
+            data: 'Request failed with status code 400'
+
+    Unauthorized:
+      description: Unauthorized – Authentication required
+      content:
+        application/json:
+          schema:
+            type: object
+          example:
+            message: 'Missing client secret'
+            data: null
+
+    Forbidden:
       description: Forbidden
       content:
         application/json:
@@ -18,129 +49,51 @@ components:
             message: 'Unauthorized'
             data: null
 
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+          example:
+            message: 'Resource not found'
+            data: null
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+          example:
+            message: 'Dataverse asset lookup failed'
+            data: null
+
 paths:
   /v1/assets/{itemguid}:
     get:
       parameters:
         - name: guid
           in: query
-          description: Guid of AssetId
           required: true
           schema:
             type: string
 
       responses:
         '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    example: 'Success'
-                  data:
+          allOf:
+            - $ref: '#/components/responses/SuccessResponse'
+            - content:
+                application/json:
+                  schema:
                     type: object
                     properties:
-                      activation:
-                        type: boolean
-                        nullable: true
-                        example: null
-                        enum: [true, false, null]
-                      assetName:
-                        type: string
-                        example: 'HP EliteDisplay E241i #166'
-                      condition:
-                        type: string
-                        example: 'Good'
-                        enum: [Excellent, Good, Poor, Garbage, Damaged, New]
-                      itemStatus:
-                        type: string
-                        example: 'Available'
-                        enum:
-                          [
-                            Assigned,
-                            Available,
-                            Kiosk,
-                            Recycled,
-                            Decommissioned,
-                            Repair,
-                            Inoperative,
-                            Unknown,
-                            'Excess in Depot',
-                          ]
-                      location:
-                        type: string
-                        nullable: true
-                      osVersion:
-                        type: string
-                        nullable: true
-                        example: Windows 11 23H2
-                        enum:
-                          [Windows 11 23H2, Windows 11 24H2, Windows 10, null]
-                      phone:
-                        type: string
-                        nullable: true
-                        example: null
-                      user:
+                      data:
                         type: object
-                        properties:
-                          email:
-                            type: string
-                            format: email
-                            example: 'matthew.hung@example.com'
-                          isActive:
-                            type: boolean
-                            example: true
-                          isContractor:
-                            type: boolean
-                            example: true
-                          phone:
-                            type: string
-                            example: '+1-555-123-4567'
-                          jobTitle:
-                            type: string
-                            example: 'Office 365 Engineer'
-                          location:
-                            type: string
-                            example: 'Arden, California'
-                          name:
-                            type: string
-                            example: 'Matthew Hung'
-                        nullable: true
-
-        '401':
-          description: Unauthorized – Authentication required
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                message: 'Missing client secret'
-                data: null
-
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                message: 'Dataverse query failed'
-                data: 'Request failed with status code 400'
-
-        '404':
-          description: Resource Not Found
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                message: 'Dataverse query failed'
-                data: null
-
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
 
   /v1/assets/{assetid}/assignments/{userid}:
     post:
@@ -156,29 +109,19 @@ paths:
 
       responses:
         '200':
-          description: Successful update
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: 'Successfully updated item assignment'
-                  data: '77727f32-b7b9-f011-bbd3-7c1e52177972'
+          allOf:
+            - $ref: '#/components/responses/SuccessResponse'
+            - content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: string
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
 
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                message: 'Unable to update assignment due to invalid assetid or userid'
-                data: null
-
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-
-  /v1/assets/{assetid}/assignments/:
+  /v1/assets/{assetid}/assignments:
     delete:
       parameters:
         - name: assetid
@@ -188,29 +131,17 @@ paths:
 
       responses:
         '200':
-          description: Successful update
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    example: 'Successfully updated item assignment'
-                  data:
-                    example: '77727f32-b7b9-f011-bbd3-7c1e52177972'
-
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                message: 'Unable to update assignment due to invalid assetid or userid'
-                data: null
-
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
+          allOf:
+            - $ref: '#/components/responses/SuccessResponse'
+            - content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: string
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
 
   /v1/assets/{assetid}/location/{locationId}:
     post:
@@ -226,31 +157,19 @@ paths:
 
       responses:
         '200':
-          description: Successful update
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    example: 'Successfully assigned location'
-                  data:
-                    example: '77727f32-b7b9-f011-bbd3-7c1e52177972'
+          allOf:
+            - $ref: '#/components/responses/SuccessResponse'
+            - content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: string
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
 
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                message: 'No location found for ID: {locationid}'
-                data: null
-
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-
-  /v1/assets/{assetid}/location/:
+  /v1/assets/{assetid}/location:
     delete:
       parameters:
         - name: assetid
@@ -260,29 +179,17 @@ paths:
 
       responses:
         '200':
-          description: Successful update
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    example: 'Successfully unassigned location'
-                  data:
-                    example: '77727f32-b7b9-f011-bbd3-7c1e52177972'
-
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                message: 'No location found for ID: {locationid}'
-                data: null
-
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
+          allOf:
+            - $ref: '#/components/responses/SuccessResponse'
+            - content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: string
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
 
   /v1/users/email/{email}/assets:
     get:
@@ -294,30 +201,15 @@ paths:
 
       responses:
         '200':
-          description: Returns all assets assigned to a user (empty array if none found)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  data:
-                    type: array
-                    items:
-                      type: object
-                example:
-                  message: 'Success'
-                  data: []
-
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: 'Dataverse asset lookup failed: '
+          allOf:
+            - $ref: '#/components/responses/SuccessResponse'
+            - content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+        '500': { $ref: '#/components/responses/InternalServerError' }
