@@ -8,23 +8,12 @@ servers:
 
 components:
   responses:
-    SuccessResponse:
-      description: Successful request
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-              data: {}
-
     BadRequest:
       description: Bad Request
       content:
         application/json:
           schema:
-            type: object
+            $ref: '#/components/schemas/ApiResponse'
           example:
             message: 'Dataverse query failed'
             data: 'Request failed with status code 400'
@@ -34,7 +23,7 @@ components:
       content:
         application/json:
           schema:
-            type: object
+            $ref: '#/components/schemas/ApiResponse'
           example:
             message: 'Missing client secret'
             data: null
@@ -44,7 +33,7 @@ components:
       content:
         application/json:
           schema:
-            type: object
+            $ref: '#/components/schemas/ApiResponse'
           example:
             message: 'Unauthorized'
             data: null
@@ -54,7 +43,7 @@ components:
       content:
         application/json:
           schema:
-            type: object
+            $ref: '#/components/schemas/ApiResponse'
           example:
             message: 'Resource not found'
             data: null
@@ -64,32 +53,97 @@ components:
       content:
         application/json:
           schema:
-            type: object
+            $ref: '#/components/schemas/ApiResponse'
           example:
             message: 'Dataverse asset lookup failed'
             data: null
+
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        data:
+          nullable: true
+
+    Asset:
+      type: object
+      properties:
+        activation:
+          type: boolean
+          nullable: true
+        assetName:
+          type: string
+        condition:
+          type: string
+          enum: [Excellent, Good, Poor, Garbage, Damaged, New]
+        itemStatus:
+          type: string
+          enum:
+            [
+              Assigned,
+              Available,
+              Kiosk,
+              Recycled,
+              Decommissioned,
+              Repair,
+              Inoperative,
+              Unknown,
+              'Excess in Depot',
+            ]
+        location:
+          type: string
+          nullable: true
+        osVersion:
+          type: string
+          nullable: true
+          enum: [Windows 11 23H2, Windows 11 24H2, Windows 10]
+        phone:
+          type: string
+          nullable: true
+        user:
+          type: object
+          nullable: true
+          properties:
+            email:
+              type: string
+              format: email
+            isActive:
+              type: boolean
+            isContractor:
+              type: boolean
+            phone:
+              type: string
+              nullable: true
+            jobTitle:
+              type: string
+            location:
+              type: string
+            name:
+              type: string
 
 paths:
   /v1/assets/{itemguid}:
     get:
       parameters:
-        - name: guid
-          in: query
+        - name: itemguid
+          in: path
           required: true
           schema:
             type: string
-
       responses:
         '200':
-          allOf:
-            - $ref: '#/components/responses/SuccessResponse'
-            - content:
-                application/json:
-                  schema:
-                    type: object
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
                     properties:
                       data:
-                        type: object
+                        $ref: '#/components/schemas/Asset'
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
@@ -99,22 +153,22 @@ paths:
     post:
       parameters:
         - name: assetid
-          in: query
+          in: path
           required: true
           schema: { type: string }
         - name: userid
-          in: query
+          in: path
           required: true
           schema: { type: string }
-
       responses:
         '200':
-          allOf:
-            - $ref: '#/components/responses/SuccessResponse'
-            - content:
-                application/json:
-                  schema:
-                    type: object
+          description: Successful update
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
                     properties:
                       data:
                         type: string
@@ -125,18 +179,18 @@ paths:
     delete:
       parameters:
         - name: assetid
-          in: query
+          in: path
           required: true
           schema: { type: string }
-
       responses:
         '200':
-          allOf:
-            - $ref: '#/components/responses/SuccessResponse'
-            - content:
-                application/json:
-                  schema:
-                    type: object
+          description: Successful update
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
                     properties:
                       data:
                         type: string
@@ -147,22 +201,22 @@ paths:
     post:
       parameters:
         - name: assetid
-          in: query
+          in: path
           required: true
           schema: { type: string }
         - name: locationId
-          in: query
+          in: path
           required: true
           schema: { type: string }
-
       responses:
         '200':
-          allOf:
-            - $ref: '#/components/responses/SuccessResponse'
-            - content:
-                application/json:
-                  schema:
-                    type: object
+          description: Successful update
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
                     properties:
                       data:
                         type: string
@@ -173,18 +227,18 @@ paths:
     delete:
       parameters:
         - name: assetid
-          in: query
+          in: path
           required: true
           schema: { type: string }
-
       responses:
         '200':
-          allOf:
-            - $ref: '#/components/responses/SuccessResponse'
-            - content:
-                application/json:
-                  schema:
-                    type: object
+          description: Successful update
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
                     properties:
                       data:
                         type: string
@@ -195,21 +249,21 @@ paths:
     get:
       parameters:
         - name: email
-          in: query
+          in: path
           required: true
           schema: { type: string }
-
       responses:
         '200':
-          allOf:
-            - $ref: '#/components/responses/SuccessResponse'
-            - content:
-                application/json:
-                  schema:
-                    type: object
+          description: Returns all assets assigned to a user
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          type: object
+                          $ref: '#/components/schemas/Asset'
         '500': { $ref: '#/components/responses/InternalServerError' }
