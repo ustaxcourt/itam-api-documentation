@@ -77,7 +77,7 @@ resource "azurerm_linux_function_app" "function" {
       client_secret_setting_name = "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
       allowed_applications       = [azuread_application.function_auth_app.client_id]
       allowed_audiences          = ["api://${azuread_application.function_auth_app.client_id}"]
-      tenant_auth_endpoint       = "https://sts.windows.net/${var.auth_tenant_id}/v2.0"
+      tenant_auth_endpoint       = "https://sts.windows.net/${var.all_tenant_id}/v2.0"
     }
 
     login {
