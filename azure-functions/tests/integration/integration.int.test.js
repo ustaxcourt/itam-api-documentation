@@ -1,10 +1,10 @@
 const baseUrl = 'http://localhost:7071';
-const existingAssetId = '6aa09331-b7b9-f011-bbd2-000d3a56dc3a';
+const existingAssetId = '8d204fa8-69d7-f011-8543-000d3a5928e0';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
-const existingUserId = 'c0181fd9-fdc4-4578-945d-aaae011feec7';
+const existingUserId = '6041809b-69d7-f011-8544-000d3a5b5036';
 const nonExistentUserId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
-const existingLocationId = '04d494f4-b5b9-f011-bbd2-000d3a56dc3a';
-const existingLocationName = '109';
+const existingLocationId = 'df164d9a-69d7-f011-8544-000d3a35fa12';
+const existingLocationName = 'San Francisco';
 const nonExistentLocationId = '04d494f4-b5b9-f011-bbd2-000d3a56dc3b';
 
 describe('Integration testing for ITAM Project', () => {
