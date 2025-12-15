@@ -1,7 +1,7 @@
 const baseUrl = 'http://localhost:7071';
 const existingAssetId = '8d204fa8-69d7-f011-8543-000d3a5928e0';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
-const existingUserId = '6041809b-69d7-f011-8544-000d3a5b5036';
+const existingUserId = '2c5d33ef-d4f3-4574-b49a-69e376ee43bb';
 const nonExistentUserId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
 const existingLocationId = 'df164d9a-69d7-f011-8544-000d3a35fa12';
 const existingLocationName = 'San Francisco';
