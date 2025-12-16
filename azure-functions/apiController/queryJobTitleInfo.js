@@ -9,7 +9,7 @@ export async function jobTitleHandler(request, context) {
     const jobTitleId = request.params.jobTitleID;
 
     if (!jobTitleId) {
-      throw new BadRequest('Missing JobTitle ID');
+      throw new BadRequest('Missing Job title ID');
     }
 
     if (request.method === 'GET') {
@@ -18,7 +18,7 @@ export async function jobTitleHandler(request, context) {
       throw new BadRequest('Invalid REST Method');
     }
 
-    return buildResponse(200, 'Successfully queried jobTitle', data);
+    return buildResponse(200, 'Successfully queried job title', data);
   } catch (error) {
     context.error(
       'Unable to update assignments',
