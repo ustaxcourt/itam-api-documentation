@@ -1,6 +1,5 @@
 import { dataverseCall } from './dataverseCall.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
-import { reorderResponseObject } from './reorderResponse.js';
 
 export async function getDataverseJobTitle(id) {
   // Build Dataverse query URL
@@ -14,26 +13,5 @@ export async function getDataverseJobTitle(id) {
     throw new NotFoundError(`No jobtitleID found for ID: ${id}`);
   }
 
-  // Normalize data
-
-  let responseexpect = {
-    ItemName: 'crf7f_ReferenceModel.crf7f_name',
-    minimumquanitity: 'crf7f_JobTitleAssetType.crf7f_minimumquanitity',
-    MaximumQuantity: 'crf7f_JobTitleAssetType.crf7f_maximumquantity',
-    JobTitle: 'crf7f_JobTitleAssetType.crf7f_JobTitle.crf7f_title',
-    AssetType: 'crf7f_JobTitleAssetType.crf7f_AssetType.crf7f_name',
-  };
-
-  const results = [];
-
-  if (Array.isArray(response.value)) {
-    for (const item of response.value) {
-      const result = await reorderResponseObject(item, responseexpect);
-      results.push(result);
-    }
-  } else {
-    return await reorderResponseObject(response.value[0], responseexpect);
-  }
-
-  return results;
+  return response;
 }
