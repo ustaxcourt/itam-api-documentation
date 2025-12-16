@@ -1,8 +1,3 @@
-provider "azurerm" {
-  features {}
-  subscription_id = var.subscription_id
-}
-
 # Reference existing resource group
 data "azurerm_resource_group" "rg" {
   name = var.resource_group_name
