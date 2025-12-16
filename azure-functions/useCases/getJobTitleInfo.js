@@ -9,11 +9,12 @@ export async function getJobTitleInfo(jobTitleId) {
   response = await getDataverseJobTitle(jobTitleId);
 
   let responseexpect = {
-    ItemName: 'crf7f_ReferenceModel.crf7f_name',
-    minimumquanitity: 'crf7f_JobTitleAssetType.crf7f_minimumquanitity',
-    MaximumQuantity: 'crf7f_JobTitleAssetType.crf7f_maximumquantity',
-    JobTitle: 'crf7f_JobTitleAssetType.crf7f_JobTitle.crf7f_title',
-    AssetType: 'crf7f_JobTitleAssetType.crf7f_AssetType.crf7f_name',
+    itemName: 'crf7f_ReferenceModel.crf7f_name',
+    minimumQuantity: 'crf7f_JobTitleAssetType.crf7f_minimumquanitity',
+    maximumQuantity: 'crf7f_JobTitleAssetType.crf7f_maximumquantity',
+    jobTitle: 'crf7f_JobTitleAssetType.crf7f_JobTitle.crf7f_title',
+    assetType: 'crf7f_JobTitleAssetType.crf7f_AssetType.crf7f_name',
+    modelMaximum: 'crf7f_modelmaximum',
   };
 
   results = [];

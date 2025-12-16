@@ -2,31 +2,37 @@ export async function restructureJobTitles(data) {
   const result = {};
 
   data.forEach(item => {
-    const { JobTitle, AssetType, minimumquanitity, MaximumQuantity, ItemName } =
-      item;
+    const {
+      jobTitle,
+      assetType,
+      minimumQuantity,
+      maximumQuantity,
+      itemName,
+      modelMaximum,
+    } = item;
 
     // Ensure JobTitle exists
-    if (!result[JobTitle]) {
-      result[JobTitle] = { 'Required Items': [] };
+    if (!result[jobTitle]) {
+      result[jobTitle] = { requiredItems: [] };
     }
 
     // Check if AssetType already exists in the Required Items array
-    let assetObj = result[JobTitle]['Required Items'].find(
-      obj => obj.AssetType === AssetType,
+    let assetObj = result[jobTitle]['requiredItems'].find(
+      obj => obj.assetType === assetType,
     );
 
     if (!assetObj) {
       assetObj = {
-        AssetType: AssetType,
-        minimumquanitity: minimumquanitity,
-        MaximumQuantity: MaximumQuantity,
+        assetType: assetType,
+        minimumQuantity: minimumQuantity,
+        maximumQuantity: maximumQuantity,
         Items: [],
       };
-      result[JobTitle]['Required Items'].push(assetObj);
+      result[jobTitle]['requiredItems'].push(assetObj);
     }
 
     // Add ItemName to Items array
-    assetObj.Items.push(ItemName);
+    assetObj.Items.push({ itemName: itemName, itemMaximum: modelMaximum });
   });
 
   return result;
