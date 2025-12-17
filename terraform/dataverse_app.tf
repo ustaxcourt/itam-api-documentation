@@ -1,18 +1,21 @@
-# Existing Dataverse App Registration
+# Dataverse App Registration
 resource "azuread_application" "dataverse_app" {
-  display_name     = var.dataverse_app_display_name
+  # Unique display name per environment
+  display_name     = "${var.dataverse_app_display_name}-${var.env}"
   sign_in_audience = var.dataverse_sign_in_audience
-  identifier_uris  = var.dataverse_identifier_uris
+
+  # Unique identifier URI per environment
+  identifier_uris  = ["api://${replace(lower(var.dataverse_app_display_name), " ", "-")}-${var.env}"]
 
   owners = var.dataverse_app_owners
 
-  # Expose API (Dataverse scope)
+  # Expose API (Dataverse scope - to be generated and unique per env)
   api {
     mapped_claims_enabled          = false
-    requested_access_token_version = 1
+    requested_access_token_version = 2
 
+    # Letting Entra ID generate the scope GUID (omitting 'id') for uniqueness per env
     oauth2_permission_scope {
-      id                         = var.dataverse_scope_id
       value                      = var.dataverse_scope_value
       type                       = "User"
       enabled                    = true
@@ -37,41 +40,27 @@ resource "azuread_application" "dataverse_app" {
   # Required resource access — Microsoft Graph
   required_resource_access {
     resource_app_id = var.graph_app_id
-
-    resource_access {
-      id   = var.graph_user_read_scope_id   # User.Read
-      type = "Scope"
-    }
-    resource_access {
-      id   = var.graph_openid_scope_id      # OpenID
-      type = "Scope"
-    }
+    resource_access { id = var.graph_user_read_scope_id, type = "Scope" } # User.Read
+    resource_access { id = var.graph_openid_scope_id,    type = "Scope" } # OpenID
   }
 
   # Required resource access — SharePoint Online
   required_resource_access {
     resource_app_id = var.sharepoint_app_id
-
     dynamic "resource_access" {
       for_each = var.sharepoint_resource_access_ids
-      content {
-        id   = resource_access.value.id
-        type = resource_access.value.type
-      }
+      content { id = resource_access.value.id, type = resource_access.value.type }
     }
   }
 
   # Required resource access — Custom API (entra connector)
   required_resource_access {
     resource_app_id = var.custom_api_app_id
-    resource_access {
-      id   = var.custom_api_scope_id
-      type = "Scope"
-    }
+    resource_access { id = var.custom_api_scope_id, type = "Scope" }
   }
 }
 
-# Existing Service Principal (Enterprise App) for Dataverse app
+# Service Principal (Enterprise App) for Dataverse app
 resource "azuread_service_principal" "dataverse_sp" {
   client_id = azuread_application.dataverse_app.client_id
 }

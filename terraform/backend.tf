@@ -1,10 +1,18 @@
 terraform {
-  backend "azurerm" {
-    resource_group_name   = "ustc-maz-rg-itam"
-    storage_account_name  = "eapps"
-    container_name        = "tfstate"
-    key                   = "itam-api/terraform.tfstate"
+  # Partial backend configuration approach - config based on env
+  backend "azurerm" {}
 
-    use_azuread_auth      = true
+  required_version = ">= 1.13.0"
+
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      # Matching current installed major/minor
+      version = "~> 4.46"
+    }
+    azuread = {
+      source  = "hashicorp/azuread"
+      version = "~> 3.6"
+    }
   }
 }

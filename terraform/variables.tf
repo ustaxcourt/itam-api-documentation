@@ -101,6 +101,7 @@ variable "dataverse_internal" {
 variable "auth_client_secret" {
   description = "Access value for authentication"
   type        = string
+  sensitive   = true
 }
 
 variable "auth_allowed_tenants" {
