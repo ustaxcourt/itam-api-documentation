@@ -254,7 +254,7 @@ describe('Integration testing for ITAM Project', () => {
     const body = await getTitleInfoResult.json();
     expect(body).toHaveProperty('message', 'Success');
     expect(body.data).toHaveProperty('requiredItems');
-    expect(body.data).toHaveProperty('JobTitle');
+    expect(body.data).toHaveProperty('jobTitle');
     expect(body.data.requiredItems[0]).toHaveProperty('assetType');
     expect(body.data.requiredItems[0]).toHaveProperty('minimumQuantity');
     expect(body.data.requiredItems[0]).toHaveProperty('maximumQuantity');

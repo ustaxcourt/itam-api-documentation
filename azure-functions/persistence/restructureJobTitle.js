@@ -1,6 +1,6 @@
 export async function restructureJobTitles(data) {
   const result = {
-    JobTitle: '', // Will hold the job title
+    jobTitle: '', // Will hold the job title
     requiredItems: [], // Will hold the asset list
   };
 
@@ -15,8 +15,8 @@ export async function restructureJobTitles(data) {
     } = item;
 
     // Set JobTitle once
-    if (!result.JobTitle) {
-      result.JobTitle = jobTitle;
+    if (!result.jobTitle) {
+      result.jobTitle = jobTitle;
     }
 
     // Check if AssetType already exists

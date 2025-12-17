@@ -31,7 +31,7 @@ describe('restructureJobTitles', () => {
 
     const result = await restructureJobTitles(data);
 
-    expect(result.JobTitle).toBe('Engineer');
+    expect(result.jobTitle).toBe('Engineer');
     expect(result.requiredItems).toHaveLength(2);
 
     const laptopGroup = result.requiredItems.find(
@@ -53,7 +53,7 @@ describe('restructureJobTitles', () => {
 
   test('should handle empty data array', async () => {
     const result = await restructureJobTitles([]);
-    expect(result.JobTitle).toBe('');
+    expect(result.jobTitle).toBe('');
     expect(result.requiredItems).toHaveLength(0);
   });
 });

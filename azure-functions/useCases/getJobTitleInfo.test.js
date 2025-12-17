@@ -146,7 +146,7 @@ describe('getJobTitleInfo', () => {
     expect(getDataverseJobTitle).toHaveBeenCalledWith('title123');
 
     expect(result).toEqual({
-      JobTitle: 'Administrative Specialist',
+      jobTitle: 'Administrative Specialist',
       requiredItems: [
         {
           assetType: 'Docking Station',
@@ -184,7 +184,7 @@ describe('getJobTitleInfo', () => {
     expect(getDataverseJobTitle).toHaveBeenCalledWith('title123');
 
     expect(result).toEqual({
-      JobTitle: 'Administrative Specialist',
+      jobTitle: 'Administrative Specialist',
       requiredItems: [
         {
           assetType: 'Laptop',
