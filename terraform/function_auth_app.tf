@@ -43,3 +43,9 @@ resource "azuread_application" "function_auth_app" {
 resource "azuread_service_principal" "function_auth_sp" {
   client_id = azuread_application.function_auth_app.client_id
 }
+
+resource "azuread_application_password" "function_auth_secret" {
+  application_object_id = azuread_application.function_auth_app.id
+  display_name          = "terraform-generated"
+  end_date              = "2026-12-17T00:00:00Z"
+}

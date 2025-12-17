@@ -64,3 +64,10 @@ resource "azuread_application" "dataverse_app" {
 resource "azuread_service_principal" "dataverse_sp" {
   client_id = azuread_application.dataverse_app.client_id
 }
+
+# Dataverse Internal
+resource "azuread_application_password" "dataverse_app_secret" {
+  application_object_id = azuread_application.dataverse_app.id
+  display_name          = "terraform-generated"
+  end_date              = "2026-12-17T00:00:00Z"
+}
