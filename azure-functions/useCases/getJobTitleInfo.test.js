@@ -152,7 +152,7 @@ describe('getJobTitleInfo', () => {
           assetType: 'Docking Station',
           minimumQuantity: 4,
           maximumQuantity: 8,
-          Items: [
+          items: [
             {
               itemName: 'CM568',
               itemMaximum: 3,
@@ -163,7 +163,7 @@ describe('getJobTitleInfo', () => {
           assetType: 'Laptop',
           minimumQuantity: 3,
           maximumQuantity: 2,
-          Items: [
+          items: [
             {
               itemName: '727pm',
               itemMaximum: 2,
@@ -190,7 +190,7 @@ describe('getJobTitleInfo', () => {
           assetType: 'Laptop',
           minimumQuantity: 3,
           maximumQuantity: 2,
-          Items: [
+          items: [
             {
               itemName: '22U Open Framer Server Rack',
               itemMaximum: 1,

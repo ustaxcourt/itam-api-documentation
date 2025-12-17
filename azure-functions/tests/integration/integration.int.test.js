@@ -258,9 +258,9 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data.requiredItems[0]).toHaveProperty('assetType');
     expect(body.data.requiredItems[0]).toHaveProperty('minimumQuantity');
     expect(body.data.requiredItems[0]).toHaveProperty('maximumQuantity');
-    expect(body.data.requiredItems[0]).toHaveProperty('Items');
-    expect(body.data.requiredItems[0].Items[0]).toHaveProperty('itemName');
-    expect(body.data.requiredItems[0].Items[0]).toHaveProperty('itemMaximum');
+    expect(body.data.requiredItems[0]).toHaveProperty('items');
+    expect(body.data.requiredItems[0].items[0]).toHaveProperty('itemName');
+    expect(body.data.requiredItems[0].items[0]).toHaveProperty('itemMaximum');
   });
 
   it('GET Job Titles - should return 404 when trying to query a job title that does not exist', async () => {

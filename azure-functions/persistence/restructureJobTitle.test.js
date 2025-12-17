@@ -37,8 +37,8 @@ describe('restructureJobTitles', () => {
     const laptopGroup = result.requiredItems.find(
       item => item.assetType === 'Laptop',
     );
-    expect(laptopGroup.Items).toHaveLength(2);
-    expect(laptopGroup.Items).toEqual(
+    expect(laptopGroup.items).toHaveLength(2);
+    expect(laptopGroup.items).toEqual(
       expect.arrayContaining([
         { itemName: 'Dell XPS', itemMaximum: 1 },
         { itemName: 'MacBook Pro', itemMaximum: 1 },
@@ -48,7 +48,7 @@ describe('restructureJobTitles', () => {
     const phoneGroup = result.requiredItems.find(
       item => item.assetType === 'Phone',
     );
-    expect(phoneGroup.Items).toEqual([{ itemName: 'iPhone', itemMaximum: 1 }]);
+    expect(phoneGroup.items).toEqual([{ itemName: 'iPhone', itemMaximum: 1 }]);
   });
 
   test('should handle empty data array', async () => {

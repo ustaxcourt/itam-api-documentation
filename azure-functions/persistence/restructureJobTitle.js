@@ -29,13 +29,13 @@ export async function restructureJobTitles(data) {
         assetType,
         minimumQuantity,
         maximumQuantity,
-        Items: [],
+        items: [],
       };
       result.requiredItems.push(assetObj);
     }
 
     // Add item to Items array
-    assetObj.Items.push({ itemName, itemMaximum: modelMaximum });
+    assetObj.items.push({ itemName, itemMaximum: modelMaximum });
   });
 
   return result;
