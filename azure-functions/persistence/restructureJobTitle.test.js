@@ -1,62 +1,59 @@
-import { restructureJobTitles } from './restructureJobTitle.js'; // Update with actual file name
+import { restructureJobTitles } from './restructureJobTitle.js';
 
 describe('restructureJobTitles', () => {
-  it('should group items by jobTitle and assetType correctly', async () => {
-    const input = [
+  test('should group items by assetType under one job title', async () => {
+    const data = [
       {
-        jobTitle: 'Administrative Specialist',
-        assetType: 'Desk Clamp Power Strip',
+        jobTitle: 'Engineer',
+        assetType: 'Laptop',
+        minimumQuantity: 1,
+        maximumQuantity: 2,
+        itemName: 'Dell XPS',
+        modelMaximum: 1,
+      },
+      {
+        jobTitle: 'Engineer',
+        assetType: 'Laptop',
+        minimumQuantity: 1,
+        maximumQuantity: 2,
+        itemName: 'MacBook Pro',
+        modelMaximum: 1,
+      },
+      {
+        jobTitle: 'Engineer',
+        assetType: 'Phone',
         minimumQuantity: 1,
         maximumQuantity: 1,
-        itemName: 'CM568',
-        modelMaximum: 1,
-      },
-      {
-        jobTitle: 'Administrative Specialist',
-        assetType: 'Laptop',
-        minimumQuantity: 3,
-        maximumQuantity: 2,
-        itemName: '727pm',
-        modelMaximum: 1,
-      },
-      {
-        jobTitle: 'Administrative Specialist',
-        assetType: 'Laptop',
-        minimumQuantity: 3,
-        maximumQuantity: 2,
-        itemName: '22U Open Framer Server Rack',
+        itemName: 'iPhone',
         modelMaximum: 1,
       },
     ];
 
-    const expected = {
-      'Administrative Specialist': {
-        requiredItems: [
-          {
-            assetType: 'Desk Clamp Power Strip',
-            minimumQuantity: 1,
-            maximumQuantity: 1,
-            Items: [{ itemName: 'CM568', itemMaximum: 1 }],
-          },
-          {
-            assetType: 'Laptop',
-            minimumQuantity: 3,
-            maximumQuantity: 2,
-            Items: [
-              { itemName: '727pm', itemMaximum: 1 },
-              { itemName: '22U Open Framer Server Rack', itemMaximum: 1 },
-            ],
-          },
-        ],
-      },
-    };
+    const result = await restructureJobTitles(data);
 
-    const result = await restructureJobTitles(input);
-    expect(result).toEqual(expected);
+    expect(result.JobTitle).toBe('Engineer');
+    expect(result.requiredItems).toHaveLength(2);
+
+    const laptopGroup = result.requiredItems.find(
+      item => item.assetType === 'Laptop',
+    );
+    expect(laptopGroup.Items).toHaveLength(2);
+    expect(laptopGroup.Items).toEqual(
+      expect.arrayContaining([
+        { itemName: 'Dell XPS', itemMaximum: 1 },
+        { itemName: 'MacBook Pro', itemMaximum: 1 },
+      ]),
+    );
+
+    const phoneGroup = result.requiredItems.find(
+      item => item.assetType === 'Phone',
+    );
+    expect(phoneGroup.Items).toEqual([{ itemName: 'iPhone', itemMaximum: 1 }]);
   });
 
-  it('should return an empty object for empty input', async () => {
+  test('should handle empty data array', async () => {
     const result = await restructureJobTitles([]);
-    expect(result).toEqual({});
+    expect(result.JobTitle).toBe('');
+    expect(result.requiredItems).toHaveLength(0);
   });
 });

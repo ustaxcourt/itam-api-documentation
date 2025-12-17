@@ -13,7 +13,6 @@ describe('getDataverseJobTitle', () => {
 
   it('should call dataverseCall with correct URL, method, and body', async () => {
     dataverseCall.mockResolvedValue({ success: true, value: true });
-
     const result = await getDataverseJobTitle(jobTitleId);
 
     expect(dataverseCall).toHaveBeenCalledWith({
@@ -30,7 +29,7 @@ describe('getDataverseJobTitle', () => {
       NotFoundError,
     );
     await expect(getDataverseJobTitle('job-title-123')).rejects.toThrow(
-      'No jobtitleID found for ID: job-title-123',
+      'No job title found for ID: job-title-123',
     );
   });
 

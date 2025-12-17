@@ -2,7 +2,6 @@ import { app } from '@azure/functions';
 import { buildResponse } from './buildResponse.js';
 import { getJobTitleInfo } from '../useCases/getJobTitleInfo.js';
 import { BadRequest } from '../errors/BadRequest.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
 
 export async function jobTitleHandler(request, context) {
   try {
@@ -18,20 +17,13 @@ export async function jobTitleHandler(request, context) {
       throw new BadRequest('Invalid REST Method');
     }
 
-    return buildResponse(200, 'Successfully queried job title', data);
+    return buildResponse(200, 'Success', data);
   } catch (error) {
     context.error(
-      'Unable to update assignments',
+      'Unable to query job title',
       error.response?.data || error.message,
     );
-
-    if (error instanceof BadRequest) {
-      return buildResponse(error.statusCode, error.message);
-    }
-
-    if (error instanceof NotFoundError) {
-      return buildResponse(404, error.message);
-    }
+    return buildResponse(error.statusCode, error.message);
   }
 }
 

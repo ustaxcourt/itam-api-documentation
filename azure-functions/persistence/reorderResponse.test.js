@@ -32,7 +32,7 @@ describe('reorderResponseObject', () => {
     crf7f_modelmaximum: 1,
   };
 
-  const responseexpect = {
+  const responseExpectation = {
     itemName: 'crf7f_ReferenceModel.crf7f_name',
     minimumQuantity: 'crf7f_JobTitleAssetType.crf7f_minimumquanitity',
     maximumQuantity: 'crf7f_JobTitleAssetType.crf7f_maximumquantity',
@@ -51,7 +51,7 @@ describe('reorderResponseObject', () => {
       modelMaximum: 1,
     };
 
-    const result = await reorderResponseObject(data, responseexpect);
+    const result = await reorderResponseObject(data, responseExpectation);
     expect(result).toEqual(expected);
   });
 
