@@ -114,6 +114,11 @@ variable "dataverse_app_display_name" {
   type        = string
 }
 
+variable "auth_app_display_name" {
+  description = "Display name of the Dataverse App Registration"
+  type        = string
+}
+
 variable "dataverse_sign_in_audience" {
   description = "Sign-in audience for the Dataverse App Registration"
   type        = string
