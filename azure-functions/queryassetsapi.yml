@@ -146,12 +146,12 @@ components:
                 type: integer
                 example: 2
                 description: Maximum number of assets allowed
-              Items:
+              items:
                 type: array
                 items:
                   type: object
                   properties:
-                    ItemName:
+                    itemName:
                       type: string
                       example: "EliteDisplay 231i"
                       description: Minimum number of assets required
