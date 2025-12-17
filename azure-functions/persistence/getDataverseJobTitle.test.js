@@ -29,7 +29,7 @@ describe('getDataverseJobTitle', () => {
       NotFoundError,
     );
     await expect(getDataverseJobTitle('job-title-123')).rejects.toThrow(
-      'No job title found for ID: job-title-123',
+      'Resource not found',
     );
   });
 

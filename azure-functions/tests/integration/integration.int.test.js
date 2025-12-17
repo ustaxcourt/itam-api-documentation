@@ -274,8 +274,6 @@ describe('Integration testing for ITAM Project', () => {
 
     expect(getTitleInfoResult.status).toBe(404);
     const body = await getTitleInfoResult.json();
-    expect(body.message).toBe(
-      `No job title found for ID: ${nonExistingJobTitleId}`,
-    );
+    expect(body.message).toBe(`Resource not found`);
   });
 });

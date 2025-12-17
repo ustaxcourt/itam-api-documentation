@@ -10,7 +10,7 @@ export async function getDataverseJobTitle(id) {
 
   const response = await dataverseCall({ query: query, method: 'GET' });
   if (!response?.value || response.value.length === 0) {
-    throw new NotFoundError(`No job title found for ID: ${id}`);
+    throw new NotFoundError(`Resource not found`);
   }
 
   return response;
