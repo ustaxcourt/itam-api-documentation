@@ -24,16 +24,6 @@ variable "subscription_id" {
   sensitive   = true
 }
 
-variable "auth_client_id" {
-  description = "Authentication app client ID"
-  type        = string
-}
-
-variable "dataverse_client_id" {
-  description = "Dataverse app client ID"
-  type        = string
-}
-
 variable "scope" {
   description = "Azure App Registry Scope Environment Variable for Dataverse App"
   type        = string
@@ -91,17 +81,6 @@ variable "auth_sign_in_audience" {
   description = "Sign-in audience for the authentication App Registration"
   type        = string
   default     = "AzureADMyOrg"
-}
-
-variable "dataverse_internal" {
-  description = "Dataverse internal access value"
-  type        = string
-}
-
-variable "auth_client_secret" {
-  description = "Access value for authentication"
-  type        = string
-  sensitive   = true
 }
 
 variable "auth_allowed_tenants" {
