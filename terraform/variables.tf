@@ -13,6 +13,11 @@ variable "storage_account_name" {
   type        = string
 }
 
+variable "scope" {
+  description = "Azure App Registry Scope Environment Variable for Dataverse App"
+  type        = string
+}
+
 variable "function_app_name" {
   description = "Name of the Azure Function App to be created"
   type        = string
@@ -22,11 +27,6 @@ variable "subscription_id" {
   description = "Azure Subscription ID"
   type        = string
   sensitive   = true
-}
-
-variable "scope" {
-  description = "Azure App Registry Scope Environment Variable for Dataverse App"
-  type        = string
 }
 
 variable "dataverse_url" {
@@ -44,19 +44,14 @@ variable "auth_redirect_uris" {
   type        = list(string)
 }
 
-variable "auth_identifier_uri" {
-  description = "Identifier URI for the authentication App Registration"
+variable "auth_scope_value" {
+  description = "OAuth2 permission scope value for the authentication App Registration"
   type        = string
 }
 
 variable "auth_scope_id" {
-  description = "OAuth2 permission scope ID for the authentication App Registration"
   type        = string
-}
-
-variable "auth_scope_value" {
-  description = "OAuth2 permission scope value for the authentication App Registration"
-  type        = string
+  description = "Deterministic GUID for the OAuth2 scope (auto-generated with uuidv5)"
 }
 
 variable "graph_app_id" {
@@ -104,11 +99,6 @@ variable "dataverse_sign_in_audience" {
   default     = "AzureADMyOrg"
 }
 
-variable "dataverse_identifier_uris" {
-  description = "Identifier URIs for the Dataverse App Registration"
-  type        = list(string)
-}
-
 variable "dataverse_app_owners" {
   description = "List of owner object IDs for the Dataverse App Registration"
   type        = list(string)
@@ -127,11 +117,6 @@ variable "dataverse_redirect_uris" {
 }
 
 # Exposed API (scope)
-variable "dataverse_scope_id" {
-  description = "Stable ID for the Dataverse oauth2_permission_scope"
-  type        = string
-}
-
 variable "dataverse_scope_value" {
   description = "Scope value for Dataverse oauth2_permission_scope"
   type        = string

@@ -55,7 +55,7 @@ resource "azurerm_linux_function_app" "function" {
     STORAGE_ACCOUNT_NAME   = data.azurerm_storage_account.storage.name
     DATAVERSE_CLIENT_ID    = azuread_application.dataverse_app.client_id
     TENANT_ID              = var.all_tenant_id
-    SCOPE                  = "${azuread_application.dataverse_app.identifier_uris[0]}/.default"
+    SCOPE                  = var.scope
     DATAVERSE_URL          = var.dataverse_url
 
     # This now makes it managed by terraform - to update just terraform apply with new end date and verify change in azure function app per env

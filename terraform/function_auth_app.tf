@@ -1,9 +1,9 @@
 resource "azuread_application" "function_auth_app" {
   # Unique per environment
-  display_name     = "${var.auth_app_display_name}-${var.env}"
+  display_name     = "${var.auth_app_display_name}"
 
   # Unique identifier URI per environment
-  identifier_uris  = ["api://${var.auth_app_display_name}-${var.env}"]
+  identifier_uris  = ["api://${var.auth_app_display_name}"]
 
   web {
     homepage_url  = "https://${var.function_app_name}.azurewebsites.net"
@@ -21,6 +21,7 @@ resource "azuread_application" "function_auth_app" {
 
     # Letting Entra ID generate the scope GUID (omitting `id` config) to retain uniquness per env
     oauth2_permission_scope {
+      id                         = local.auth_scope_id
       value                      = var.auth_scope_value
       type                       = "User"
       enabled                    = true
@@ -33,8 +34,14 @@ resource "azuread_application" "function_auth_app" {
 
   required_resource_access {
     resource_app_id = var.graph_app_id
-    resource_access { id = var.graph_user_read_scope_id, type = "Scope" }
-    resource_access { id = var.graph_openid_scope_id,     type = "Scope" }
+    resource_access {
+      id = var.graph_user_read_scope_id
+      type = "Scope"
+    }
+    resource_access {
+      id = var.graph_openid_scope_id
+      type = "Scope"
+    }
   }
 
   sign_in_audience = var.auth_sign_in_audience
@@ -45,7 +52,7 @@ resource "azuread_service_principal" "function_auth_sp" {
 }
 
 resource "azuread_application_password" "function_auth_secret" {
-  application_object_id = azuread_application.function_auth_app.id
-  display_name          = "terraform-generated"
-  end_date              = "2026-12-17T00:00:00Z"
+  application_id = azuread_application.function_auth_app.id
+  display_name   = "terraform-generated"
+  end_date       = "2026-12-17T00:00:00Z"
 }

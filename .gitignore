@@ -30,3 +30,8 @@ override.tf.json
 # Terraform CLI config
 .terraformrc
 terraform.rc
+
+# Terraform plan outputs
+*.tfplan
+*.plan
+tfplan*

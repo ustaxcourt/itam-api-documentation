@@ -30,11 +30,6 @@ output "app_insights_connection_string" {
   sensitive   = true
 }
 
-output "scope" {
-  description = "Scope used for Dataverse API access"
-  value       = var.scope
-}
-
 output "function_auth_app_id" {
   description = "The Application (client) ID of the Function Auth App Registration"
   value       = azuread_application.function_auth_app.client_id
