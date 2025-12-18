@@ -1,7 +1,7 @@
-openapi: "3.0.3"
+openapi: '3.0.3'
 info:
   title: Query Assets
-  version: "1.0"
+  version: '1.0'
 
 servers:
   - url: /api
@@ -13,19 +13,19 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ApiResponse"
+            $ref: '#/components/schemas/ApiResponse'
           example:
-            message: "Dataverse query failed"
-            data: "Request failed with status code 400"
+            message: 'Dataverse query failed'
+            data: 'Request failed with status code 400'
 
     Unauthorized:
       description: Unauthorized – Authentication required
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ApiResponse"
+            $ref: '#/components/schemas/ApiResponse'
           example:
-            message: "Missing client secret"
+            message: 'Missing client secret'
             data: null
 
     Forbidden:
@@ -33,9 +33,9 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ApiResponse"
+            $ref: '#/components/schemas/ApiResponse'
           example:
-            message: "Unauthorized"
+            message: 'Unauthorized'
             data: null
 
     NotFound:
@@ -43,9 +43,9 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ApiResponse"
+            $ref: '#/components/schemas/ApiResponse'
           example:
-            message: "Resource not found"
+            message: 'Resource not found'
             data: null
 
     InternalServerError:
@@ -53,9 +53,9 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ApiResponse"
+            $ref: '#/components/schemas/ApiResponse'
           example:
-            message: "Dataverse asset lookup failed"
+            message: 'Dataverse asset lookup failed'
             data: null
 
   schemas:
@@ -90,7 +90,7 @@ components:
               Repair,
               Inoperative,
               Unknown,
-              "Excess in Depot",
+              'Excess in Depot',
             ]
         location:
           type: string
@@ -127,7 +127,7 @@ components:
       properties:
         jobTitle:
           type: string
-          example: "Engineer"
+          example: 'Engineer'
           nullable: false
         requiredItems:
           type: array
@@ -136,7 +136,7 @@ components:
             properties:
               assetType:
                 type: string
-                example: "Monitor"
+                example: 'Monitor'
                 description: Type/category of the asset (e.g., Laptop, Docking Station)
               minimumQuantity:
                 type: integer
@@ -153,7 +153,7 @@ components:
                   properties:
                     itemName:
                       type: string
-                      example: "EliteDisplay 231i"
+                      example: 'EliteDisplay 231i'
                       description: Minimum number of assets required
                     itemMaximum:
                       type: integer
@@ -170,21 +170,21 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/schemas/ApiResponse"
+                  - $ref: '#/components/schemas/ApiResponse'
                   - type: object
                     properties:
                       data:
-                        $ref: "#/components/schemas/Asset"
-        "400": { $ref: "#/components/responses/BadRequest" }
-        "401": { $ref: "#/components/responses/Unauthorized" }
-        "403": { $ref: "#/components/responses/Forbidden" }
-        "404": { $ref: "#/components/responses/NotFound" }
+                        $ref: '#/components/schemas/Asset'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
 
   /v1/assets/{assetid}/assignments/{userid}:
     post:
@@ -198,19 +198,19 @@ paths:
           required: true
           schema: { type: string }
       responses:
-        "200":
+        '200':
           description: Successful update
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/schemas/ApiResponse"
+                  - $ref: '#/components/schemas/ApiResponse'
                   - type: object
                     properties:
                       data:
                         type: string
-        "403": { $ref: "#/components/responses/Forbidden" }
-        "404": { $ref: "#/components/responses/NotFound" }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
 
   /v1/assets/{assetid}/assignments:
     delete:
@@ -220,19 +220,19 @@ paths:
           required: true
           schema: { type: string }
       responses:
-        "200":
+        '200':
           description: Successful update
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/schemas/ApiResponse"
+                  - $ref: '#/components/schemas/ApiResponse'
                   - type: object
                     properties:
                       data:
                         type: string
-        "403": { $ref: "#/components/responses/Forbidden" }
-        "404": { $ref: "#/components/responses/NotFound" }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
 
   /v1/assets/{assetid}/location/{locationId}:
     post:
@@ -246,19 +246,19 @@ paths:
           required: true
           schema: { type: string }
       responses:
-        "200":
+        '200':
           description: Successful update
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/schemas/ApiResponse"
+                  - $ref: '#/components/schemas/ApiResponse'
                   - type: object
                     properties:
                       data:
                         type: string
-        "403": { $ref: "#/components/responses/Forbidden" }
-        "404": { $ref: "#/components/responses/NotFound" }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
 
   /v1/assets/{assetid}/location:
     delete:
@@ -268,19 +268,19 @@ paths:
           required: true
           schema: { type: string }
       responses:
-        "200":
+        '200':
           description: Successful update
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/schemas/ApiResponse"
+                  - $ref: '#/components/schemas/ApiResponse'
                   - type: object
                     properties:
                       data:
                         type: string
-        "403": { $ref: "#/components/responses/Forbidden" }
-        "404": { $ref: "#/components/responses/NotFound" }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
 
   /v1/users/email/{email}/assets:
     get:
@@ -290,20 +290,20 @@ paths:
           required: true
           schema: { type: string }
       responses:
-        "200":
+        '200':
           description: Returns all assets assigned to a user
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/schemas/ApiResponse"
+                  - $ref: '#/components/schemas/ApiResponse'
                   - type: object
                     properties:
                       data:
                         type: array
                         items:
-                          $ref: "#/components/schemas/Asset"
-        "500": { $ref: "#/components/responses/InternalServerError" }
+                          $ref: '#/components/schemas/Asset'
+        '500': { $ref: '#/components/responses/InternalServerError' }
   /v1/titleinfo/{jobTitle}:
     get:
       parameters:
@@ -312,17 +312,17 @@ paths:
           required: true
           schema: { type: string }
       responses:
-        "200":
-          description: Returns all assets equired by Job Title
+        '200':
+          description: Returns all assets required by Job Title
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/schemas/ApiResponse"
+                  - $ref: '#/components/schemas/ApiResponse'
                   - type: object
                     properties:
                       data:
                         type: object
-                        $ref: "#/components/schemas/JobTitles"
-        "500": { $ref: "#/components/responses/InternalServerError" }
-        "404": { $ref: "#/components/responses/NotFound" }
+                        $ref: '#/components/schemas/JobTitles'
+        '500': { $ref: '#/components/responses/InternalServerError' }
+        '404': { $ref: '#/components/responses/NotFound' }

@@ -1,4 +1,4 @@
-export async function restructureJobTitles(data) {
+export async function restructureJobTitle(data) {
   const result = {
     jobTitle: '', // Will hold the job title
     requiredItems: [], // Will hold the asset list

@@ -1,6 +1,6 @@
-import { restructureJobTitles } from './restructureJobTitle.js';
+import { restructureJobTitle } from './restructureJobTitle.js';
 
-describe('restructureJobTitles', () => {
+describe('restructureJobTitle', () => {
   test('should group items by assetType under one job title', async () => {
     const data = [
       {
@@ -29,7 +29,7 @@ describe('restructureJobTitles', () => {
       },
     ];
 
-    const result = await restructureJobTitles(data);
+    const result = await restructureJobTitle(data);
 
     expect(result.jobTitle).toBe('Engineer');
     expect(result.requiredItems).toHaveLength(2);
@@ -52,7 +52,7 @@ describe('restructureJobTitles', () => {
   });
 
   test('should handle empty data array', async () => {
-    const result = await restructureJobTitles([]);
+    const result = await restructureJobTitle([]);
     expect(result.jobTitle).toBe('');
     expect(result.requiredItems).toHaveLength(0);
   });
