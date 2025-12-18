@@ -1,3 +1,4 @@
+
 name: Deploy Azure Function App (JavaScript ESM)
 
 on:
@@ -5,11 +6,30 @@ on:
     branches:
       - main
       - deployTest
-  workflow_dispatch: # verified that this does generate an on call button in actions page
+      - deployDev
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment (dev | test | prod)"
+        required: false
+        type: choice
+        options:
+          - dev
+          - test
+          - prod
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
+    # Expose env-specific secrets; we'll pick the right ones later.
+    env:
+      APP_NAME_DEV: ${{ secrets.AZURE_FUNCTIONAPP_NAME_DEV }}
+      APP_NAME_TEST: ${{ secrets.AZURE_FUNCTIONAPP_NAME_TEST }}
+      APP_NAME_PROD: ${{ secrets.AZURE_FUNCTIONAPP_NAME_PROD }}
+      PUBLISH_PROFILE_DEV: ${{ secrets.AZURE_PUBLISH_PROFILE_DEV }}
+      PUBLISH_PROFILE_TEST: ${{ secrets.AZURE_PUBLISH_PROFILE_TEST }}
+      PUBLISH_PROFILE_PROD: ${{ secrets.AZURE_PUBLISH_PROFILE_PROD }}
 
     steps:
     - name: Checkout code
@@ -38,12 +58,55 @@ jobs:
         cd functionapp
         zip -r ../functionapp.zip .
 
+    # Decide environment:
+    # - If workflow_dispatch has input, use it.
+    # - Else map from branch: main -> prod, deployTest -> test, dev -> dev.
+    - name: Resolve target environment
+      id: resolve_env
+      shell: bash
+      run: |
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ github.event.inputs.environment }}" ]]; then
+          env_name="${{ github.event.inputs.environment }}"
+        else
+          branch="${GITHUB_REF##*/}"
+          case "$branch" in
+            main)        env_name="prod" ;;
+            deployTest)  env_name="test" ;;
+            deployDev)         env_name="dev"  ;;
+            *)           echo "Unsupported branch for auto-deploy: $branch"; exit 1 ;;
+          esac
+        fi
+        echo "env_name=$env_name" >> $GITHUB_OUTPUT
+        echo "Resolved environment: $env_name"
+
+    - name: Select env-specific secrets
+      id: pick
+      shell: bash
+      run: |
+        case "${{ steps.resolve_env.outputs.env_name }}" in
+          dev)
+            echo "APP_NAME=${APP_NAME_DEV}" >> $GITHUB_OUTPUT
+            echo "PUBLISH_PROFILE=${PUBLISH_PROFILE_DEV}" >> $GITHUB_OUTPUT
+            ;;
+          test)
+            echo "APP_NAME=${APP_NAME_TEST}" >> $GITHUB_OUTPUT
+            echo "PUBLISH_PROFILE=${PUBLISH_PROFILE_TEST}" >> $GITHUB_OUTPUT
+            ;;
+          prod)
+            echo "APP_NAME=${APP_NAME_PROD}" >> $GITHUB_OUTPUT
+            echo "PUBLISH_PROFILE=${PUBLISH_PROFILE_PROD}" >> $GITHUB_OUTPUT
+            ;;
+          *)
+            echo "Unknown environment: ${{ steps.resolve_env.outputs.env_name }}"; exit 1;
+            ;;
+        esac
+
     - name: Deploy to Azure Functions
       uses: Azure/functions-action@v1
       with:
-        app-name: ${{ secrets.AZURE_FUNCTIONAPP_NAME }}
+        app-name: ${{ steps.pick.outputs.APP_NAME }}
         package: functionapp.zip
-        publish-profile: ${{ secrets.AZURE_CREDENTIALS }}
+        publish-profile: ${{ steps.pick.outputs.PUBLISH_PROFILE }}
 
     - name: Clean up temporary functionapp folder
       run: rm -rf functionapp
