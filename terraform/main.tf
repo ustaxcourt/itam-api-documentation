@@ -74,12 +74,11 @@ resource "azurerm_linux_function_app" "function" {
     runtime_version        = "~1"
 
     active_directory_v2 {
-      # Bind to the env's Auth App (created in your azuread_application.function_auth_app)
+      # Bind to the env's Auth App
       client_id                  = azuread_application.function_auth_app.client_id
       client_secret_setting_name = "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
 
       # Accept tokens whose 'aud' matches the env Auth App's identifier URIs
-      # (Use the whole list in case you ever add multiple URIs)
       allowed_audiences          = azuread_application.function_auth_app.identifier_uris
       tenant_auth_endpoint       = "https://sts.windows.net/${var.all_tenant_id}/v2.0"
     }

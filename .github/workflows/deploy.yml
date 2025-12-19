@@ -59,7 +59,7 @@ jobs:
 
     # Decide environment:
     # - If workflow_dispatch has input, use it.
-    # - Else map from branch: main -> prod, deployTest -> test, dev -> dev.
+    # - Else map from branch: main -> prod, deployTest -> test, deployDev -> dev.
     - name: Resolve target environment
       id: resolve_env
       shell: bash
