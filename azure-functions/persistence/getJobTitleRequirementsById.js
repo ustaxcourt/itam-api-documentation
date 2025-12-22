@@ -1,6 +1,6 @@
 import { dataverseCall } from './dataverseCall.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
-import { restrucureJobTitleRequirements } from './restructureJobTitleRequirements.js';
+import { restructureJobTitleRequirements } from './restructureJobTitleRequirements.js';
 import { parseDataverseResponse } from './parseDataverseResponse.js';
 
 export async function getJobTitleRequirementsById(id) {
@@ -25,7 +25,7 @@ export async function getJobTitleRequirementsById(id) {
     modelMinimum: 'crf7f_modelminimum', // TODO: this may need implementation in the database
   };
 
-  return restrucureJobTitleRequirements(
+  return restructureJobTitleRequirements(
     response.value.map(row => parseDataverseResponse({ data: row, schema })),
   );
 }
