@@ -1,7 +1,9 @@
 export default {
   transform: {
     '^.+\\.js$': 'babel-jest',
+    '^.+\\.ts$': ['ts-jest', { useESM: true }],
   },
+  extensionsToTreatAsEsm: ['.ts'],
   testEnvironment: 'node',
   collectCoverage: true,
   collectCoverageFrom: [
