@@ -1,6 +1,6 @@
 import { app } from '@azure/functions';
 import { buildResponse } from './buildResponse.js';
-import { getJobTitleInfo } from '../useCases/getJobTitleInfo.js';
+import { getJobTitleRequirementsInteractor } from '../useCases/getJobTitleRequirementsInteractor.js';
 import { BadRequest } from '../errors/BadRequest.js';
 
 export async function getRequirementsForJobTitleRequestHandler(
@@ -15,7 +15,7 @@ export async function getRequirementsForJobTitleRequestHandler(
     }
 
     if (request.method === 'GET') {
-      var data = await getJobTitleInfo(jobTitleId);
+      var data = await getJobTitleRequirementsInteractor(jobTitleId);
     } else {
       throw new BadRequest('Invalid REST Method');
     }

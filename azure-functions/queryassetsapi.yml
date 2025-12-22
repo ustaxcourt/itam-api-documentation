@@ -129,7 +129,7 @@ components:
           type: string
           example: 'Engineer'
           nullable: false
-        requiredItems:
+        requiredAssets:
           type: array
           items:
             type: object
@@ -146,19 +146,23 @@ components:
                 type: integer
                 example: 2
                 description: Maximum number of assets allowed
-              items:
+              models:
                 type: array
                 items:
                   type: object
                   properties:
-                    itemName:
+                    modelName:
                       type: string
                       example: 'EliteDisplay 231i'
-                      description: Minimum number of assets required
-                    itemMaximum:
+                      description: Name of the specific Model
+                    modelMaximum:
                       type: integer
                       example: 2
-                      description: Minimum number of assets required
+                      description: Maximum number of assets required for this specific model
+                    modelMinimum:
+                      type: integer
+                      example: 1
+                      description: Minimum number of assets required for this specfic model
 
 paths:
   /v1/assets/{itemguid}:

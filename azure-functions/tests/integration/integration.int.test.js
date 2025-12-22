@@ -253,14 +253,19 @@ describe('Integration testing for ITAM Project', () => {
 
     const body = await getTitleInfoResult.json();
     expect(body).toHaveProperty('message', 'Success');
-    expect(body.data).toHaveProperty('requiredItems');
+    expect(body.data).toHaveProperty('requiredAssets');
     expect(body.data).toHaveProperty('jobTitle');
-    expect(body.data.requiredItems[0]).toHaveProperty('assetType');
-    expect(body.data.requiredItems[0]).toHaveProperty('minimumQuantity');
-    expect(body.data.requiredItems[0]).toHaveProperty('maximumQuantity');
-    expect(body.data.requiredItems[0]).toHaveProperty('items');
-    expect(body.data.requiredItems[0].items[0]).toHaveProperty('itemName');
-    expect(body.data.requiredItems[0].items[0]).toHaveProperty('itemMaximum');
+    expect(body.data.requiredAssets[0]).toHaveProperty('assetType');
+    expect(body.data.requiredAssets[0]).toHaveProperty('minimumQuantity');
+    expect(body.data.requiredAssets[0]).toHaveProperty('maximumQuantity');
+    expect(body.data.requiredAssets[0]).toHaveProperty('models');
+    expect(body.data.requiredAssets[0].models[0]).toHaveProperty('modelName');
+    expect(body.data.requiredAssets[0].models[0]).toHaveProperty(
+      'modelMaximum',
+    );
+    expect(body.data.requiredAssets[0].models[0]).toHaveProperty(
+      'modelMinimum',
+    );
   });
 
   it('GET Job Titles - should return 404 when trying to query a job title that does not exist', async () => {
