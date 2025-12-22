@@ -3,7 +3,10 @@ import { buildResponse } from './buildResponse.js';
 import { getJobTitleInfo } from '../useCases/getJobTitleInfo.js';
 import { BadRequest } from '../errors/BadRequest.js';
 
-export async function jobTitleHandler(request, context) {
+export async function getRequirementsForJobTitleRequestHandler(
+  request,
+  context,
+) {
   try {
     const jobTitleId = request.params.jobTitleID;
 
@@ -31,5 +34,5 @@ app.http('jobTitle', {
   methods: ['GET'],
   authLevel: 'anonymous',
   route: 'v1/titleInfo/{jobTitleID}',
-  handler: jobTitleHandler,
+  handler: getRequirementsForJobTitleRequestHandler,
 });

@@ -1,4 +1,4 @@
-import { jobTitleHandler } from './queryJobTitleInfo.js';
+import { getRequirementsForJobTitleRequestHandler } from './queryJobTitleInfo.js';
 import { getJobTitleInfo } from '../useCases/getJobTitleInfo.js';
 import { BadRequest } from '../errors/BadRequest.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
@@ -50,7 +50,10 @@ describe('jobTitleHandler', () => {
     getJobTitleInfo.mockResolvedValue(mockData);
 
     const request = { params: { jobTitleID: 'title123' }, method: 'GET' };
-    const result = await jobTitleHandler(request, context);
+    const result = await getRequirementsForJobTitleRequestHandler(
+      request,
+      context,
+    );
 
     expect(getJobTitleInfo).toHaveBeenCalledWith('title123');
     expect(context.error).not.toHaveBeenCalled();
@@ -63,7 +66,10 @@ describe('jobTitleHandler', () => {
     const error = new BadRequest('Missing Job title ID');
 
     const request = { params: {}, method: 'GET' };
-    const result = await jobTitleHandler(request, context);
+    const result = await getRequirementsForJobTitleRequestHandler(
+      request,
+      context,
+    );
     expect(context.error).toHaveBeenCalledWith(
       'Unable to query job title',
       error.message,
@@ -77,7 +83,10 @@ describe('jobTitleHandler', () => {
     getJobTitleInfo.mockRejectedValue(error);
 
     const request = { params: { jobTitleID: 'title123' }, method: 'POST' };
-    const result = await jobTitleHandler(request, context);
+    const result = await getRequirementsForJobTitleRequestHandler(
+      request,
+      context,
+    );
     expect(context.error).toHaveBeenCalledWith(
       'Unable to query job title',
       error.message,
@@ -91,7 +100,10 @@ describe('jobTitleHandler', () => {
     getJobTitleInfo.mockRejectedValue(error);
 
     const request = { params: { jobTitleID: 'title123' }, method: 'GET' };
-    const result = await jobTitleHandler(request, context);
+    const result = await getRequirementsForJobTitleRequestHandler(
+      request,
+      context,
+    );
     expect(context.error).toHaveBeenCalledWith(
       'Unable to query job title',
       error.message,
@@ -109,7 +121,10 @@ describe('jobTitleHandler', () => {
     );
     getJobTitleInfo.mockRejectedValue(error);
     const request = { params: { jobTitleID: 'title123' }, method: 'GET' };
-    const result = await jobTitleHandler(request, context);
+    const result = await getRequirementsForJobTitleRequestHandler(
+      request,
+      context,
+    );
 
     expect(context.error).toHaveBeenCalledWith(
       'Unable to query job title',
