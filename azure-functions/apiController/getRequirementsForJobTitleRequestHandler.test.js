@@ -1,4 +1,4 @@
-import { getRequirementsForJobTitleRequestHandler } from './queryJobTitleInfo.js';
+import { getRequirementsForJobTitleRequestHandler } from './getRequirementsForJobTitleRequestHandler.js';
 import { getJobTitleInfo } from '../useCases/getJobTitleInfo.js';
 import { BadRequest } from '../errors/BadRequest.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
