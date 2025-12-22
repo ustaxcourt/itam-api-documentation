@@ -5,7 +5,7 @@ import { NotFoundError } from '../errors/NotFoundError.js';
 export async function getJobTitleNameById(id) {
   // Build Dataverse query URL
 
-  const query = `crf7f_JobTitle?$select=crf7f_title,&$filter=crf7f_ois_job_titleid eq '${id}'`;
+  const query = `crf7f_JobTitle?$select=crf7f_title&$filter=crf7f_ois_job_titleid eq '${id}'`;
 
   // Dataverse call
   const response = await dataverseCall({ query, method: 'GET' });
