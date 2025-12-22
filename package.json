@@ -6,10 +6,11 @@
   "type": "module",
   "scripts": {
     "start": "func start",
-    "test": "jest",
+    "test": "npm run build && jest",
     "test:unit": "jest --selectProjects unit",
     "test:integration": "jest --selectProjects integration --coverage=false",
-    "prepare": "husky"
+    "prepare": "husky",
+    "build": "tsc"
   },
   "dependencies": {
     "@azure/data-tables": "^13.3.1",

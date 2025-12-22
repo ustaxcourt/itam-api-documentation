@@ -35,14 +35,16 @@
     // Migration settings - Allows JS to keep running
     "allowJs": true,
     "checkJs": false,
-    "noEmit": true,
+    "noEmit": false,
+    "outDir": "dist",
+    "rootDir": ".",
     "strict": false,
     "exactOptionalPropertyTypes": false,
 
     // Recommended Options
     //"strict": true,
     "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",

@@ -30,3 +30,6 @@ override.tf.json
 # Terraform CLI config
 .terraformrc
 terraform.rc
+
+# TSC generated artifacts for local testing
+dist/

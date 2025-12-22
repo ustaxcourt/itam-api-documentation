@@ -15,6 +15,7 @@ export default {
     '!jest.setup.js',
     '!jest.teardown.js',
     '!**/tests/integration/**',
+    '!**/*.d.ts', // ignores type declaration files from coverage
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
@@ -30,11 +31,12 @@ export default {
   projects: [
     {
       displayName: 'unit',
-      testMatch: ['**/azure-functions/**/*.test.js'],
+      testMatch: ['**/dist/azure-functions/**/*.test.js'], // Now points to the generated JS files instead of TS
       testPathIgnorePatterns: [
         '/azure-functions/tests/integration/',
         'jest.setup.js',
         'jest.teardown.js',
+        '\\.d\\.ts$', // ignores type declaration files for test consideration
       ],
     },
     {
