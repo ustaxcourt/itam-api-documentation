@@ -3,14 +3,7 @@ locals {
   graph_app_id             = "00000003-0000-0000-c000-000000000000"
   graph_user_read_scope_id = "e1fe6dd8-ba31-4d61-89e7-88639da4683d"
   graph_openid_scope_id    = "37f7f235-527c-4136-accd-4a02d197296e"
-  # This is a user impersonation one in api permissions section
-  sharepoint_resource_access_ids = [
-    {
-      id   = "78ce3f0f-a1ce-49c2-8cde-64b5c0896db4"
-      type = "Scope"
-    }
-  ]
-  # These two are also user impersonation in api permissions section
+  # These two are user impersonation in api permissions section
   custom_api_app_id   = "f5cda511-d71d-4f10-a5dd-ec2627475e75"
   custom_api_scope_id = "f4539fe0-7aa1-47af-9608-7098d66c87e6"
 }

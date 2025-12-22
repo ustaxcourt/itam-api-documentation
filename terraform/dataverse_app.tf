@@ -39,18 +39,6 @@ resource "azuread_application" "dataverse_app" {
     } # OpenID
   }
 
-  # Required resource access — SharePoint Online - creates user impersonation api permission
-  required_resource_access {
-    resource_app_id = local.sharepoint_app_id
-    dynamic "resource_access" {
-      for_each = local.sharepoint_resource_access_ids
-      content {
-        id   = resource_access.value.id
-        type = resource_access.value.type
-      }
-    }
-  }
-
   # Required resource access — Custom API (entra connector) - creates user impersonation api permission
   required_resource_access {
     resource_app_id = local.custom_api_app_id
