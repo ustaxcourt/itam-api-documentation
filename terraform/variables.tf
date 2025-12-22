@@ -44,34 +44,6 @@ variable "auth_redirect_uris" {
   type        = list(string)
 }
 
-variable "auth_scope_value" {
-  description = "OAuth2 permission scope value for the authentication App Registration"
-  type        = string
-}
-
-variable "auth_scope_id" {
-  type        = string
-  description = "Deterministic GUID for the OAuth2 scope (auto-generated with uuidv5)"
-}
-
-variable "graph_app_id" {
-  description = "App ID for Microsoft Graph"
-  type        = string
-  default     = "00000003-0000-0000-c000-000000000000"
-}
-
-variable "graph_user_read_scope_id" {
-  description = "Scope ID for Microsoft Graph User.Read"
-  type        = string
-  default     = "e1fe6dd8-ba31-4d61-89e7-88639da4683d"
-}
-
-variable "graph_openid_scope_id" {
-  description = "Scope ID for Microsoft Graph OpenID"
-  type        = string
-  default     = "37f7f235-527c-4136-accd-4a02d197296e"
-}
-
 variable "auth_sign_in_audience" {
   description = "Sign-in audience for the authentication App Registration"
   type        = string
@@ -114,40 +86,4 @@ variable "dataverse_homepage_url" {
 variable "dataverse_redirect_uris" {
   description = "Redirect URIs for the Dataverse web application"
   type        = list(string)
-}
-
-# Exposed API (scope)
-variable "dataverse_scope_value" {
-  description = "Scope value for Dataverse oauth2_permission_scope"
-  type        = string
-}
-
-# Required resource access (Graph, SharePoint, custom API)
-variable "sharepoint_app_id" {
-  description = "App ID for SharePoint Online"
-  type        = string
-  default     = "00000007-0000-0000-c000-000000000000"
-}
-
-variable "sharepoint_resource_access_ids" {
-  description = "List of {id, type} for required SharePoint resource access"
-  type = list(object({
-    id   = string
-    type = string
-  }))
-  default = [
-    { id = "78ce3f0f-a1ce-49c2-8cde-64b5c0896db4", type = "Scope" },
-  ]
-}
-
-variable "custom_api_app_id" {
-  description = "App ID for custom API (entra connector)"
-  type        = string
-  default     = "f5cda511-d71d-4f10-a5dd-ec2627475e75"
-}
-
-variable "custom_api_scope_id" {
-  description = "Scope ID for custom API access"
-  type        = string
-  default     = "f4539fe0-7aa1-47af-9608-7098d66c87e6"
 }

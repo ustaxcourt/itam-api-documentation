@@ -1,9 +1,9 @@
 resource "azuread_application" "function_auth_app" {
   # Unique per environment
-  display_name     = "${var.auth_app_display_name}"
+  display_name = var.auth_app_display_name
 
   # Unique identifier URI per environment
-  identifier_uris  = ["api://${var.auth_app_display_name}"]
+  identifier_uris = ["api://${var.auth_app_display_name}"]
 
   web {
     homepage_url  = "https://${var.function_app_name}.azurewebsites.net"
@@ -18,28 +18,16 @@ resource "azuread_application" "function_auth_app" {
   api {
     requested_access_token_version = 2
     mapped_claims_enabled          = false
-
-    # Letting Entra ID generate the scope GUID (omitting `id` config) to retain uniquness per env
-    oauth2_permission_scope {
-      id                         = local.auth_scope_id
-      value                      = var.auth_scope_value
-      type                       = "User"
-      enabled                    = true
-      admin_consent_display_name = "Access ustc-itam-apis"
-      admin_consent_description  = "Allow the application to access ustc-itam-apis on behalf of the signed-in user."
-      user_consent_display_name  = "Access ustc-itam-apis"
-      user_consent_description   = "Allow the application to access ustc-itam-apis on your behalf."
-    }
   }
 
   required_resource_access {
-    resource_app_id = var.graph_app_id
+    resource_app_id = local.graph_app_id
     resource_access {
-      id = var.graph_user_read_scope_id
+      id   = local.graph_user_read_scope_id
       type = "Scope"
     }
     resource_access {
-      id = var.graph_openid_scope_id
+      id   = local.graph_openid_scope_id
       type = "Scope"
     }
   }
