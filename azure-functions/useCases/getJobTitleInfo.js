@@ -1,5 +1,5 @@
 import { getDataverseJobTitle } from '../persistence/getDataverseJobTitle.js';
-import { reorderResponseObject } from '../persistence/reorderResponse.js';
+import { parseDataverseResponse } from '../persistence/parseDataverseResponse.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 import { restructureJobTitle } from '../persistence/restructureJobTitle.js';
@@ -22,7 +22,7 @@ export async function getJobTitleInfo(jobTitleId) {
     };
     results = [];
     for (const item of response.value) {
-      const result = await reorderResponseObject(item, responseExpectation);
+      const result = await parseDataverseResponse(item, responseExpectation);
       results.push(result);
     }
 
