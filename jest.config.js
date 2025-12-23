@@ -39,7 +39,7 @@ export default {
         '^.+\\.ts$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
       },
 
-      moduleNameMapper: { '^(\\.{1,2}/.*)\\.js$': '$1' },
+      moduleNameMapper: { '^(\\.{1,2}/.*)\\.js$': '$1' }, // a backup to remove file extensions from imports
     },
     {
       displayName: 'integration', // integration tests will run a build first to ensure actual emitted code runs
