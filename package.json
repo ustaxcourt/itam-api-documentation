@@ -10,7 +10,7 @@
     "test:unit": "jest --selectProjects unit",
     "test:integration": "jest --selectProjects integration --coverage=false",
     "prepare": "husky",
-    "build": "tsc"
+    "build": "tsc && jq '.main=\"./index.js\"' package.json > dist/azure-functions/package.json && cp local.settings.json dist/azure-functions/local.settings.json && cp host.json dist/azure-functions/host.json"
   },
   "dependencies": {
     "@azure/data-tables": "^13.3.1",

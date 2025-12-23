@@ -31,7 +31,7 @@ export default {
   projects: [
     {
       displayName: 'unit',
-      testMatch: ['**/dist/azure-functions/**/*.test.js'], // Now points to the generated JS files instead of TS
+      testMatch: ['**/azure-functions/**/*.test.{js,ts}'], // Unit tests run on source files and doesn't need a build
       testPathIgnorePatterns: [
         '/azure-functions/tests/integration/',
         'jest.setup.js',
@@ -40,7 +40,7 @@ export default {
       ],
     },
     {
-      displayName: 'integration',
+      displayName: 'integration', //integration tests will run a build first to ensure actual emitted code runs
       testMatch: ['**/integration/**/*.int.test.js'],
       globalSetup: './jest.setup.js',
       globalTeardown: './jest.teardown.js',

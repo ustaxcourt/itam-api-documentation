@@ -36,8 +36,8 @@
     "allowJs": true,
     "checkJs": false,
     "noEmit": false,
-    "outDir": "dist",
-    "rootDir": ".",
+    "outDir": "dist/azure-functions",
+    "rootDir": "azure-functions",
     "strict": false,
     "exactOptionalPropertyTypes": false,
 
@@ -49,5 +49,8 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true
-  }
+  },
+
+  "include": ["azure-functions/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.*", "**/tests/**"]
 }
