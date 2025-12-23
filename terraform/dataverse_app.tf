@@ -38,15 +38,6 @@ resource "azuread_application" "dataverse_app" {
       type = "Scope"
     } # OpenID
   }
-
-  # Required resource access — Custom API (entra connector) - creates user impersonation api permission
-  required_resource_access {
-    resource_app_id = local.custom_api_app_id
-    resource_access {
-      id   = local.custom_api_scope_id
-      type = "Scope"
-    }
-  }
 }
 
 # Service Principal (Enterprise App) for Dataverse app
