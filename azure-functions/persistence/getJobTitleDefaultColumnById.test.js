@@ -5,7 +5,7 @@ import { InternalServerError } from '../errors/InternalServerError.js';
 
 jest.mock('./dataverseCall.js');
 
-describe('getJobTitleNameById', () => {
+describe('getJobTitleDefaultColumnById', () => {
   const jobTitleId = 'b09cf686-30d5-f011-8544-7c1e52177972';
 
   beforeEach(() => {
