@@ -10,7 +10,6 @@ export async function getJobTitleRequirementsById(id) {
 
   // Dataverse call
   const response = await dataverseCall({ query: query, method: 'GET' });
-
   // Check to see if we got anything
   if (!response?.value || response.value.length === 0) {
     throw new NotFoundError(`Resource not found`);
@@ -22,7 +21,7 @@ export async function getJobTitleRequirementsById(id) {
     maximumQuantity: 'crf7f_JobTitleAssetType.crf7f_maximumquantity',
     assetType: 'crf7f_JobTitleAssetType.crf7f_AssetType.crf7f_name',
     modelMaximum: 'crf7f_modelmaximum',
-    modelMinimum: 'crf7f_modelminimum', // TODO: this may need implementation in the database
+    modelMinimum: 'crf7f_modelminimum',
   };
 
   return restructureJobTitleRequirements(
