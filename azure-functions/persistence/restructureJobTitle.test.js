@@ -1,4 +1,4 @@
-import { restructureJobTitle } from './restructureJobTitle.js';
+import { restructureJobTitle } from './restructureJobTitle';
 
 describe('restructureJobTitle', () => {
   test('should group items by assetType under one job title', async () => {

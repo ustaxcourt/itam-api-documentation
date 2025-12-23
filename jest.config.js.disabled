@@ -26,23 +26,27 @@ export default {
   projects: [
     {
       displayName: 'unit',
-      testMatch: ['**/azure-functions/**/*.test.{js,ts}'], // looks for both TS and JS files while we migrate
+      testMatch: ['**/azure-functions/**/*.test.{js,ts}'], // Unit tests run on source files and doesn't need a build
       testPathIgnorePatterns: [
         '/azure-functions/tests/integration/',
         'jest.setup.js',
         'jest.teardown.js',
-        '\\.d\\.ts$',
+        '\\.d\\.ts$', // ignores type declaration files for test consideration
       ],
-      // force jest to use babel for the JS files and out tsconfig rules on ts-jest for any TS
+
       transform: {
         '^.+\\.js$': 'babel-jest',
-        '^.+\\.ts$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
+        '^.+\\.ts$': ['ts-jest', { useESM: true }],
       },
 
-      moduleNameMapper: { '^(\\.{1,2}/.*)\\.js$': '$1' },
+      extensionsToTreatAsEsm: ['.ts'],
+
+      moduleNameMapper: {
+        '^(\\.{1,2}/.*)\\.js$': '$1',
+      },
     },
     {
-      displayName: 'integration', // integration tests will run a build first to ensure actual emitted code runs
+      displayName: 'integration', //integration tests will run a build first to ensure actual emitted code runs
       testMatch: ['**/integration/**/*.int.test.js'],
       globalSetup: './jest.setup.js',
       globalTeardown: './jest.teardown.js',

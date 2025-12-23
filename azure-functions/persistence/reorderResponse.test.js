@@ -1,4 +1,4 @@
-import { reorderResponseObject } from './reorderResponse.js'; // Update with actual file name
+import { reorderResponseObject } from './reorderResponse'; // Update with actual file name
 
 describe('reorderResponseObject', () => {
   const data = {

@@ -1,4 +1,4 @@
-import { DataverseTokenError } from '../errors/DataverseTokenError.js';
+import { DataverseTokenError } from '../errors/DataverseTokenError';
 
 export async function getDataverseAccessToken() {
   const { CLIENT_ID, TENANT_ID, DATAVERSE_INTERNAL, SCOPE } = process.env;

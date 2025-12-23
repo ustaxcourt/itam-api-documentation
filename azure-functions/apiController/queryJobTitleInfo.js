@@ -1,7 +1,7 @@
 import { app } from '@azure/functions';
-import { buildResponse } from './buildResponse.js';
-import { getJobTitleInfo } from '../useCases/getJobTitleInfo.js';
-import { BadRequest } from '../errors/BadRequest.js';
+import { buildResponse } from './buildResponse';
+import { getJobTitleInfo } from '../useCases/getJobTitleInfo';
+import { BadRequest } from '../errors/BadRequest';
 
 export async function jobTitleHandler(request, context) {
   try {

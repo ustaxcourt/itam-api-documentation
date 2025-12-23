@@ -1,6 +1,6 @@
-import { getDataverseJobTitle } from './getDataverseJobTitle.js';
-import { dataverseCall } from './dataverseCall.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
+import { getDataverseJobTitle } from './getDataverseJobTitle';
+import { dataverseCall } from './dataverseCall';
+import { NotFoundError } from '../errors/NotFoundError';
 
 jest.mock('./dataverseCall.js');
 

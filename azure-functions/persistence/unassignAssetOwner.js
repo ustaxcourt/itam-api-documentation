@@ -1,4 +1,4 @@
-import { dataverseCall } from '../persistence/dataverseCall.js';
+import { dataverseCall } from '../persistence/dataverseCall';
 
 export async function unassignAssetOwner(assetId) {
   const body = {

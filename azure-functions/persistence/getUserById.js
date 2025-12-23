@@ -1,6 +1,6 @@
-import { dataverseCall } from './dataverseCall.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
+import { dataverseCall } from './dataverseCall';
+import { NotFoundError } from '../errors/NotFoundError';
+import { InternalServerError } from '../errors/InternalServerError';
 
 export async function getUserById(userid) {
   const query = `crf7f_ois_asset_entra_dat_users?$filter=crf7f_name eq '${userid}'`;

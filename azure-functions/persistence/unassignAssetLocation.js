@@ -1,6 +1,6 @@
-import { DataverseTokenError } from '../errors/DataverseTokenError.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
-import { dataverseCall } from './dataverseCall.js';
+import { DataverseTokenError } from '../errors/DataverseTokenError';
+import { InternalServerError } from '../errors/InternalServerError';
+import { dataverseCall } from './dataverseCall';
 
 export async function unassignLocationAsset(assetId) {
   try {

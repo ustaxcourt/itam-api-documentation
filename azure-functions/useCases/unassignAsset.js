@@ -1,4 +1,4 @@
-import { unassignAssetOwner } from '../persistence/unassignAssetOwner.js';
+import { unassignAssetOwner } from '../persistence/unassignAssetOwner';
 
 export async function unassignAsset(assetId) {
   await unassignAssetOwner(assetId);

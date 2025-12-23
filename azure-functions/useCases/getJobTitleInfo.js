@@ -1,9 +1,9 @@
-import { getDataverseJobTitle } from '../persistence/getDataverseJobTitle.js';
-import { reorderResponseObject } from '../persistence/reorderResponse.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
-import { DataverseTokenError } from '../errors/DataverseTokenError.js';
-import { restructureJobTitle } from '../persistence/restructureJobTitle.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
+import { getDataverseJobTitle } from '../persistence/getDataverseJobTitle';
+import { reorderResponseObject } from '../persistence/reorderResponse';
+import { InternalServerError } from '../errors/InternalServerError';
+import { DataverseTokenError } from '../errors/DataverseTokenError';
+import { restructureJobTitle } from '../persistence/restructureJobTitle';
+import { NotFoundError } from '../errors/NotFoundError';
 
 //asset arrays of zero length are handled at the controller level
 export async function getJobTitleInfo(jobTitleId) {

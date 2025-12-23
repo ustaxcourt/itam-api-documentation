@@ -1,7 +1,7 @@
-import { getJobTitleInfo } from './getJobTitleInfo.js';
-import { getDataverseJobTitle } from '../persistence/getDataverseJobTitle.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
-import { DataverseTokenError } from '../errors/DataverseTokenError.js';
+import { getJobTitleInfo } from './getJobTitleInfo';
+import { getDataverseJobTitle } from '../persistence/getDataverseJobTitle';
+import { InternalServerError } from '../errors/InternalServerError';
+import { DataverseTokenError } from '../errors/DataverseTokenError';
 
 jest.mock('../persistence/getDataverseJobTitle.js');
 

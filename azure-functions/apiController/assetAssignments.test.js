@@ -1,6 +1,6 @@
-import { assignmentsHandler } from './assetAssignments.js';
-import { assignAssetToUser } from '../useCases/assignAssetToUser.js';
-import { unassignAsset } from '../useCases/unassignAsset.js';
+import { assignmentsHandler } from './assetAssignments';
+import { assignAssetToUser } from '../useCases/assignAssetToUser';
+import { unassignAsset } from '../useCases/unassignAsset';
 
 jest.mock('../useCases/assignAssetToUser.js');
 jest.mock('../useCases/unassignAsset.js');

@@ -1,8 +1,8 @@
-import { jobTitleHandler } from './queryJobTitleInfo.js';
-import { getJobTitleInfo } from '../useCases/getJobTitleInfo.js';
-import { BadRequest } from '../errors/BadRequest.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
+import { jobTitleHandler } from './queryJobTitleInfo';
+import { getJobTitleInfo } from '../useCases/getJobTitleInfo';
+import { BadRequest } from '../errors/BadRequest';
+import { NotFoundError } from '../errors/NotFoundError';
+import { InternalServerError } from '../errors/InternalServerError';
 
 jest.mock('../useCases/getJobTitleInfo.js');
 

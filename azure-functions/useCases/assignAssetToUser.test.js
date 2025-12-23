@@ -1,5 +1,5 @@
-import { assignAssetToUser } from './assignAssetToUser.js';
-import { assignAssetOwner } from '../persistence/assignAssetOwner.js';
+import { assignAssetToUser } from './assignAssetToUser';
+import { assignAssetOwner } from '../persistence/assignAssetOwner';
 
 jest.mock('../persistence/assignAssetOwner.js', () => ({
   assignAssetOwner: jest.fn(),

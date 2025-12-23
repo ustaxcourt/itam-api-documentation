@@ -1,5 +1,5 @@
-import { filterDictionary } from './filterDict.js';
-import { filterDictionaryByList } from './filterDictbyList.js';
+import { filterDictionary } from './filterDict';
+import { filterDictionaryByList } from './filterDictbyList';
 
 jest.mock('./filterDict.js', () => ({
   filterDictionary: jest.fn(),

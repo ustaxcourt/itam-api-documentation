@@ -1,5 +1,5 @@
-import { dataverseCall } from './dataverseCall.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
+import { dataverseCall } from './dataverseCall';
+import { NotFoundError } from '../errors/NotFoundError';
 
 export async function getDataverseJobTitle(id) {
   // Build Dataverse query URL

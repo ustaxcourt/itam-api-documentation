@@ -1,4 +1,4 @@
-import { getAssetByID } from '../persistence/getAssetByID.js';
+import { getAssetByID } from '../persistence/getAssetByID';
 
 export async function getAssetDetails(id) {
   // From persistence layer

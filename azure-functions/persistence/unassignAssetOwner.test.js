@@ -1,5 +1,5 @@
-import { unassignAssetOwner } from './unassignAssetOwner.js';
-import { dataverseCall } from '../persistence/dataverseCall.js';
+import { unassignAssetOwner } from './unassignAssetOwner';
+import { dataverseCall } from '../persistence/dataverseCall';
 
 jest.mock('../persistence/dataverseCall.js');
 

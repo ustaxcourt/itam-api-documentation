@@ -1,7 +1,7 @@
-import { getAssetByID } from './getAssetByID.js';
-import { dataverseCall } from './dataverseCall.js';
-import { filterDictionary } from './filterDict.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
+import { getAssetByID } from './getAssetByID';
+import { dataverseCall } from './dataverseCall';
+import { filterDictionary } from './filterDict';
+import { NotFoundError } from '../errors/NotFoundError';
 
 jest.mock('./dataverseCall.js');
 jest.mock('./filterDict.js');

@@ -1,5 +1,5 @@
-import { DataverseTokenError } from '../errors/DataverseTokenError.js';
-import { getDataverseAccessToken } from './getDataverseAccessToken.js';
+import { DataverseTokenError } from '../errors/DataverseTokenError';
+import { getDataverseAccessToken } from './getDataverseAccessToken';
 
 let clientIDStorage;
 let tenantIDStorage;
