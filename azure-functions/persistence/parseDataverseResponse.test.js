@@ -1,6 +1,6 @@
-import { reorderResponseObject } from './reorderResponse.js'; // Update with actual file name
+import { parseDataverseResponse } from './parseDataverseResponse.js'; // Update with actual file name
 
-describe('reorderResponseObject', () => {
+describe('parseDataverseResponse', () => {
   const data = {
     '@odata.etag': 'W/"11137313"',
     'modifiedon@OData.Community.Display.V1.FormattedValue':
@@ -41,7 +41,7 @@ describe('reorderResponseObject', () => {
     modelMaximum: 'crf7f_modelmaximum',
   };
 
-  it('should map nested data to expected schema correctly', async () => {
+  it('should map nested data to expected schema correctly', () => {
     const expected = {
       itemName: 'CM568',
       minimumQuantity: 3,
@@ -51,11 +51,14 @@ describe('reorderResponseObject', () => {
       modelMaximum: 1,
     };
 
-    const result = await reorderResponseObject(data, responseExpectation);
+    const result = parseDataverseResponse({
+      data,
+      schema: responseExpectation,
+    });
     expect(result).toEqual(expected);
   });
 
-  it('should return null for missing paths', async () => {
+  it('should return undefined for missing paths', () => {
     const schemaWithMissingKey = {
       missingField: 'non.existent.path',
     };
@@ -64,12 +67,15 @@ describe('reorderResponseObject', () => {
       missingField: undefined,
     };
 
-    const result = await reorderResponseObject(data, schemaWithMissingKey);
+    const result = parseDataverseResponse({
+      data,
+      schema: schemaWithMissingKey,
+    });
     expect(result).toEqual(expected);
   });
 
-  it('should return empty object if schema is empty', async () => {
-    const result = await reorderResponseObject(data, {});
+  it('should return empty object if schema is empty', () => {
+    const result = parseDataverseResponse({ data, schema: {} });
     expect(result).toEqual({});
   });
 });
