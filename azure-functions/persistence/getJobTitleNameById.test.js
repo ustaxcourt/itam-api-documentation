@@ -24,7 +24,7 @@ describe('getJobTitleNameById', () => {
 
     expect(dataverseCall).toHaveBeenCalledWith({
       query:
-        "crf7f_JobTitle?$select=crf7f_title&$filter=crf7f_ois_job_titleid eq 'b09cf686-30d5-f011-8544-7c1e52177972'",
+        "crf7f_ois_job_titles?$select=crf7f_title&$filter=crf7f_ois_job_titleid eq 'b09cf686-30d5-f011-8544-7c1e52177972'",
       method: 'GET',
     });
   });

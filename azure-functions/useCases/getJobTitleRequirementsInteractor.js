@@ -8,7 +8,9 @@ import { NotFoundError } from '../errors/NotFoundError.js';
 export async function getJobTitleRequirementsInteractor(jobTitleId) {
   try {
     const jobTitleName = await getJobTitleNameById(jobTitleId);
+    console.log(jobTitleName);
     const requirements = await getJobTitleRequirementsById(jobTitleId);
+    console.log(requirements);
 
     return {
       jobTitle: jobTitleName,
