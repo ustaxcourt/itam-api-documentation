@@ -8,7 +8,7 @@ let scopeStorage;
 
 describe('getDataverseAccessToken', () => {
   beforeAll(() => {
-    clientIDStorage = process.env.CLIENT_ID;
+    clientIDStorage = process.env.DATAVERSE_CLIENT_ID;
     tenantIDStorage = process.env.TENANT_ID;
     dataverseStorage = process.env.DATAVERSE_INTERNAL;
     scopeStorage = process.env.SCOPE;
@@ -19,7 +19,7 @@ describe('getDataverseAccessToken', () => {
   });
 
   afterAll(() => {
-    process.env.CLIENT_ID = clientIDStorage;
+    process.env.DATAVERSE_CLIENT_ID = clientIDStorage;
     process.env.TENANT_ID = tenantIDStorage;
     process.env.DATAVERSE_INTERNAL = dataverseStorage;
     process.env.SCOPE = scopeStorage;
