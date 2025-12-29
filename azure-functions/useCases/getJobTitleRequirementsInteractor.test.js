@@ -97,7 +97,7 @@ describe('getJobTitleRequirementsInteractor', () => {
     expect(getJobTitleRequirementsById).toHaveBeenCalledWith('title789');
   });
 
-  it('should rethrow InternalServerError', async () => {
+  it('re-throw an internal server error that the persistence method threw', async () => {
     const error = new InternalServerError('Internal Server Error');
     getJobTitleRequirementsById.mockRejectedValue(error);
 

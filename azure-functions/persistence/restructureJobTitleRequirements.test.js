@@ -1,7 +1,7 @@
 import { restructureJobTitleRequirements } from './restructureJobTitleRequirements.js';
 
 describe('restructureJobTitleRequirements', () => {
-  test('should group models by assetType', async () => {
+  it('should group models by assetType', async () => {
     const data = [
       {
         assetType: 'Laptop',
@@ -49,7 +49,7 @@ describe('restructureJobTitleRequirements', () => {
     ]);
   });
 
-  test('should handle empty data array', async () => {
+  it('should handle empty data array', async () => {
     const result = restructureJobTitleRequirements([]);
     expect(result).toHaveLength(0);
   });
