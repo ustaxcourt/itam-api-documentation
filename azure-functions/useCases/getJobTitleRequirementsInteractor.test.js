@@ -115,7 +115,7 @@ describe('getJobTitleRequirementsInteractor', () => {
     );
   });
 
-  it('should rethrow InternalServerError', async () => {
+  it('re-throw an Internal server error that the persistence method threw', async () => {
     getJobTitleDefaultColumnById.mockResolvedValue(false);
     const error = new InternalServerError('Internal Server Error');
     getJobTitleRequirementsById.mockRejectedValue(error);
