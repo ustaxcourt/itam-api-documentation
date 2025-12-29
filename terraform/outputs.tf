@@ -30,11 +30,6 @@ output "app_insights_connection_string" {
   sensitive   = true
 }
 
-output "scope" {
-  description = "Scope used for Dataverse API access"
-  value       = var.scope
-}
-
 output "function_auth_app_id" {
   description = "The Application (client) ID of the Function Auth App Registration"
   value       = azuread_application.function_auth_app.client_id
@@ -55,7 +50,7 @@ output "function_auth_redirect_uris" {
   value       = azuread_application.function_auth_app.web[0].redirect_uris
 }
 
-output "function_auth_tenant_id" {
-  description = "Tenant ID used for the Function Auth App Registration"
-  value       = var.auth_tenant_id
+output "all_tenant_id" {
+  description = "Tenant ID used for all of our applications"
+  value       = var.all_tenant_id
 }

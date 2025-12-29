@@ -1,11 +1,9 @@
-# We are using a separate tenant for the authentication provider
-provider "azuread" {
-  tenant_id = var.auth_tenant_id
-}
-
 resource "azuread_application" "function_auth_app" {
-  display_name     = "${var.function_app_name}-authentication"
-  identifier_uris  = [var.auth_identifier_uri]
+  # Unique per environment
+  display_name = var.auth_app_display_name
+
+  # Unique identifier URI per environment
+  identifier_uris = ["api://${var.auth_app_display_name}"]
 
   web {
     homepage_url  = "https://${var.function_app_name}.azurewebsites.net"
@@ -20,29 +18,16 @@ resource "azuread_application" "function_auth_app" {
   api {
     requested_access_token_version = 2
     mapped_claims_enabled          = false
-
-    oauth2_permission_scope {
-      admin_consent_description  = "Allow the application to access ustc-itam-apis on behalf of the signed-in user."
-      admin_consent_display_name = "Access ustc-itam-apis"
-      enabled                    = true
-      id                         = var.auth_scope_id
-      type                       = "User"
-      user_consent_description   = "Allow the application to access ustc-itam-apis on your behalf."
-      user_consent_display_name  = "Access ustc-itam-apis"
-      value                      = var.auth_scope_value
-    }
   }
 
   required_resource_access {
-    resource_app_id = var.graph_app_id
-
+    resource_app_id = local.graph_app_id
     resource_access {
-      id   = var.graph_user_read_scope_id
+      id   = local.graph_user_read_scope_id
       type = "Scope"
     }
-
     resource_access {
-      id   = var.graph_openid_scope_id
+      id   = local.graph_openid_scope_id
       type = "Scope"
     }
   }
@@ -52,4 +37,10 @@ resource "azuread_application" "function_auth_app" {
 
 resource "azuread_service_principal" "function_auth_sp" {
   client_id = azuread_application.function_auth_app.client_id
+}
+
+resource "azuread_application_password" "function_auth_secret" {
+  application_id = azuread_application.function_auth_app.id
+  display_name   = "terraform-generated"
+  end_date       = "2026-12-17T00:00:00Z"
 }
