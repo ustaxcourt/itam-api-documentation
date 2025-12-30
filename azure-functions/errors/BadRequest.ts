@@ -1,6 +1,7 @@
 export class BadRequest extends Error {
-  constructor(message) {
+  readonly statusCode = 400;
+
+  constructor(message: string) {
     super(message);
-    this.statusCode = 400;
   }
 }

@@ -31,7 +31,5 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-# Terraform plan outputs
-*.tfplan
-*.plan
-tfplan*
+# TSC generated artifacts for local testing
+dist/
