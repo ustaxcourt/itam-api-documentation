@@ -33,6 +33,6 @@ export async function getRequirementsForJobTitleRequestHandler(
 app.http('jobTitle', {
   methods: ['GET'],
   authLevel: 'anonymous',
-  route: 'v1/titleInfo/{jobTitleID}/requirements',
+  route: 'v1/job-titles/{jobTitleID}/requirements',
   handler: getRequirementsForJobTitleRequestHandler,
 });

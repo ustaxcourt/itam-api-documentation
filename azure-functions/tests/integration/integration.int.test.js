@@ -242,7 +242,7 @@ describe('Integration testing for ITAM Project', () => {
 
   it('GET Job Titles - should display proper job title infomation after querying', async () => {
     const getTitleInfoResult = await fetch(
-      `${baseUrl}/api/v1/titleinfo/${existingJobTitleId}/requirements`,
+      `${baseUrl}/api/v1/job-titles/${existingJobTitleId}/requirements`,
       {
         method: 'GET',
         headers: { Authorization: 'Bearer mocked-token' },
@@ -270,7 +270,7 @@ describe('Integration testing for ITAM Project', () => {
 
   it('GET Job Titles - should return 404 when trying to query a job title that does not exist', async () => {
     const getTitleInfoResult = await fetch(
-      `${baseUrl}/api/v1/titleinfo/${nonExistingJobTitleId}/requirements`,
+      `${baseUrl}/api/v1/job-titles/${nonExistingJobTitleId}/requirements`,
       {
         method: 'GET',
         headers: { Authorization: 'Bearer mocked-token' },
