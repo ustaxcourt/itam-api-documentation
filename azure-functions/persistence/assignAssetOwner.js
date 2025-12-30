@@ -1,6 +1,6 @@
-import { getUserById } from './getUserById.js';
-import { dataverseCall } from './dataverseCall.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
+import { getUserById } from './getUserById';
+import { dataverseCall } from './dataverseCall';
+import { NotFoundError } from '../errors/NotFoundError';
 
 export async function assignAssetOwner(userId, assetId) {
   const rowId = await getUserById(userId);

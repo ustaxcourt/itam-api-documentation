@@ -1,7 +1,7 @@
 import { app } from '@azure/functions';
-import { getAssetDetails } from '../useCases/getAssetDetails.js';
-import { buildResponse } from './buildResponse.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
+import { getAssetDetails } from '../useCases/getAssetDetails';
+import { buildResponse } from './buildResponse';
+import { NotFoundError } from '../errors/NotFoundError';
 
 export async function queryAssetHandler(request, context) {
   try {

@@ -1,5 +1,5 @@
-import { getDataverseAccessToken } from './getDataverseAccessToken.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
+import { getDataverseAccessToken } from './getDataverseAccessToken';
+import { InternalServerError } from '../errors/InternalServerError';
 
 export async function dataverseCall({ query, method, body = null }) {
   const token = await getDataverseAccessToken();

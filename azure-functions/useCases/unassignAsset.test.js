@@ -1,5 +1,5 @@
-import { unassignAsset } from './unassignAsset.js';
-import { unassignAssetOwner } from '../persistence/unassignAssetOwner.js';
+import { unassignAsset } from './unassignAsset';
+import { unassignAssetOwner } from '../persistence/unassignAssetOwner';
 
 jest.mock('../persistence/unassignAssetOwner.js', () => ({
   unassignAssetOwner: jest.fn(),

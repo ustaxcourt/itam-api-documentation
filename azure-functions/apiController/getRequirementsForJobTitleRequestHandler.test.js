@@ -1,8 +1,8 @@
-import { getRequirementsForJobTitleRequestHandler } from './getRequirementsForJobTitleRequestHandler.js';
-import { getJobTitleRequirementsInteractor } from '../useCases/getJobTitleRequirementsInteractor.js';
-import { BadRequest } from '../errors/BadRequest.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
+import { getRequirementsForJobTitleRequestHandler } from './getRequirementsForJobTitleRequestHandler';
+import { getJobTitleRequirementsInteractor } from '../useCases/getJobTitleRequirementsInteractor';
+import { BadRequest } from '../errors/BadRequest';
+import { NotFoundError } from '../errors/NotFoundError';
+import { InternalServerError } from '../errors/InternalServerError';
 
 jest.mock('../useCases/getJobTitleRequirementsInteractor.js');
 

@@ -1,8 +1,8 @@
-import { DataverseTokenError } from '../errors/DataverseTokenError.js';
-import { getJobTitleNameById } from '../persistence/getJobTitleNameById.js';
-import { getJobTitleRequirementsById } from '../persistence/getJobTitleRequirementsById.js';
-import { getJobTitleRequirementsInteractor } from './getJobTitleRequirementsInteractor.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
+import { DataverseTokenError } from '../errors/DataverseTokenError';
+import { getJobTitleNameById } from '../persistence/getJobTitleNameById';
+import { getJobTitleRequirementsById } from '../persistence/getJobTitleRequirementsById';
+import { getJobTitleRequirementsInteractor } from './getJobTitleRequirementsInteractor';
+import { InternalServerError } from '../errors/InternalServerError';
 
 jest.mock('../persistence/getJobTitleRequirementsById.js');
 jest.mock('../persistence/getJobTitleNameById.js');

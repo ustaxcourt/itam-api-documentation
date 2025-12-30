@@ -1,5 +1,5 @@
-import { unassignLocationAsset } from '../persistence/unassignAssetLocation.js';
-import { getAssetByID } from '../persistence/getAssetByID.js';
+import { unassignLocationAsset } from '../persistence/unassignAssetLocation';
+import { getAssetByID } from '../persistence/getAssetByID';
 
 export async function unassignLocationToAsset(assetId) {
   await getAssetByID(assetId);

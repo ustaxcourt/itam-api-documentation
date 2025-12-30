@@ -1,4 +1,4 @@
-import { filterDictionary } from './filterDict.js';
+import { filterDictionary } from './filterDict';
 
 export function filterDictionaryByList(list) {
   const results = [];

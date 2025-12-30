@@ -1,4 +1,4 @@
-import { filterDictionary } from './filterDict.js';
+import { filterDictionary } from './filterDict';
 
 describe('filterDictionary', () => {
   it('should filter and rename keys based on keyMap', () => {

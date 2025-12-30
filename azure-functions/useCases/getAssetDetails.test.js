@@ -1,5 +1,5 @@
-import { getAssetByID } from '../persistence/getAssetByID.js';
-import { getAssetDetails } from './getAssetDetails.js';
+import { getAssetByID } from '../persistence/getAssetByID';
+import { getAssetDetails } from './getAssetDetails';
 
 jest.mock('../persistence/getAssetByID.js', () => ({
   getAssetByID: jest.fn(),

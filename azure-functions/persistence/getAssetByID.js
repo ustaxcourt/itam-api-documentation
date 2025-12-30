@@ -1,6 +1,6 @@
-import { dataverseCall } from './dataverseCall.js';
-import { filterDictionary } from './filterDict.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
+import { dataverseCall } from './dataverseCall';
+import { filterDictionary } from './filterDict';
+import { NotFoundError } from '../errors/NotFoundError';
 
 export async function getAssetByID(id) {
   // Build Dataverse query URL

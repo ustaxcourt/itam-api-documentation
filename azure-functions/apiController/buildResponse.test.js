@@ -1,4 +1,4 @@
-import { buildResponse } from './buildResponse.js';
+import { buildResponse } from './buildResponse';
 
 describe('buildResponse', () => {
   it('should return correct response with all parameters', () => {

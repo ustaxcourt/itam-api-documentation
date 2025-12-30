@@ -1,6 +1,6 @@
-import { dataverseCall } from './dataverseCall.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
+import { dataverseCall } from './dataverseCall';
+import { NotFoundError } from '../errors/NotFoundError';
+import { InternalServerError } from '../errors/InternalServerError';
 
 export async function getLocationByName({ locationname }) {
   const query = `crf7f_fac_asset_ref_locations?$filter=crf7f_name eq '${locationname}'`;

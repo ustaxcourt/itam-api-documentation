@@ -1,7 +1,7 @@
-import { unassignLocationAsset } from './unassignAssetLocation.js';
-import { DataverseTokenError } from '../errors/DataverseTokenError.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
-import { dataverseCall } from './dataverseCall.js';
+import { unassignLocationAsset } from './unassignAssetLocation';
+import { DataverseTokenError } from '../errors/DataverseTokenError';
+import { InternalServerError } from '../errors/InternalServerError';
+import { dataverseCall } from './dataverseCall';
 
 jest.mock('./dataverseCall.js');
 

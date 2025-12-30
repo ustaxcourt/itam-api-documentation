@@ -1,6 +1,6 @@
-import { queryAssetsByEmail } from './queryAssetsByEmail.js';
-import { getAssetsByEmail } from '../useCases/getAssetsByEmail.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
+import { queryAssetsByEmail } from './queryAssetsByEmail';
+import { getAssetsByEmail } from '../useCases/getAssetsByEmail';
+import { InternalServerError } from '../errors/InternalServerError';
 
 jest.mock('../useCases/getAssetsByEmail.js');
 jest.mock('../persistence/dataverseCall.js');

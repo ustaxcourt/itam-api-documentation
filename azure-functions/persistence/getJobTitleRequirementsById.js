@@ -1,7 +1,7 @@
-import { dataverseCall } from './dataverseCall.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
-import { restructureJobTitleRequirements } from './restructureJobTitleRequirements.js';
-import { parseDataverseResponse } from './parseDataverseResponse.js';
+import { dataverseCall } from './dataverseCall';
+import { NotFoundError } from '../errors/NotFoundError';
+import { restructureJobTitleRequirements } from './restructureJobTitleRequirements';
+import { parseDataverseResponse } from './parseDataverseResponse';
 
 export async function getJobTitleRequirementsById(id) {
   // Build Dataverse query URL

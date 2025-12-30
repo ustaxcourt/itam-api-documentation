@@ -1,7 +1,7 @@
-import { getLocationById } from './getLocationById.js';
-import { dataverseCall } from './dataverseCall.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
+import { getLocationById } from './getLocationById';
+import { dataverseCall } from './dataverseCall';
+import { NotFoundError } from '../errors/NotFoundError';
+import { InternalServerError } from '../errors/InternalServerError';
 
 jest.mock('./dataverseCall.js'); // Mock dataverseCall
 

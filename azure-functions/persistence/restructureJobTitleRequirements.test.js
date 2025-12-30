@@ -1,4 +1,4 @@
-import { restructureJobTitleRequirements } from './restructureJobTitleRequirements.js';
+import { restructureJobTitleRequirements } from './restructureJobTitleRequirements';
 
 describe('restructureJobTitleRequirements', () => {
   it('should group models by assetType', async () => {

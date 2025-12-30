@@ -1,7 +1,7 @@
-import { DataverseTokenError } from '../errors/DataverseTokenError.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
-import { dataverseCall } from './dataverseCall.js';
-import { filterDictionaryByList } from './filterDictbyList.js';
+import { DataverseTokenError } from '../errors/DataverseTokenError';
+import { InternalServerError } from '../errors/InternalServerError';
+import { dataverseCall } from './dataverseCall';
+import { filterDictionaryByList } from './filterDictbyList';
 
 export async function getDataverseAssetsByEmail(email) {
   try {
