@@ -308,7 +308,7 @@ paths:
                         items:
                           $ref: "#/components/schemas/Asset"
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /v1/titleinfo/{jobTitle}/requirements:
+  /v1/job-titles/{jobTitle}/requirements:
     get:
       parameters:
         - name: jobTitle

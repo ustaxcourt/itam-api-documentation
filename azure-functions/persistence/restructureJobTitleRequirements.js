@@ -27,8 +27,6 @@ export function restructureJobTitleRequirements(data) {
 
   return Object.keys(requirements).map(key => ({
     assetType: key,
-    minimumQuantity: requirements[key].minimumQuantity,
-    maximumQuantity: requirements[key].maximumQuantity,
-    models: requirements[key].models,
+    ...requirements[key],
   }));
 }
