@@ -26,6 +26,7 @@ export function filterDictionary(dict) {
     crf7f_jobtitle: 'jobTitle',
     crf7f_phone: 'phone',
     crf7f_location: 'location',
+    crf7f_title: 'title',
   };
 
   for (const key in dict) {
