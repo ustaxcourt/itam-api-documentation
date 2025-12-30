@@ -50,4 +50,8 @@ resource "azuread_application_password" "dataverse_app_secret" {
   application_id = azuread_application.dataverse_app.id
   display_name   = "terraform-generated"
   end_date       = "2026-12-17T00:00:00Z"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
