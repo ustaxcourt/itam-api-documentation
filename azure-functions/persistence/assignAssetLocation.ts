@@ -1,8 +1,12 @@
-import { DataverseTokenError } from '../errors/DataverseTokenError';
-import { InternalServerError } from '../errors/InternalServerError';
-import { dataverseCall } from './dataverseCall';
+import { DataverseTokenError } from '../errors/DataverseTokenError.js';
+import { InternalServerError } from '../errors/InternalServerError.js';
+import { dataverseCall } from './dataverseCall.js';
 
-export async function assignLocationAsset(assetId, locationId) {
+//Promise may need to be changed to void instead of unknown if we're not using the return
+export async function assignLocationAsset(
+  assetId: string,
+  locationId: string,
+): Promise<unknown> {
   try {
     const body = {
       'crf7f_fac_asset_ref_locationLookup@odata.bind': `crf7f_fac_asset_ref_locations(${locationId})`,
