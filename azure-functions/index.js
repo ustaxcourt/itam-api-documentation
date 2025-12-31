@@ -5,6 +5,7 @@ import './apiController/queryAsset.js';
 import './apiController/authTest.js';
 import './apiController/locationAssignment.js';
 import './apiController/queryAssetsByEmail.js';
+import './apiController/getRequirementsForJobTitleRequestHandler.js';
 
 app.setup({
   enableHttpStream: true,

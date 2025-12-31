@@ -6,6 +6,8 @@ const nonExistentUserId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
 const existingLocationId = 'df164d9a-69d7-f011-8544-000d3a35fa12';
 const existingLocationName = 'San Francisco';
 const nonExistentLocationId = '04d494f4-b5b9-f011-bbd2-000d3a56dc3b';
+const existingJobTitleId = 'b09cf686-30d5-f011-8544-7c1e52177972';
+const nonExistingJobTitleId = 'b09cf686-30d5-f011-8544-7c1e52177973';
 
 describe('Integration testing for ITAM Project', () => {
   it('should fetch an existing asset successfully', async () => {
@@ -236,5 +238,47 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.message).toBe(
       `No location found for ID: ${nonExistentLocationId}`,
     );
+  });
+
+  it('GET Job Titles - should display proper job title infomation after querying', async () => {
+    const getTitleInfoResult = await fetch(
+      `${baseUrl}/api/v1/job-titles/${existingJobTitleId}/requirements`,
+      {
+        method: 'GET',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+
+    expect(getTitleInfoResult.status).toBe(200);
+
+    const body = await getTitleInfoResult.json();
+    expect(body).toHaveProperty('message', 'Success');
+    expect(body.data).toHaveProperty('requiredAssets');
+    expect(body.data).toHaveProperty('jobTitle');
+    expect(body.data.requiredAssets[0]).toHaveProperty('assetType');
+    expect(body.data.requiredAssets[0]).toHaveProperty('minimumQuantity');
+    expect(body.data.requiredAssets[0]).toHaveProperty('maximumQuantity');
+    expect(body.data.requiredAssets[0]).toHaveProperty('models');
+    expect(body.data.requiredAssets[0].models[0]).toHaveProperty('modelName');
+    expect(body.data.requiredAssets[0].models[0]).toHaveProperty(
+      'modelMaximum',
+    );
+    expect(body.data.requiredAssets[0].models[0]).toHaveProperty(
+      'modelMinimum',
+    );
+  });
+
+  it('GET Job Titles - should return 404 when trying to query a job title that does not exist', async () => {
+    const getTitleInfoResult = await fetch(
+      `${baseUrl}/api/v1/job-titles/${nonExistingJobTitleId}/requirements`,
+      {
+        method: 'GET',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+
+    expect(getTitleInfoResult.status).toBe(404);
+    const body = await getTitleInfoResult.json();
+    expect(body.message).toBe(`Resource not found`);
   });
 });
