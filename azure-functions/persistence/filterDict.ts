@@ -1,9 +1,13 @@
-export function filterDictionary(dict) {
-  const cleaned = {};
+//The response object dictates the shape of dict as a Record
+//We can lock down a more specific type if needed/desired later.
+export function filterDictionary(
+  dict: Record<string, unknown>,
+): Record<string, unknown> {
+  const cleaned: Record<string, unknown> = {};
   const guidRegex =
     /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
 
-  const keyMap = {
+  const keyMap: Record<string, string> = {
     '_crf7f_ois_asset_dat_itemlookup_value@OData.Community.Display.V1.FormattedValue':
       'assetName',
     '_crf7f_fac_asset_ref_locationlookup_value@OData.Community.Display.V1.FormattedValue':
@@ -39,15 +43,16 @@ export function filterDictionary(dict) {
     const prettyKey = keyMap[key];
 
     if (value && typeof value === 'object' && !Array.isArray(value)) {
-      cleaned[prettyKey] = filterDictionary(value);
+      cleaned[prettyKey] = filterDictionary(value as Record<string, unknown>);
     } else {
       cleaned[prettyKey] = value;
     }
   }
 
+  //Explicitly need to type the shape of reduce otherwise it defaults to {}
   const sortedCleaned = Object.keys(cleaned)
     .sort()
-    .reduce((acc, key) => {
+    .reduce<Record<string, unknown>>((acc, key) => {
       acc[key] = cleaned[key];
       return acc;
     }, {});
