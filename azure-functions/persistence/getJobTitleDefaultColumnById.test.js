@@ -29,7 +29,7 @@ describe('getJobTitleDefaultColumnById', () => {
     });
   });
 
-  it('should parse the name from the dataverse response and return it', async () => {
+  it('should get the default column from the dataverse response and return it', async () => {
     dataverseCall.mockResolvedValue({
       value: [
         {

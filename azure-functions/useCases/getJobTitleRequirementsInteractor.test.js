@@ -2,7 +2,7 @@ import { getJobTitleNameById } from '../persistence/getJobTitleNameById.js';
 import { getJobTitleRequirementsById } from '../persistence/getJobTitleRequirementsById.js';
 import { getJobTitleRequirementsInteractor } from './getJobTitleRequirementsInteractor.js';
 
-import { getJobTitleDefaultRequirements } from '../persistence/getJobTitleDefaultRequirements.js';
+import { getDefaultRequirements } from '../persistence/getDefaultRequirements.js';
 import { getJobTitleDefaultColumnById } from '../persistence/getJobTitleDefaultColumnById.js';
 
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
@@ -12,7 +12,7 @@ jest.mock('../persistence/getJobTitleRequirementsById.js');
 jest.mock('../persistence/getJobTitleNameById.js');
 
 jest.mock('../persistence/getJobTitleDefaultColumnById.js');
-jest.mock('../persistence/getJobTitleDefaultRequirements.js');
+jest.mock('../persistence/getDefaultRequirements.js');
 
 const mockResponseList = [
   {
@@ -49,7 +49,7 @@ const mockResponseList = [
 describe('getJobTitleRequirementsInteractor', () => {
   beforeEach(() => {
     getJobTitleRequirementsById.mockResolvedValue(mockResponseList);
-    getJobTitleDefaultRequirements.mockResolvedValue(mockResponseList);
+    getDefaultRequirements.mockResolvedValue(mockResponseList);
     getJobTitleNameById.mockResolvedValue('Administrative Specialist');
   });
 
@@ -102,13 +102,13 @@ describe('getJobTitleRequirementsInteractor', () => {
   it('should fetch the requirements from persistence when job title is assigned default items', async () => {
     getJobTitleDefaultColumnById.mockResolvedValue(true);
     await getJobTitleRequirementsInteractor('title123');
-    expect(getJobTitleDefaultRequirements).toHaveBeenCalledTimes(1);
+    expect(getDefaultRequirements).toHaveBeenCalledTimes(1);
   });
 
   it('should rethrow DataverseTokenError', async () => {
     getJobTitleDefaultColumnById.mockResolvedValue(true);
     const error = new DataverseTokenError('Token expired');
-    getJobTitleDefaultRequirements.mockRejectedValue(error);
+    getDefaultRequirements.mockRejectedValue(error);
 
     await expect(getJobTitleRequirementsInteractor('title789')).rejects.toThrow(
       DataverseTokenError,

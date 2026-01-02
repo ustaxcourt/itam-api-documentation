@@ -7,7 +7,6 @@ export async function getJobTitleDefaultColumnById(id) {
 
   // Dataverse call
   const response = await dataverseCall({ query, method: 'GET' });
-  console.log(response);
   // Check to see if we got anything
   if (!response?.value || response.value.length === 0) {
     throw new NotFoundError('Resource not found');

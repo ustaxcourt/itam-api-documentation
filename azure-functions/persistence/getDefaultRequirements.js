@@ -3,7 +3,7 @@ import { NotFoundError } from '../errors/NotFoundError.js';
 import { restructureJobTitleRequirements } from './restructureJobTitleRequirements.js';
 import { parseDataverseResponse } from './parseDataverseResponse.js';
 
-export async function getJobTitleDefaultRequirements() {
+export async function getDefaultRequirements() {
   // Build Dataverse query URL
 
   const query = `crf7f_ois_job_title_model_types?$select=crf7f_modelmaximum,crf7f_modelminimum,crf7f_JobTitleAssetType,crf7f_ReferenceModel&$filter=crf7f_JobTitleAssetType/crf7f_isdefault eq true &$expand=crf7f_ReferenceModel($select=crf7f_name),crf7f_JobTitleAssetType($select=crf7f_minimumquanitity,crf7f_maximumquantity,crf7f_JobTitle,crf7f_AssetType;$expand=crf7f_JobTitle($select=crf7f_title),crf7f_AssetType($select=crf7f_name))`;

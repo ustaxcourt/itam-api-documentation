@@ -1,6 +1,6 @@
 import { getJobTitleRequirementsById } from '../persistence/getJobTitleRequirementsById.js';
 import { getJobTitleNameById } from '../persistence/getJobTitleNameById.js';
-import { getJobTitleDefaultRequirements } from '../persistence/getJobTitleDefaultRequirements.js';
+import { getDefaultRequirements } from '../persistence/getDefaultRequirements.js';
 import { getJobTitleDefaultColumnById } from '../persistence/getJobTitleDefaultColumnById.js';
 
 import { InternalServerError } from '../errors/InternalServerError.js';
@@ -10,12 +10,12 @@ import { NotFoundError } from '../errors/NotFoundError.js';
 //asset arrays of zero length are handled at the controller level
 export async function getJobTitleRequirementsInteractor(jobTitleId) {
   try {
-    var requirements;
+    let requirements;
     const jobTitleName = await getJobTitleNameById(jobTitleId);
     const isDefault = await getJobTitleDefaultColumnById(jobTitleId);
 
     if (isDefault === true) {
-      requirements = await getJobTitleDefaultRequirements();
+      requirements = await getDefaultRequirements();
     } else if (isDefault === false) {
       requirements = await getJobTitleRequirementsById(jobTitleId);
     }

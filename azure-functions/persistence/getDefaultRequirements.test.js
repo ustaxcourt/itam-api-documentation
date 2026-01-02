@@ -1,4 +1,4 @@
-import { getJobTitleDefaultRequirements } from './getJobTitleDefaultRequirements.js';
+import { getDefaultRequirements } from './getDefaultRequirements.js';
 import { dataverseCall } from './dataverseCall.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
 import {
@@ -16,7 +16,7 @@ describe('getJobTitleDefaultRequirements', () => {
   it('should call dataverseCall with correct URL, method, and body', async () => {
     dataverseCall.mockResolvedValue(mockDataverseResponseItem);
 
-    const result = await getJobTitleDefaultRequirements();
+    const result = await getDefaultRequirements();
 
     expect(dataverseCall).toHaveBeenCalledWith({
       query: `crf7f_ois_job_title_model_types?$select=crf7f_modelmaximum,crf7f_modelminimum,crf7f_JobTitleAssetType,crf7f_ReferenceModel&$filter=crf7f_JobTitleAssetType/crf7f_isdefault eq true &$expand=crf7f_ReferenceModel($select=crf7f_name),crf7f_JobTitleAssetType($select=crf7f_minimumquanitity,crf7f_maximumquantity,crf7f_JobTitle,crf7f_AssetType;$expand=crf7f_JobTitle($select=crf7f_title),crf7f_AssetType($select=crf7f_name))`,
@@ -42,12 +42,7 @@ describe('getJobTitleDefaultRequirements', () => {
   it('should return the proper response when job title has more than one model under the same asset type', async () => {
     dataverseCall.mockResolvedValue(mockDataverseResponseList);
 
-    const result = await getJobTitleDefaultRequirements();
-
-    expect(dataverseCall).toHaveBeenCalledWith({
-      query: `crf7f_ois_job_title_model_types?$select=crf7f_modelmaximum,crf7f_modelminimum,crf7f_JobTitleAssetType,crf7f_ReferenceModel&$filter=crf7f_JobTitleAssetType/crf7f_isdefault eq true &$expand=crf7f_ReferenceModel($select=crf7f_name),crf7f_JobTitleAssetType($select=crf7f_minimumquanitity,crf7f_maximumquantity,crf7f_JobTitle,crf7f_AssetType;$expand=crf7f_JobTitle($select=crf7f_title),crf7f_AssetType($select=crf7f_name))`,
-      method: 'GET',
-    });
+    const result = await getDefaultRequirements();
 
     expect(result).toEqual([
       {
@@ -85,10 +80,8 @@ describe('getJobTitleDefaultRequirements', () => {
   it('should throw NotFoundError when response has empty value array', async () => {
     dataverseCall.mockResolvedValue({ value: [] });
 
-    await expect(getJobTitleDefaultRequirements()).rejects.toThrow(
-      NotFoundError,
-    );
-    await expect(getJobTitleDefaultRequirements()).rejects.toThrow(
+    await expect(getDefaultRequirements()).rejects.toThrow(NotFoundError);
+    await expect(getDefaultRequirements()).rejects.toThrow(
       'Resource not found',
     );
   });
@@ -96,16 +89,12 @@ describe('getJobTitleDefaultRequirements', () => {
   it('should throw NotFoundError when response is null', async () => {
     dataverseCall.mockResolvedValue(null);
 
-    await expect(getJobTitleDefaultRequirements()).rejects.toThrow(
-      NotFoundError,
-    );
+    await expect(getDefaultRequirements()).rejects.toThrow(NotFoundError);
   });
 
   it('should propagate errors from dataverseCall', async () => {
     dataverseCall.mockRejectedValue(new Error('Network failure'));
 
-    await expect(getJobTitleDefaultRequirements()).rejects.toThrow(
-      'Network failure',
-    );
+    await expect(getDefaultRequirements()).rejects.toThrow('Network failure');
   });
 });
