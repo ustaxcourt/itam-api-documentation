@@ -1,21 +1,36 @@
-import { getDataverseAccessToken } from './getDataverseAccessToken';
-import { InternalServerError } from '../errors/InternalServerError';
+import { getDataverseAccessToken } from './getDataverseAccessToken.js';
+import { InternalServerError } from '../errors/InternalServerError.js';
 
-export async function dataverseCall({ query, method, body = null }) {
+// Clean shape for the input arguments
+type DataverseCallArgs = {
+  query: string;
+  method: 'GET' | 'POST' | 'PATCH' | 'DELETE';
+  body?: unknown;
+};
+
+// T is a caller defined shape
+// The promise either returns the shape 'T' or null (for 204s)
+// callers that don't care about the response can use Promise<void> safely
+export async function dataverseCall<T = unknown>({
+  query,
+  method,
+  body = null,
+}: DataverseCallArgs): Promise<T | null> {
   const token = await getDataverseAccessToken();
   if (!process.env.DATAVERSE_URL) {
     throw new InternalServerError('DATAVERSE_URL is missing');
   }
 
   const url = `${process.env.DATAVERSE_URL}/${query}`;
-  const headers = {
+  const headers: Record<string, string> = {
     Authorization: `Bearer ${token}`,
     Accept: 'application/json',
     Prefer:
       'odata.include-annotations="OData.Community.Display.V1.FormattedValue"',
   };
 
-  const options = { method, headers };
+  // RequestInit is a built-in defined TS interface for fetch options
+  const options: RequestInit = { method, headers };
 
   if (method === 'PATCH' || method === 'POST') {
     options.headers['Content-Type'] = 'application/json';
@@ -39,9 +54,13 @@ export async function dataverseCall({ query, method, body = null }) {
       return null;
     }
 
-    return response.json();
+    // Cast the response to shape 'T' to align with our declared return type
+    return response.json() as T;
   } catch (error) {
-    console.error('Fetch error in dataverseCall:', error.message);
+    console.error(
+      'Fetch error in dataverseCall:',
+      error instanceof Error ? error.message : error,
+    );
     throw error;
   }
 }
