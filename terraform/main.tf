@@ -52,14 +52,14 @@ resource "azurerm_linux_function_app" "function" {
     APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.insights.connection_string
 
     # These are the environment variables within the azure function app (per env)
-    STORAGE_ACCOUNT_NAME   = data.azurerm_storage_account.storage.name
-    DATAVERSE_CLIENT_ID    = azuread_application.dataverse_app.client_id
-    TENANT_ID              = var.all_tenant_id
-    SCOPE                  = var.scope
-    DATAVERSE_URL          = var.dataverse_url
+    STORAGE_ACCOUNT_NAME = data.azurerm_storage_account.storage.name
+    DATAVERSE_CLIENT_ID  = azuread_application.dataverse_app.client_id
+    TENANT_ID            = var.all_tenant_id
+    SCOPE                = var.scope
+    DATAVERSE_URL        = var.dataverse_url
 
     # This now makes it managed by terraform - to update just terraform apply with new end date and verify change in azure function app per env
-    DATAVERSE_INTERNAL     = azuread_application_password.dataverse_app_secret.value
+    DATAVERSE_INTERNAL                       = azuread_application_password.dataverse_app_secret.value
     MICROSOFT_PROVIDER_AUTHENTICATION_SECRET = azuread_application_password.function_auth_secret.value
 
     # Single-tenant
@@ -79,8 +79,9 @@ resource "azurerm_linux_function_app" "function" {
       client_secret_setting_name = "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
 
       # Accept tokens whose 'aud' matches the env Auth App's identifier URIs
-      allowed_audiences          = azuread_application.function_auth_app.identifier_uris
-      tenant_auth_endpoint       = "https://sts.windows.net/${var.all_tenant_id}/v2.0"
+      allowed_audiences    = azuread_application.function_auth_app.identifier_uris
+      allowed_applications = [azuread_application.function_auth_app.client_id]
+      tenant_auth_endpoint = "https://sts.windows.net/${var.all_tenant_id}/v2.0"
     }
 
     login {
