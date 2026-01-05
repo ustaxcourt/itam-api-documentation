@@ -55,7 +55,7 @@ describe('queryAssetsByEmail', () => {
     getAssetsByEmail.mockRejectedValue(error);
 
     const result = await queryAssetsByEmail(request);
-    expect(result.status).toBeUndefined(); // May be improved with future error handling
+    expect(result.status).toBe(500);
     expect(result.jsonBody.message).toBe('Something went wrong!');
   });
 });

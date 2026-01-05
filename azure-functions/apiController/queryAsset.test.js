@@ -33,24 +33,8 @@ describe('queryAssetHandler', () => {
     );
   });
 
-  it('should handle errors with status from error.response', async () => {
-    const error = { response: { status: 400 }, message: 'Bad Request' };
-    getAssetDetails.mockRejectedValue(error);
-    const request = { params: { itemid: 'asset123' } };
-    const result = await queryAssetHandler(request, context);
-
-    expect(context.error).toHaveBeenCalledWith(
-      'Dataverse query error:',
-      'Bad Request',
-    );
-    expect(result.status).toBe(400);
-    expect(result.jsonBody).toEqual({
-      data: 'Bad Request',
-      message: 'Dataverse query failed',
-    });
-  });
-
-  it('should default to 500 when error.response is missing', async () => {
+  // Replaces the old 500 test suite because it was relying on AxiosFetch returning a response property
+  it('returns 500 for unexpected errors', async () => {
     const error = new Error('Network failure');
     getAssetDetails.mockRejectedValue(error);
 
@@ -64,7 +48,7 @@ describe('queryAssetHandler', () => {
     expect(result.status).toBe(500);
     expect(result.jsonBody).toEqual({
       message: 'Dataverse query failed',
-      data: 'Network failure',
+      data: null,
     });
   });
 });

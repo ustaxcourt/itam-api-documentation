@@ -178,7 +178,10 @@ describe('Integration testing for ITAM Project', () => {
     );
     expect(result.status).toBe(200);
     body = await result.json();
-    expect(body).toHaveProperty('message', 'Successfully assigned location');
+    expect(body).toHaveProperty(
+      'message',
+      `Successfully assigned location for ${existingAssetId}`,
+    );
 
     //check if location name is changed to be expected
     result = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {

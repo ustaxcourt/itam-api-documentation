@@ -1,5 +1,5 @@
 //If more calls use this ApiResponse piece, we can make a centralized types file
-type ApiResponse<TData = unknown> = {
+export type ApiResponse<TData = unknown> = {
   status: number;
   jsonBody: {
     message: string;

@@ -26,8 +26,8 @@ describe('locationAssignmentsHandler', () => {
     expect(result).toEqual({
       status: 200,
       jsonBody: {
-        data: 'asset123',
-        message: 'Successfully assigned location',
+        data: null,
+        message: `Successfully assigned location for ${request.params.assetid}`,
       },
     });
     expect(context.error).not.toHaveBeenCalled();
@@ -43,7 +43,7 @@ describe('locationAssignmentsHandler', () => {
 
     expect(assignLocationToAsset).not.toHaveBeenCalled();
     expect(context.error).toHaveBeenCalledWith(
-      'Unable to update assignments',
+      'Bad request:',
       'Invalid REST Method',
     );
     expect(result).toEqual({
@@ -71,7 +71,7 @@ describe('locationAssignmentsHandler', () => {
       'invalidLoc',
     );
     expect(context.error).toHaveBeenCalledWith(
-      'Unable to update assignments',
+      'Not Found:',
       'Location ID not found',
     );
     expect(result).toEqual({
