@@ -72,10 +72,7 @@ describe('jobTitleHandler', () => {
       request,
       context,
     );
-    expect(context.error).toHaveBeenCalledWith(
-      'Unable to query job title',
-      error.message,
-    );
+    expect(context.error).toHaveBeenCalledWith('Bad request:', error.message);
     expect(result.jsonBody.message).toBe('Missing Job title ID');
     expect(result.status).toBe(400);
   });
@@ -89,10 +86,7 @@ describe('jobTitleHandler', () => {
       request,
       context,
     );
-    expect(context.error).toHaveBeenCalledWith(
-      'Unable to query job title',
-      error.message,
-    );
+    expect(context.error).toHaveBeenCalledWith('Bad request:', error.message);
     expect(result.jsonBody.message).toBe('Invalid REST Method');
     expect(result.status).toBe(400);
   });
@@ -106,10 +100,7 @@ describe('jobTitleHandler', () => {
       request,
       context,
     );
-    expect(context.error).toHaveBeenCalledWith(
-      'Unable to query job title',
-      error.message,
-    );
+    expect(context.error).toHaveBeenCalledWith('Not found:', error.message);
 
     expect(result.jsonBody.message).toBe(
       `No job title found for ID: ${request.params.jobTitleID}`,
@@ -132,9 +123,7 @@ describe('jobTitleHandler', () => {
       'Unable to query job title',
       error.message,
     );
-    expect(result.jsonBody.message).toBe(
-      `Unable to get Job Title Item Requirements`,
-    );
+    expect(result.jsonBody.message).toBe(`Unable to query job title`);
     expect(result.status).toBe(500);
   });
 });

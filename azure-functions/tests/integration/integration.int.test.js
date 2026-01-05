@@ -48,7 +48,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.message).toMatch(/Successfully updated item assignment/);
-    expect(body.data).toBe(existingAssetId);
+    expect(body.data).toBeNull();
   });
 
   it('should display proper user assignment information in query after new assignment', async () => {
@@ -102,7 +102,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.message).toMatch(/Successfully updated item assignment/);
-    expect(body.data).toBe(existingAssetId);
+    expect(body.data).toBeNull();
   });
 
   it('should display proper assignment information in query after new unassignment', async () => {

@@ -26,8 +26,8 @@ describe('assignmentsHandler', () => {
     expect(result).toEqual({
       status: 200,
       jsonBody: {
-        data: 'asset123',
-        message: 'Successfully updated item assignment',
+        data: null,
+        message: 'Successfully updated item assignment for asset123',
       },
     });
   });
@@ -46,8 +46,8 @@ describe('assignmentsHandler', () => {
     expect(result).toEqual({
       status: 200,
       jsonBody: {
-        data: 'asset123',
-        message: 'Successfully updated item assignment',
+        data: null,
+        message: 'Successfully updated item assignment for asset123',
       },
     });
   });
@@ -71,7 +71,7 @@ describe('assignmentsHandler', () => {
   });
 
   it('should handle 401 error gracefully', async () => {
-    const error = { response: { status: 401 } };
+    const error = new Error('Unauthorized');
     assignAssetToUser.mockRejectedValue(error);
 
     const request = {
@@ -83,7 +83,7 @@ describe('assignmentsHandler', () => {
 
     expect(context.error).toHaveBeenCalled();
     expect(result).toEqual({
-      status: 403,
+      status: 401,
       jsonBody: {
         data: null,
         message: 'Unauthorized',

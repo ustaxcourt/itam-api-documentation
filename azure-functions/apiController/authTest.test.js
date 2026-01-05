@@ -8,6 +8,7 @@ describe('authTest function', () => {
     expect(response.status).toBe(200);
     expect(response.jsonBody).toEqual({
       message: '✅ You are authenticated. Welcome!',
+      data: null,
     });
   });
 });

@@ -5,7 +5,7 @@ import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
 import { AssetRequirement } from '../persistence/restructureJobTitleRequirements.js';
 
-type JobTitleRequirementsResult = {
+export type JobTitleRequirementsResult = {
   jobTitle: string;
   requiredAssets: AssetRequirement[];
 };

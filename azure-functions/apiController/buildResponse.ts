@@ -1,4 +1,5 @@
-//If more calls use this ApiResponse piece, we can make a centralized types file
+//Right now we're just exporting directly from this file but we can centralize
+// data: null is for COMMAND calls where we're not expecting back data to use
 export type ApiResponse<TData = unknown> = {
   status: number;
   jsonBody: {
