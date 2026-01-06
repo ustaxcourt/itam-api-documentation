@@ -1,5 +1,5 @@
-import { queryAssetHandler } from './queryAsset.js';
-import { getAssetDetails } from '../useCases/getAssetDetails.js';
+import { queryAssetHandler } from './queryAsset';
+import { getAssetDetails } from '../useCases/getAssetDetails';
 
 jest.mock('../useCases/getAssetDetails.js');
 

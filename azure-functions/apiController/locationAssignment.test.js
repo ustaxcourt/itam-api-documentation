@@ -1,6 +1,6 @@
-import { locationAssignmentsHandler } from './locationAssignment.js';
-import { assignLocationToAsset } from '../useCases/assignLocationToAsset.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
+import { locationAssignmentsHandler } from './locationAssignment';
+import { assignLocationToAsset } from '../useCases/assignLocationToAsset';
+import { NotFoundError } from '../errors/NotFoundError';
 
 jest.mock('../useCases/assignLocationToAsset.js');
 

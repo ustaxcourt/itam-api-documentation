@@ -1,8 +1,8 @@
-import { getJobTitleRequirementsById } from '../persistence/getJobTitleRequirementsById.js';
-import { getJobTitleNameById } from '../persistence/getJobTitleNameById.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
-import { DataverseTokenError } from '../errors/DataverseTokenError.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
+import { getJobTitleRequirementsById } from '../persistence/getJobTitleRequirementsById';
+import { getJobTitleNameById } from '../persistence/getJobTitleNameById';
+import { InternalServerError } from '../errors/InternalServerError';
+import { DataverseTokenError } from '../errors/DataverseTokenError';
+import { NotFoundError } from '../errors/NotFoundError';
 
 //asset arrays of zero length are handled at the controller level
 export async function getJobTitleRequirementsInteractor(jobTitleId) {

@@ -2,10 +2,14 @@ import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
 import { dataverseCall } from './dataverseCall.js';
 
-export async function unassignLocationAsset(assetId) {
+//Promise may need to be changed to void instead of unknown if we're not using the return
+export async function assignLocationAsset(
+  assetId: string,
+  locationId: string,
+): Promise<unknown> {
   try {
     const body = {
-      'crf7f_fac_asset_ref_locationLookup@odata.bind': null,
+      'crf7f_fac_asset_ref_locationLookup@odata.bind': `crf7f_fac_asset_ref_locations(${locationId})`,
     };
 
     const url = `crf7f_ois_asset_rela_item_orgs(${assetId})`;
@@ -19,6 +23,6 @@ export async function unassignLocationAsset(assetId) {
       throw error;
     }
 
-    throw new InternalServerError('Unable to unassign Location to Asset');
+    throw new InternalServerError('Unable to assign Location to Asset');
   }
 }

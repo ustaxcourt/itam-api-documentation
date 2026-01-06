@@ -1,9 +1,9 @@
-import { unassignLocationToAsset } from './unassignLocationToAsset.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
-import { DataverseTokenError } from '../errors/DataverseTokenError.js';
+import { unassignLocationToAsset } from './unassignLocationToAsset';
+import { NotFoundError } from '../errors/NotFoundError';
+import { DataverseTokenError } from '../errors/DataverseTokenError';
 
-import { unassignLocationAsset } from '../persistence/unassignAssetLocation.js';
-import { getAssetByID } from '../persistence/getAssetByID.js';
+import { unassignLocationAsset } from '../persistence/unassignAssetLocation';
+import { getAssetByID } from '../persistence/getAssetByID';
 
 jest.mock('../persistence/unassignAssetLocation.js');
 jest.mock('../persistence/getAssetByID.js');

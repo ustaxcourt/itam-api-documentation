@@ -1,6 +1,6 @@
-import { assignAssetOwner } from './assignAssetOwner.js';
-import { getUserById } from './getUserById.js';
-import { dataverseCall } from './dataverseCall.js';
+import { assignAssetOwner } from './assignAssetOwner';
+import { getUserById } from './getUserById';
+import { dataverseCall } from './dataverseCall';
 
 jest.mock('./getUserById.js');
 jest.mock('./dataverseCall.js');

@@ -1,6 +1,6 @@
 import { app } from '@azure/functions';
-import { buildResponse } from './buildResponse.js';
-import { getAssetsByEmail } from '../useCases/getAssetsByEmail.js';
+import { buildResponse } from './buildResponse';
+import { getAssetsByEmail } from '../useCases/getAssetsByEmail';
 
 export async function queryAssetsByEmail(request) {
   try {

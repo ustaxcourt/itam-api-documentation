@@ -1,10 +1,10 @@
-import { getJobTitleRequirementsById } from './getJobTitleRequirementsById.js';
-import { dataverseCall } from './dataverseCall.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
+import { getJobTitleRequirementsById } from './getJobTitleRequirementsById';
+import { dataverseCall } from './dataverseCall';
+import { NotFoundError } from '../errors/NotFoundError';
 import {
   mockDataverseResponseItem,
   mockDataverseResponseList,
-} from '../tests/mocks/mockJobTitleRequirements.js';
+} from '../tests/mocks/mockJobTitleRequirements';
 
 jest.mock('./dataverseCall.js');
 

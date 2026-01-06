@@ -1,7 +1,7 @@
 import { app } from '@azure/functions';
-import { buildResponse } from './buildResponse.js';
-import { getJobTitleRequirementsInteractor } from '../useCases/getJobTitleRequirementsInteractor.js';
-import { BadRequest } from '../errors/BadRequest.js';
+import { buildResponse } from './buildResponse';
+import { getJobTitleRequirementsInteractor } from '../useCases/getJobTitleRequirementsInteractor';
+import { BadRequest } from '../errors/BadRequest';
 
 export async function getRequirementsForJobTitleRequestHandler(
   request,

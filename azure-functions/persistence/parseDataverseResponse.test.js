@@ -1,4 +1,4 @@
-import { parseDataverseResponse } from './parseDataverseResponse.js'; // Update with actual file name
+import { parseDataverseResponse } from './parseDataverseResponse'; // Update with actual file name
 
 describe('parseDataverseResponse', () => {
   const data = {

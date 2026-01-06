@@ -2,7 +2,12 @@ import { getUserById } from './getUserById.js';
 import { dataverseCall } from './dataverseCall.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
 
-export async function assignAssetOwner(userId, assetId) {
+// dataverseCall returns an object but we aren't currently modelling that
+// Promise<unknown> is a placeholder until we better define that response - ZD 30 Dec 2025
+export async function assignAssetOwner(
+  userId: string,
+  assetId: string,
+): Promise<unknown> {
   const rowId = await getUserById(userId);
   if (!rowId) {
     throw new NotFoundError(`User ${userId} not found`);

@@ -1,8 +1,8 @@
-import { dataverseCall } from './dataverseCall.js';
-import { filterDictionaryByList } from './filterDictbyList.js';
-import { DataverseTokenError } from '../errors/DataverseTokenError.js';
-import { getDataverseAssetsByEmail } from './getDataverseAssetsByEmail.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
+import { dataverseCall } from './dataverseCall';
+import { filterDictionaryByList } from './filterDictbyList';
+import { DataverseTokenError } from '../errors/DataverseTokenError';
+import { getDataverseAssetsByEmail } from './getDataverseAssetsByEmail';
+import { InternalServerError } from '../errors/InternalServerError';
 
 jest.mock('./dataverseCall.js', () => ({
   dataverseCall: jest.fn(),

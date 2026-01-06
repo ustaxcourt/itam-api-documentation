@@ -1,7 +1,7 @@
-import { BadRequest } from '../errors/BadRequest.js';
-import { DataverseTokenError } from '../errors/DataverseTokenError.js';
-import { getDataverseAssetsByEmail } from '../persistence/getDataverseAssetsByEmail.js';
-import { getAssetsByEmail } from './getAssetsByEmail.js';
+import { BadRequest } from '../errors/BadRequest';
+import { DataverseTokenError } from '../errors/DataverseTokenError';
+import { getDataverseAssetsByEmail } from '../persistence/getDataverseAssetsByEmail';
+import { getAssetsByEmail } from './getAssetsByEmail';
 
 jest.mock('../persistence/getDataverseAssetsByEmail.js', () => ({
   getDataverseAssetsByEmail: jest.fn(),

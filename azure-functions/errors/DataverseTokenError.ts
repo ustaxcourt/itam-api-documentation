@@ -1,6 +1,7 @@
 export class DataverseTokenError extends Error {
-  constructor(message) {
+  readonly statusCode = 500;
+
+  constructor(message: string) {
     super(message);
-    this.statusCode = 500;
   }
 }

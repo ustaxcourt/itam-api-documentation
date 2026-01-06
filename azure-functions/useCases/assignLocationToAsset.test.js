@@ -1,10 +1,10 @@
-import { assignLocationToAsset } from './assignLocationToAsset.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
-import { DataverseTokenError } from '../errors/DataverseTokenError.js';
+import { assignLocationToAsset } from './assignLocationToAsset';
+import { NotFoundError } from '../errors/NotFoundError';
+import { DataverseTokenError } from '../errors/DataverseTokenError';
 
-import { assignLocationAsset } from '../persistence/assignAssetLocation.js';
-import { getLocationById } from '../persistence/getLocationById.js';
-import { getAssetByID } from '../persistence/getAssetByID.js';
+import { assignLocationAsset } from '../persistence/assignAssetLocation';
+import { getLocationById } from '../persistence/getLocationById';
+import { getAssetByID } from '../persistence/getAssetByID';
 
 jest.mock('../persistence/assignAssetLocation.js');
 jest.mock('../persistence/getLocationById.js');

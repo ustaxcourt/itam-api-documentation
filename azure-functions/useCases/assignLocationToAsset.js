@@ -1,6 +1,6 @@
-import { assignLocationAsset } from '../persistence/assignAssetLocation.js';
-import { getLocationById } from '../persistence/getLocationById.js';
-import { getAssetByID } from '../persistence/getAssetByID.js';
+import { assignLocationAsset } from '../persistence/assignAssetLocation';
+import { getLocationById } from '../persistence/getLocationById';
+import { getAssetByID } from '../persistence/getAssetByID';
 
 export async function assignLocationToAsset(assetId, locationId) {
   await getLocationById(locationId);

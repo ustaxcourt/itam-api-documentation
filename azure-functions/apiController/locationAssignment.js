@@ -1,8 +1,8 @@
 import { app } from '@azure/functions';
-import { buildResponse } from './buildResponse.js';
-import { assignLocationToAsset } from '../useCases/assignLocationToAsset.js';
-import { unassignLocationToAsset } from '../useCases/unassignLocationToAsset.js';
-import { BadRequest } from '../errors/BadRequest.js';
+import { buildResponse } from './buildResponse';
+import { assignLocationToAsset } from '../useCases/assignLocationToAsset';
+import { unassignLocationToAsset } from '../useCases/unassignLocationToAsset';
+import { BadRequest } from '../errors/BadRequest';
 
 export async function locationAssignmentsHandler(request, context) {
   try {

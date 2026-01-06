@@ -23,6 +23,7 @@ async function waitForServer(url, timeout = 60000) {
 module.exports = async () => {
   console.log('Starting Azure Functions...');
   funcProcess = spawn('func', ['start'], {
+    cwd: 'dist/azure-functions',
     shell: true, // Important for Windows
     stdio: 'inherit', // Show func output in console
   });

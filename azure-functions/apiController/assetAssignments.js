@@ -1,9 +1,9 @@
 import { app } from '@azure/functions';
-import { buildResponse } from './buildResponse.js';
-import { assignAssetToUser } from '../useCases/assignAssetToUser.js';
-import { unassignAsset } from '../useCases/unassignAsset.js';
-import { BadRequest } from '../errors/BadRequest.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
+import { buildResponse } from './buildResponse';
+import { assignAssetToUser } from '../useCases/assignAssetToUser';
+import { unassignAsset } from '../useCases/unassignAsset';
+import { BadRequest } from '../errors/BadRequest';
+import { NotFoundError } from '../errors/NotFoundError';
 
 export async function assignmentsHandler(request, context) {
   try {
