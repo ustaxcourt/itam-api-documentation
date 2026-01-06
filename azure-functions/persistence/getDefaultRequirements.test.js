@@ -77,13 +77,10 @@ describe('getJobTitleDefaultRequirements', () => {
     ]);
   });
 
-  it('should throw NotFoundError when response has empty value array', async () => {
+  it('should return empty array when no defualt items are set', async () => {
     dataverseCall.mockResolvedValue({ value: [] });
-
-    await expect(getDefaultRequirements()).rejects.toThrow(NotFoundError);
-    await expect(getDefaultRequirements()).rejects.toThrow(
-      'Resource not found',
-    );
+    const result = await getDefaultRequirements();
+    expect(result).toEqual([]);
   });
 
   it('should throw NotFoundError when response is null', async () => {

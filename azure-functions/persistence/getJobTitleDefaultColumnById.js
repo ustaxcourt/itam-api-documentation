@@ -15,5 +15,5 @@ export async function getJobTitleDefaultColumnById(id) {
     throw new InternalServerError('Invalid response from Dataverse');
   }
 
-  return response.value[0].crf7f_defaultassetrequirements;
+  return !!response.value[0].crf7f_defaultassetrequirements;
 }

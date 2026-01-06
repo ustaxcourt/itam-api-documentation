@@ -1,16 +1,13 @@
 import { getJobTitleNameById } from '../persistence/getJobTitleNameById.js';
 import { getJobTitleRequirementsById } from '../persistence/getJobTitleRequirementsById.js';
 import { getJobTitleRequirementsInteractor } from './getJobTitleRequirementsInteractor.js';
-
 import { getDefaultRequirements } from '../persistence/getDefaultRequirements.js';
 import { getJobTitleDefaultColumnById } from '../persistence/getJobTitleDefaultColumnById.js';
-
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
 
 jest.mock('../persistence/getJobTitleRequirementsById.js');
 jest.mock('../persistence/getJobTitleNameById.js');
-
 jest.mock('../persistence/getJobTitleDefaultColumnById.js');
 jest.mock('../persistence/getDefaultRequirements.js');
 

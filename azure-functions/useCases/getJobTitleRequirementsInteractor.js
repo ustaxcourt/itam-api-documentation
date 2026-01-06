@@ -14,12 +14,9 @@ export async function getJobTitleRequirementsInteractor(jobTitleId) {
     const jobTitleName = await getJobTitleNameById(jobTitleId);
     const isDefault = await getJobTitleDefaultColumnById(jobTitleId);
 
-    if (isDefault === true) {
-      requirements = await getDefaultRequirements();
-    } else if (isDefault === false) {
-      requirements = await getJobTitleRequirementsById(jobTitleId);
-    }
-
+    requirements = isDefault
+      ? await getDefaultRequirements()
+      : await getJobTitleRequirementsById(jobTitleId);
     return {
       jobTitle: jobTitleName,
       requiredAssets: requirements,

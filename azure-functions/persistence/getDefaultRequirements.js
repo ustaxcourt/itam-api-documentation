@@ -1,7 +1,7 @@
 import { dataverseCall } from './dataverseCall.js';
-import { NotFoundError } from '../errors/NotFoundError.js';
 import { restructureJobTitleRequirements } from './restructureJobTitleRequirements.js';
 import { parseDataverseResponse } from './parseDataverseResponse.js';
+import { NotFoundError } from '../errors/NotFoundError.js';
 
 export async function getDefaultRequirements() {
   // Build Dataverse query URL
@@ -11,7 +11,12 @@ export async function getDefaultRequirements() {
   // Dataverse call
   const response = await dataverseCall({ query: query, method: 'GET' });
   // Check to see if we got anything
-  if (!response?.value || response.value.length === 0) {
+
+  if (Array.isArray(response?.value) && response?.value.length === 0) {
+    return response?.value;
+  }
+
+  if (response === null) {
     throw new NotFoundError(`Resource not found`);
   }
 
