@@ -1,5 +1,8 @@
 import { getJobTitleRequirementsById } from '../persistence/getJobTitleRequirementsById.js';
 import { getJobTitleNameById } from '../persistence/getJobTitleNameById.js';
+import { getDefaultRequirements } from '../persistence/getDefaultRequirements.js';
+import { getJobTitleDefaultColumnById } from '../persistence/getJobTitleDefaultColumnById.js';
+
 import { InternalServerError } from '../errors/InternalServerError.js';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
@@ -7,9 +10,13 @@ import { NotFoundError } from '../errors/NotFoundError.js';
 //asset arrays of zero length are handled at the controller level
 export async function getJobTitleRequirementsInteractor(jobTitleId) {
   try {
+    let requirements;
     const jobTitleName = await getJobTitleNameById(jobTitleId);
-    const requirements = await getJobTitleRequirementsById(jobTitleId);
+    const isDefault = await getJobTitleDefaultColumnById(jobTitleId);
 
+    requirements = isDefault
+      ? await getDefaultRequirements()
+      : await getJobTitleRequirementsById(jobTitleId);
     return {
       jobTitle: jobTitleName,
       requiredAssets: requirements,
