@@ -18,11 +18,14 @@ describe('assignmentsHandler', () => {
     const request = {
       method: 'POST',
       params: { assetid: 'asset123', userid: 'user456' },
+      body: { testbody: 'test' },
     };
 
     const result = await assignmentsHandler(request, context);
 
-    expect(assignAssetToUser).toHaveBeenCalledWith('user456', 'asset123');
+    expect(assignAssetToUser).toHaveBeenCalledWith('user456', 'asset123', {
+      testbody: 'test',
+    });
     expect(result).toEqual({
       status: 200,
       jsonBody: {

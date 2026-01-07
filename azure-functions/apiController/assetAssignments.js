@@ -8,17 +8,24 @@ import { NotFoundError } from '../errors/NotFoundError.js';
 export async function assignmentsHandler(request, context) {
   try {
     const assetId = request.params.assetid;
-
+    const userId = request.params.userid;
     if (!assetId) {
       throw new BadRequest('Missing asset ID');
     }
 
     if (request.method === 'POST') {
-      const userId = request.params.userid;
+      const body = await request.json();
+
+      if (!Object.hasOwn(body, 'zenDeskTicketId')) {
+        throw new BadRequest(
+          'Missing required ZenDeskTicketId in body of request ',
+        );
+      }
+
       if (!userId) {
         throw new BadRequest('Missing user ID for assignment');
       }
-      await assignAssetToUser(userId, assetId);
+      await assignAssetToUser(userId, assetId, body);
     } else if (request.method === 'DELETE') {
       await unassignAsset(assetId);
     } else {
