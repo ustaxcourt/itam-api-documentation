@@ -13,13 +13,12 @@ export async function conditionallyUpdateAssetAuditLog(assetId, body) {
   const latestCondition = await getLatestAssetAuditLogEntryCondition(assetName);
 
   if (latestCondition != choices[assetDetails.condition]) {
-    console.log('need to update log');
     await addNewAssetToAssetAuditLog(
       assetDetails.assetName,
       choices[assetDetails.condition],
       body.zenDeskTicketId,
       body.notes ?? null,
-      'Assignment',
+      'Asset Assignment',
     );
   }
 }

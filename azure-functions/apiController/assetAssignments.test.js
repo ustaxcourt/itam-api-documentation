@@ -80,6 +80,10 @@ describe('assignmentsHandler', () => {
     const request = {
       method: 'POST',
       params: { assetid: 'asset123', userid: 'user456' },
+      body: {
+        zenDeskTicketId: '123123',
+        notes: 'this is a very big note',
+      },
     };
 
     const result = await assignmentsHandler(request, context);

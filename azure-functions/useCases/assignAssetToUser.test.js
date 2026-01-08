@@ -1,9 +1,10 @@
 import { assignAssetToUser } from './assignAssetToUser.js';
 import { assignAssetOwner } from '../persistence/assignAssetOwner.js';
+import { conditionallyUpdateAssetAuditLog } from './conditionallyUpdateAssetAuditLog.js';
+import { expect } from '@jest/globals';
 
-jest.mock('../persistence/assignAssetOwner.js', () => ({
-  assignAssetOwner: jest.fn(),
-}));
+jest.mock('./conditionallyUpdateAssetAuditLog.js');
+jest.mock('../persistence/assignAssetOwner.js');
 
 describe('assignAssetToUser', () => {
   beforeEach(() => {
@@ -18,7 +19,10 @@ describe('assignAssetToUser', () => {
     });
 
     expect(assignAssetOwner).toHaveBeenCalledTimes(1);
-    expect(assignAssetOwner).toHaveBeenCalledWith('testUser', 'asset123', {
+    expect(assignAssetOwner).toHaveBeenCalledWith('testUser', 'asset123');
+
+    expect(conditionallyUpdateAssetAuditLog).toHaveBeenCalledTimes(1);
+    expect(conditionallyUpdateAssetAuditLog).toHaveBeenCalled({
       zenDeskTicketId: '123123',
       notes: 'this is a very big note',
     });
@@ -34,6 +38,22 @@ describe('assignAssetToUser', () => {
 
   it('handles empty calls', async () => {
     assignAssetOwner.mockRejectedValue(new Error('XXX: user not found'));
+    await expect(assignAssetToUser()).rejects.toThrow('XXX: user not found');
+  });
+
+  it('throws errors targeting the conditonally update', async () => {
+    conditionallyUpdateAssetAuditLog.mockRejectedValue(
+      new Error('XXX: user not found'),
+    );
+    await expect(assignAssetToUser('user123', 'asset123')).rejects.toThrow(
+      'XXX: user not found',
+    );
+  });
+
+  it('handles empty calls targeting conditionally update', async () => {
+    conditionallyUpdateAssetAuditLog.mockRejectedValue(
+      new Error('XXX: user not found'),
+    );
     await expect(assignAssetToUser()).rejects.toThrow('XXX: user not found');
   });
 });
