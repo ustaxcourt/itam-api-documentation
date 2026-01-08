@@ -12,10 +12,16 @@ describe('assignAssetToUser', () => {
 
   //Basic test if function is being called correctly
   it('calls assignAssetOwner with the given userID and assetID', async () => {
-    await assignAssetToUser('testUser', 'asset123');
+    await assignAssetToUser('testUser', 'asset123', {
+      zenDeskTicketId: '123123',
+      notes: 'this is a very big note',
+    });
 
     expect(assignAssetOwner).toHaveBeenCalledTimes(1);
-    expect(assignAssetOwner).toHaveBeenCalledWith('testUser', 'asset123');
+    expect(assignAssetOwner).toHaveBeenCalledWith('testUser', 'asset123', {
+      zenDeskTicketId: '123123',
+      notes: 'this is a very big note',
+    });
   });
 
   //Basic tests for expected failure modes
