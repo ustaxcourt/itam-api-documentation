@@ -2,25 +2,11 @@ import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
 import { dataverseCall } from './dataverseCall.js';
 
-export async function addNewAssetToAssetAuditLog(
-  assetName,
-  condition,
-  zenDeskTicketId,
-  notes,
-  action,
-) {
+export async function getLatestAssetAuditLogEntry(assetName) {
   try {
-    const url = `crf7f_ois_asset_audit_logs`;
-
-    let body = {
-      crf7f_condition: condition,
-      crf7f_name: assetName,
-      crf7f_notes: notes,
-      crf7f_zendesk_ticket_number: zenDeskTicketId,
-      crf7f_action: action,
-    };
-
-    return await dataverseCall({ query: url, method: 'POST', body: body });
+    const url = `crf7f_ois_asset_audit_logs?$filter=crf7f_name eq '${assetName}'&$orderby=createdon desc&$top=1`;
+    const response = dataverseCall({ query: url, method: 'GET' });
+    return response;
   } catch (error) {
     if (
       error instanceof InternalServerError ||
