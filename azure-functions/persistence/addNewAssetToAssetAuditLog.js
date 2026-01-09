@@ -13,10 +13,10 @@ export async function addNewAssetToAssetAuditLog(
     const url = `crf7f_ois_asset_audit_logs`;
 
     let body = {
-      crf7f_condition: condition,
       crf7f_name: assetName,
-      crf7f_notes: notes,
+      crf7f_condition: condition,
       crf7f_zendesk_ticket_number: zenDeskTicketId,
+      crf7f_notes: notes,
       crf7f_action: action,
     };
 

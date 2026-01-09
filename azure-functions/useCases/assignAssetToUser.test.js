@@ -22,7 +22,7 @@ describe('assignAssetToUser', () => {
     expect(assignAssetOwner).toHaveBeenCalledWith('testUser', 'asset123');
 
     expect(conditionallyUpdateAssetAuditLog).toHaveBeenCalledTimes(1);
-    expect(conditionallyUpdateAssetAuditLog).toHaveBeenCalled({
+    expect(conditionallyUpdateAssetAuditLog).toHaveBeenCalledWith('asset123', {
       zenDeskTicketId: '123123',
       notes: 'this is a very big note',
     });

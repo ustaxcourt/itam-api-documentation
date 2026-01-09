@@ -43,6 +43,7 @@ describe('Integration testing for ITAM Project', () => {
       {
         method: 'POST',
         headers: { Authorization: 'Bearer mocked-token' },
+        body: { zenDeskTicketId: 123, notes: 'these are notes' },
       },
     );
     expect(res.status).toBe(200);
@@ -57,6 +58,7 @@ describe('Integration testing for ITAM Project', () => {
       {
         method: 'POST',
         headers: { Authorization: 'Bearer mocked-token' },
+        body: { zenDeskTicketId: 123, notes: 'these are notes' },
       },
     );
     expect(assignRes.status).toBe(200);
@@ -84,6 +86,7 @@ describe('Integration testing for ITAM Project', () => {
       {
         method: 'POST',
         headers: { Authorization: 'Bearer mocked-token' },
+        body: { zenDeskTicketId: 123, notes: 'these are notes' },
       },
     );
     expect(res.status).toBe(404);
