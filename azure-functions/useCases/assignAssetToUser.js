@@ -1,7 +1,7 @@
 import { assignAssetOwner } from '../persistence/assignAssetOwner.js';
-import { conditionallyUpdateAssetAuditLog } from './conditionallyUpdateAssetAuditLog.js';
+import { updateAssetAuditLog } from './updateAssetAuditLog.js';
 
 export async function assignAssetToUser(userId, assetId, body) {
   await assignAssetOwner(userId, assetId);
-  await conditionallyUpdateAssetAuditLog(assetId, body);
+  await updateAssetAuditLog(assetId, body);
 }
