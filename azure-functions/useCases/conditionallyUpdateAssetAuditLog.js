@@ -1,4 +1,4 @@
-import { addNewAssetToAssetAuditLog } from '../persistence/addNewAssetToAssetAuditLog.js';
+import { addNewEntryToAssetAuditLog } from '../persistence/addNewEntryToAssetAuditLog.js';
 import { getChoiceFieldIntegersFromAssetAuditLogTable } from '../persistence/getChoiceFieldIntegersFromAssetAuditLogTable.js';
 import { getLatestAssetAuditLogEntryCondition } from '../persistence/getLatestAssetAuditLogEntryCondition.js';
 import { getAssetDetails } from './getAssetDetails.js';
@@ -12,7 +12,7 @@ export async function conditionallyUpdateAssetAuditLog(assetId, body) {
   const latestCondition = await getLatestAssetAuditLogEntryCondition(assetName);
 
   if (latestCondition != choices[assetDetails.condition]) {
-    await addNewAssetToAssetAuditLog(
+    await addNewEntryToAssetAuditLog(
       assetName,
       choices[assetDetails.condition],
       Number(body.zenDeskTicketId),

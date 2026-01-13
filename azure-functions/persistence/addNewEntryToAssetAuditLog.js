@@ -2,7 +2,7 @@ import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
 import { dataverseCall } from './dataverseCall.js';
 
-export async function addNewAssetToAssetAuditLog(
+export async function addNewEntryToAssetAuditLog(
   assetName,
   condition,
   zenDeskTicketId,

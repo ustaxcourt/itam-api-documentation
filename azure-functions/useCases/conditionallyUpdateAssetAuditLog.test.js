@@ -2,12 +2,12 @@ import { conditionallyUpdateAssetAuditLog } from './conditionallyUpdateAssetAudi
 import { NotFoundError } from '../errors/NotFoundError.js';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 
-import { addNewAssetToAssetAuditLog } from '../persistence/addNewAssetToAssetAuditLog.js';
+import { addNewEntryToAssetAuditLog } from '../persistence/addNewEntryToAssetAuditLog.js';
 import { getChoiceFieldIntegersFromAssetAuditLogTable } from '../persistence/getChoiceFieldIntegersFromAssetAuditLogTable.js';
 import { getLatestAssetAuditLogEntryCondition } from '../persistence/getLatestAssetAuditLogEntryCondition.js';
 import { getAssetDetails } from './getAssetDetails.js';
 
-jest.mock('../persistence/addNewAssetToAssetAuditLog.js');
+jest.mock('../persistence/addNewEntryToAssetAuditLog.js');
 jest.mock('../persistence/getChoiceFieldIntegersFromAssetAuditLogTable.js');
 jest.mock('../persistence/getLatestAssetAuditLogEntryCondition.js');
 jest.mock('./getAssetDetails.js');
@@ -63,7 +63,7 @@ describe('conditionallyUpdateAssetAuditLog', () => {
     expect(getLatestAssetAuditLogEntryCondition).toHaveBeenCalledWith(
       'HP EliteDisplay E241i %2322',
     );
-    expect(addNewAssetToAssetAuditLog).not.toHaveBeenCalled();
+    expect(addNewEntryToAssetAuditLog).not.toHaveBeenCalled();
   });
 
   it('should call addNewAssetToAssetAuditLog since condition has changed', async () => {
@@ -78,7 +78,7 @@ describe('conditionallyUpdateAssetAuditLog', () => {
     expect(getLatestAssetAuditLogEntryCondition).toHaveBeenCalledWith(
       'HP EliteDisplay E241i %2322',
     );
-    expect(addNewAssetToAssetAuditLog).toHaveBeenCalledWith(
+    expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
       'HP EliteDisplay E241i %2322',
       2,
       123123,
@@ -96,7 +96,7 @@ describe('conditionallyUpdateAssetAuditLog', () => {
 
     expect(getChoiceFieldIntegersFromAssetAuditLogTable).not.toHaveBeenCalled();
     expect(getLatestAssetAuditLogEntryCondition).not.toHaveBeenCalled();
-    expect(addNewAssetToAssetAuditLog).not.toHaveBeenCalled();
+    expect(addNewEntryToAssetAuditLog).not.toHaveBeenCalled();
   });
 
   it('should throw DataverseTokenError if asset retrieval fails with token error', async () => {
@@ -108,6 +108,6 @@ describe('conditionallyUpdateAssetAuditLog', () => {
       conditionallyUpdateAssetAuditLog(assetId, body),
     ).rejects.toThrow(DataverseTokenError);
 
-    expect(addNewAssetToAssetAuditLog).not.toHaveBeenCalled();
+    expect(addNewEntryToAssetAuditLog).not.toHaveBeenCalled();
   });
 });

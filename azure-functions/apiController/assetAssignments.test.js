@@ -18,12 +18,10 @@ describe('assignmentsHandler', () => {
     const request = {
       method: 'POST',
       params: { assetid: 'asset123', userid: 'user456' },
-      json: jest
-        .fn()
-        .mockResolvedValue({
-          zenDeskTicketId: 123123,
-          notes: 'this is a very big note',
-        }),
+      json: jest.fn().mockResolvedValue({
+        zenDeskTicketId: 123123,
+        notes: 'this is a very big note',
+      }),
     };
 
     const result = await assignmentsHandler(request, context);
@@ -80,16 +78,15 @@ describe('assignmentsHandler', () => {
   });
 
   it('should handle 401 error gracefully', async () => {
-    const error = { response: { status: 401 } };
-    assignAssetToUser.mockRejectedValue(error);
+    assignAssetToUser.mockRejectedValue({ response: { status: 401 } });
 
     const request = {
       method: 'POST',
       params: { assetid: 'asset123', userid: 'user456' },
-      body: {
-        zenDeskTicketId: '123123',
+      json: jest.fn().mockResolvedValue({
+        zenDeskTicketId: 123123,
         notes: 'this is a very big note',
-      },
+      }),
     };
 
     const result = await assignmentsHandler(request, context);

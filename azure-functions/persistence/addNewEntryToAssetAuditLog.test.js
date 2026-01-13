@@ -1,11 +1,11 @@
-import { addNewAssetToAssetAuditLog } from './addNewAssetToAssetAuditLog.js';
+import { addNewEntryToAssetAuditLog } from './addNewEntryToAssetAuditLog.js';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
 import { dataverseCall } from './dataverseCall.js';
 
 jest.mock('./dataverseCall.js');
 
-describe('addNewAssetToAssetAuditLog', () => {
+describe('addNewEntryToAssetAuditLog', () => {
   const DATAVERSE_URL = 'https://example.com';
   let originalEnv;
 
@@ -25,7 +25,7 @@ describe('addNewAssetToAssetAuditLog', () => {
   it('should call dataverseCall with correct URL, method, and body', async () => {
     dataverseCall.mockResolvedValue({ success: true });
 
-    const result = await addNewAssetToAssetAuditLog(
+    const result = await addNewEntryToAssetAuditLog(
       'assetName',
       'Poor',
       '123',
@@ -51,7 +51,7 @@ describe('addNewAssetToAssetAuditLog', () => {
     dataverseCall.mockRejectedValue(new InternalServerError('Server issue'));
 
     await expect(
-      addNewAssetToAssetAuditLog(
+      addNewEntryToAssetAuditLog(
         'assetName',
         'Poor',
         '123',
@@ -65,7 +65,7 @@ describe('addNewAssetToAssetAuditLog', () => {
     dataverseCall.mockRejectedValue(new DataverseTokenError('Token expired'));
 
     await expect(
-      addNewAssetToAssetAuditLog(
+      addNewEntryToAssetAuditLog(
         'assestName',
         'Poor',
         '123',
@@ -81,7 +81,7 @@ describe('addNewAssetToAssetAuditLog', () => {
     );
 
     await expect(
-      addNewAssetToAssetAuditLog(
+      addNewEntryToAssetAuditLog(
         'assestName',
         'Poor',
         '123',
