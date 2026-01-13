@@ -2,6 +2,7 @@ import { addNewEntryToAssetAuditLog } from '../persistence/addNewEntryToAssetAud
 import { getChoiceFieldIntegersFromAssetAuditLogTable } from '../persistence/getChoiceFieldIntegersFromAssetAuditLogTable.js';
 import { getAssetDetails } from './getAssetDetails.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
+import { updateAssetCondition } from '../persistence/updateAssetCondition.js';
 
 export async function updateAssetAuditLog(assetId, body) {
   // Fetch asset details and choice mapping
@@ -32,4 +33,7 @@ export async function updateAssetAuditLog(assetId, body) {
     body?.notes ?? null,
     'Asset Assignment', // this can be customized if desired to function based on user input or this default as well
   );
+
+  // Run update to condition field in base table
+  updateAssetCondition(assetId, conditionCode);
 }
