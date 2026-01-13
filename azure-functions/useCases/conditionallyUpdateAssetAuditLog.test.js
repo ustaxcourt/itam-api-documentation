@@ -18,36 +18,39 @@ describe('conditionallyUpdateAssetAuditLog', () => {
     zenDeskTicketId: 123123,
     notes: 'this is a very big note',
   };
-  getAssetDetails.mockResolvedValue({
-    activation: true,
-    assetName: 'HP EliteDisplay E241i #22',
-    condition: 'Poor',
-    itemStatus: 'Assigned',
-    location: '316',
-    osVersion: null,
-    phone: null,
-    user: {
-      email: 'Tracy.Chung@ustaxcourt.gov',
-      isActive: true,
-      isContractor: false,
-      jobTitle: 'Chambers Administrator',
-      location: '432',
-      name: 'Tracy Chung',
-      phone: '202-521-4721',
-    },
-  });
-
-  getChoiceFieldIntegersFromAssetAuditLogTable.mockResolvedValue({
-    Excellent: 0,
-    Good: 1,
-    Poor: 2,
-    Garbage: 3,
-    Damaged: 4,
-    New: 5,
-  });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
+
+    getAssetDetails.mockResolvedValue({
+      activation: true,
+      assetName: 'HP EliteDisplay E241i #22',
+      condition: 'Poor',
+      itemStatus: 'Assigned',
+      location: '316',
+      osVersion: null,
+      phone: null,
+      user: {
+        email: 'Tracy.Chung@ustaxcourt.gov',
+        isActive: true,
+        isContractor: false,
+        jobTitle: 'Chambers Administrator',
+        location: '432',
+        name: 'Tracy Chung',
+        phone: '202-521-4721',
+      },
+    });
+
+    getChoiceFieldIntegersFromAssetAuditLogTable.mockResolvedValue({
+      Excellent: 0,
+      Good: 1,
+      Poor: 2,
+      Garbage: 3,
+      Damaged: 4,
+      New: 5,
+    });
+
+    getLatestAssetAuditLogEntryCondition.mockResolvedValue(2);
   });
 
   it('should call all functions successfully', async () => {
@@ -60,18 +63,12 @@ describe('conditionallyUpdateAssetAuditLog', () => {
     expect(getLatestAssetAuditLogEntryCondition).toHaveBeenCalledWith(
       'HP EliteDisplay E241i %2322',
     );
+    expect(addNewAssetToAssetAuditLog).not.toHaveBeenCalled();
   });
 
-  it('should call addNewAssetToAssetAuditLog and others successfully since condition has changed', async () => {
-    getChoiceFieldIntegersFromAssetAuditLogTable.mockResolvedValue({
-      Excellent: 0,
-      Good: 1,
-      Poor: 2,
-      Garbage: 3,
-      Damaged: 4,
-      New: 5,
-    });
-    getLatestAssetAuditLogEntryCondition.mockResolvedValue('Garbage');
+  it('should call addNewAssetToAssetAuditLog since condition has changed', async () => {
+    getLatestAssetAuditLogEntryCondition.mockResolvedValue(3);
+
     await conditionallyUpdateAssetAuditLog(assetId, body);
 
     expect(getAssetDetails).toHaveBeenCalledWith(assetId);
@@ -96,6 +93,7 @@ describe('conditionallyUpdateAssetAuditLog', () => {
     await expect(
       conditionallyUpdateAssetAuditLog(assetId, body),
     ).rejects.toThrow(NotFoundError);
+
     expect(getChoiceFieldIntegersFromAssetAuditLogTable).not.toHaveBeenCalled();
     expect(getLatestAssetAuditLogEntryCondition).not.toHaveBeenCalled();
     expect(addNewAssetToAssetAuditLog).not.toHaveBeenCalled();
@@ -109,6 +107,7 @@ describe('conditionallyUpdateAssetAuditLog', () => {
     await expect(
       conditionallyUpdateAssetAuditLog(assetId, body),
     ).rejects.toThrow(DataverseTokenError);
+
     expect(addNewAssetToAssetAuditLog).not.toHaveBeenCalled();
   });
 });
