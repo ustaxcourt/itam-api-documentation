@@ -31,7 +31,7 @@ export async function updateAssetAuditLog(assetId, body) {
     conditionCode,
     Number(body.zenDeskTicketId),
     body?.notes ?? null,
-    'Asset Assignment', // this can be customized if desired to function based on user input or this default as well
+    body?.action ?? null,
   );
 
   // Run update to condition field in base table

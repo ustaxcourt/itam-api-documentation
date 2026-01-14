@@ -12,7 +12,7 @@ export async function updateAssetCondition(assetId, conditionCode) {
     );
   }
 
-  const query = `api/data/v9.2/crf7f_ois_asset_rela_item_orgs(${assetId})`;
+  const query = `crf7f_ois_asset_rela_item_orgs(${assetId})`;
 
   await dataverseCall({
     query,
