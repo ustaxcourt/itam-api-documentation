@@ -1,4 +1,4 @@
-import { getJobTitleRequirementsById } from './getJobTitleRequirementsById.js';
+import { getDefaultRequirements } from './getDefaultRequirements.js';
 import { dataverseCall } from './dataverseCall.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
 import {
@@ -8,9 +8,7 @@ import {
 
 jest.mock('./dataverseCall.js');
 
-describe('getJobTitleRequirementsById', () => {
-  const jobTitleId = 'b09cf686-30d5-f011-8544-7c1e52177972';
-
+describe('getJobTitleDefaultRequirements', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
@@ -18,10 +16,10 @@ describe('getJobTitleRequirementsById', () => {
   it('should call dataverseCall with correct URL, method, and body', async () => {
     dataverseCall.mockResolvedValue(mockDataverseResponseItem);
 
-    const result = await getJobTitleRequirementsById(jobTitleId);
+    const result = await getDefaultRequirements();
 
     expect(dataverseCall).toHaveBeenCalledWith({
-      query: `crf7f_ois_job_title_model_types?$select=crf7f_modelmaximum,crf7f_modelminimum,crf7f_JobTitleAssetType,crf7f_ReferenceModel&$filter=crf7f_JobTitleAssetType/crf7f_JobTitle/crf7f_ois_job_titleid eq '${jobTitleId}' and crf7f_JobTitleAssetType/crf7f_isdefault eq false &$expand=crf7f_ReferenceModel($select=crf7f_name),crf7f_JobTitleAssetType($select=crf7f_minimumquanitity,crf7f_maximumquantity,crf7f_JobTitle,crf7f_AssetType;$expand=crf7f_JobTitle($select=crf7f_title),crf7f_AssetType($select=crf7f_name))`,
+      query: `crf7f_ois_job_title_model_types?$select=crf7f_modelmaximum,crf7f_modelminimum,crf7f_JobTitleAssetType,crf7f_ReferenceModel&$filter=crf7f_JobTitleAssetType/crf7f_isdefault eq true &$expand=crf7f_ReferenceModel($select=crf7f_name),crf7f_JobTitleAssetType($select=crf7f_minimumquanitity,crf7f_maximumquantity,crf7f_JobTitle,crf7f_AssetType;$expand=crf7f_JobTitle($select=crf7f_title),crf7f_AssetType($select=crf7f_name))`,
       method: 'GET',
     });
 
@@ -44,12 +42,7 @@ describe('getJobTitleRequirementsById', () => {
   it('should return the proper response when job title has more than one model under the same asset type', async () => {
     dataverseCall.mockResolvedValue(mockDataverseResponseList);
 
-    const result = await getJobTitleRequirementsById(jobTitleId);
-
-    expect(dataverseCall).toHaveBeenCalledWith({
-      query: `crf7f_ois_job_title_model_types?$select=crf7f_modelmaximum,crf7f_modelminimum,crf7f_JobTitleAssetType,crf7f_ReferenceModel&$filter=crf7f_JobTitleAssetType/crf7f_JobTitle/crf7f_ois_job_titleid eq '${jobTitleId}' and crf7f_JobTitleAssetType/crf7f_isdefault eq false &$expand=crf7f_ReferenceModel($select=crf7f_name),crf7f_JobTitleAssetType($select=crf7f_minimumquanitity,crf7f_maximumquantity,crf7f_JobTitle,crf7f_AssetType;$expand=crf7f_JobTitle($select=crf7f_title),crf7f_AssetType($select=crf7f_name))`,
-      method: 'GET',
-    });
+    const result = await getDefaultRequirements();
 
     expect(result).toEqual([
       {
@@ -84,30 +77,21 @@ describe('getJobTitleRequirementsById', () => {
     ]);
   });
 
-  it('should throw NotFoundError when response has empty value array', async () => {
+  it('should return empty array when no defualt items are set', async () => {
     dataverseCall.mockResolvedValue({ value: [] });
-
-    await expect(getJobTitleRequirementsById('job-title-123')).rejects.toThrow(
-      NotFoundError,
-    );
-    await expect(getJobTitleRequirementsById('job-title-123')).rejects.toThrow(
-      'Resource not found',
-    );
+    const result = await getDefaultRequirements();
+    expect(result).toEqual([]);
   });
 
   it('should throw NotFoundError when response is null', async () => {
     dataverseCall.mockResolvedValue(null);
 
-    await expect(getJobTitleRequirementsById('job-title-123')).rejects.toThrow(
-      NotFoundError,
-    );
+    await expect(getDefaultRequirements()).rejects.toThrow(NotFoundError);
   });
 
   it('should propagate errors from dataverseCall', async () => {
     dataverseCall.mockRejectedValue(new Error('Network failure'));
 
-    await expect(getJobTitleRequirementsById('job-title-123')).rejects.toThrow(
-      'Network failure',
-    );
+    await expect(getDefaultRequirements()).rejects.toThrow('Network failure');
   });
 });
