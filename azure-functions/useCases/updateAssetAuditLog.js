@@ -33,5 +33,5 @@ export async function updateAssetAuditLog(assetId, body) {
   );
 
   // Run update to condition field in base table
-  updateAssetCondition(assetId, conditionCode);
+  await updateAssetCondition(assetId, conditionCode);
 }

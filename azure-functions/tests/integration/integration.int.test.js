@@ -42,8 +42,15 @@ describe('Integration testing for ITAM Project', () => {
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${existingUserId}`,
       {
         method: 'POST',
-        headers: { Authorization: 'Bearer mocked-token' },
-        body: { zenDeskTicketId: 123, notes: 'these are notes' },
+        headers: {
+          Authorization: 'Bearer mocked-token',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          zenDeskTicketId: 123,
+          condition: 'Good',
+          notes: 'these are notes',
+        }),
       },
     );
     expect(res.status).toBe(200);
@@ -57,8 +64,15 @@ describe('Integration testing for ITAM Project', () => {
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${existingUserId}`,
       {
         method: 'POST',
-        headers: { Authorization: 'Bearer mocked-token' },
-        body: { zenDeskTicketId: 123, notes: 'these are notes' },
+        headers: {
+          Authorization: 'Bearer mocked-token',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          zenDeskTicketId: 123,
+          condition: 'Good',
+          notes: 'these are notes',
+        }),
       },
     );
     expect(assignRes.status).toBe(200);
@@ -85,8 +99,15 @@ describe('Integration testing for ITAM Project', () => {
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${nonExistentUserId}`,
       {
         method: 'POST',
-        headers: { Authorization: 'Bearer mocked-token' },
-        body: { zenDeskTicketId: 123, notes: 'these are notes' },
+        headers: {
+          Authorization: 'Bearer mocked-token',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          zenDeskTicketId: 123,
+          condition: 'Good',
+          notes: 'these are notes',
+        }),
       },
     );
     expect(res.status).toBe(404);
