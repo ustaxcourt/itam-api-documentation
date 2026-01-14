@@ -4,21 +4,24 @@ import { getChoiceFieldIntegersFromAssetAuditLogTable } from '../persistence/get
 import { getAssetDetails } from './getAssetDetails.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
+import { updateAssetCondition } from '../persistence/updateAssetCondition.js';
 
 jest.mock('../persistence/addNewEntryToAssetAuditLog.js');
 jest.mock('../persistence/getChoiceFieldIntegersFromAssetAuditLogTable.js');
 jest.mock('./getAssetDetails.js');
+jest.mock('../persistence/updateAssetCondition.js');
 
 describe('updateAssetAuditLog', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
-    // Default: asset with condition "Poor", choice mapping includes "Poor"
+    // Default asset details
     getAssetDetails.mockResolvedValue({
       assetName: 'Device #1',
       condition: 'Poor',
     });
 
+    // Choice map for condition label -> integer
     getChoiceFieldIntegersFromAssetAuditLogTable.mockResolvedValue({
       Excellent: 0,
       Good: 1,
@@ -29,38 +32,27 @@ describe('updateAssetAuditLog', () => {
     });
 
     addNewEntryToAssetAuditLog.mockResolvedValue({ id: 'mock-created-id' });
+    updateAssetCondition.mockResolvedValue(undefined);
   });
 
-  it('uses condition from body when provided', async () => {
+  it('uses condition from body (required) and passes user-defined action', async () => {
     await updateAssetAuditLog('asset123', {
       zenDeskTicketId: 123123,
       notes: 'Condition changed to Good',
       condition: 'Good',
+      action: 'Asset Assignment',
     });
 
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
       'Device %231', // "#" encoded
       1, // Good
-      123123, // coerced to number
+      123123, // numeric
       'Condition changed to Good',
       'Asset Assignment',
     );
-  });
 
-  it('falls back to existing asset condition when body.condition is not provided', async () => {
-    await updateAssetAuditLog('asset123', {
-      zenDeskTicketId: 444,
-      notes: 'No condition provided',
-      // condition omitted
-    });
-
-    expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
-      'Device %231',
-      2, // Poor
-      444,
-      'No condition provided',
-      'Asset Assignment',
-    );
+    // Also updates base table condition
+    expect(updateAssetCondition).toHaveBeenCalledWith('asset123', 1);
   });
 
   it('encodes assetName by replacing "#" with "%23"', async () => {
@@ -70,38 +62,46 @@ describe('updateAssetAuditLog', () => {
     });
 
     await updateAssetAuditLog('asset123', {
-      zenDeskTicketId: '555', // string; should be transformed
+      zenDeskTicketId: '555',
       notes: 'encoding test',
+      condition: 'Poor',
+      action: 'Transfer',
     });
 
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
       'HP EliteDisplay E241i %2322',
-      2,
-      555,
+      2, // Poor
+      555, // transformed to numeric
       'encoding test',
-      'Asset Assignment',
+      'Transfer',
     );
+    expect(updateAssetCondition).toHaveBeenCalledWith('asset123', 2);
   });
 
-  it('coerces zenDeskTicketId to a number', async () => {
+  it('transforms zenDeskTicketId to a number', async () => {
     await updateAssetAuditLog('asset123', {
       zenDeskTicketId: '999', // string input
       notes: 'ticket as string',
+      condition: 'Poor',
+      action: 'Return',
     });
 
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
       'Device %231',
       2,
-      999, // transformed to numeric
+      999,
       'ticket as string',
-      'Asset Assignment',
+      'Return',
     );
+    expect(updateAssetCondition).toHaveBeenCalledWith('asset123', 2);
   });
 
   it('passes notes as null when not provided', async () => {
     await updateAssetAuditLog('asset123', {
       zenDeskTicketId: 321,
       // notes omitted
+      condition: 'Poor',
+      action: 'Dispose',
     });
 
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
@@ -109,21 +109,55 @@ describe('updateAssetAuditLog', () => {
       2,
       321,
       null,
-      'Asset Assignment',
+      'Dispose',
     );
+    expect(updateAssetCondition).toHaveBeenCalledWith('asset123', 2);
   });
 
-  it('throws InternalServerError when condition label is not in the choices map', async () => {
-    getAssetDetails.mockResolvedValue({
-      assetName: 'Device #1',
-      condition: 'UnknownLabel',
+  it('passes action as null when not provided', async () => {
+    await updateAssetAuditLog('asset123', {
+      zenDeskTicketId: 101,
+      notes: 'no action provided',
+      condition: 'Good',
+      // action omitted
     });
 
+    expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
+      'Device %231',
+      1,
+      101,
+      'no action provided',
+      null,
+    );
+    expect(updateAssetCondition).toHaveBeenCalledWith('asset123', 1);
+  });
+
+  it('throws InternalServerError when condition is missing from body', async () => {
     await expect(
-      updateAssetAuditLog('asset123', { zenDeskTicketId: 123 }),
+      updateAssetAuditLog('asset123', {
+        zenDeskTicketId: 123,
+        notes: 'missing condition',
+        // condition omitted
+        action: 'Asset Assignment',
+      }),
     ).rejects.toThrow(InternalServerError);
 
     expect(addNewEntryToAssetAuditLog).not.toHaveBeenCalled();
+    expect(updateAssetCondition).not.toHaveBeenCalled();
+  });
+
+  it('throws InternalServerError when condition label is not in the choices map', async () => {
+    await expect(
+      updateAssetAuditLog('asset123', {
+        zenDeskTicketId: 123,
+        notes: 'bad label',
+        condition: 'NotInMap',
+        action: 'Asset Assignment',
+      }),
+    ).rejects.toThrow(InternalServerError);
+
+    expect(addNewEntryToAssetAuditLog).not.toHaveBeenCalled();
+    expect(updateAssetCondition).not.toHaveBeenCalled();
   });
 
   it('bubbles up a DataverseTokenError thrown by the persistence layer', async () => {
@@ -135,6 +169,8 @@ describe('updateAssetAuditLog', () => {
       updateAssetAuditLog('asset123', {
         zenDeskTicketId: 100,
         notes: 'token error',
+        condition: 'Good',
+        action: 'Repair',
       }),
     ).rejects.toThrow(DataverseTokenError);
   });
@@ -148,6 +184,8 @@ describe('updateAssetAuditLog', () => {
       updateAssetAuditLog('asset123', {
         zenDeskTicketId: 100,
         notes: 'internal error',
+        condition: 'Good',
+        action: 'Repair',
       }),
     ).rejects.toThrow(InternalServerError);
   });

@@ -12,10 +12,8 @@ export async function updateAssetAuditLog(assetId, body) {
   // Normalize asset name
   const assetName = assetDetails.assetName.replace(/#/g, '%23');
 
-  // Determine which condition to use:
-  //    - If body.condition exists and is non-empty, use that
-  //    - Otherwise, fall back to assetDetails.condition
-  const conditionLabel = body?.condition?.trim() || assetDetails.condition;
+  // body.condition must exist in request
+  const conditionLabel = body?.condition?.trim();
 
   // Map condition label to integer code
   const conditionCode = choices[conditionLabel];
