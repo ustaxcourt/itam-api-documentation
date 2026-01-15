@@ -1,8 +1,8 @@
-import { addNewEntryToAssetAuditLog } from '../persistence/addNewEntryToAssetAuditLog.js';
-import { getChoiceFieldIntegersFromAssetAuditLogTable } from '../persistence/getChoiceFieldIntegersFromAssetAuditLogTable.js';
-import { getAssetDetails } from './getAssetDetails.js';
+import { addNewEntryToAssetAuditLog } from './addNewEntryToAssetAuditLog.js';
+import { getChoiceFieldIntegersFromAssetAuditLogTable } from './getChoiceFieldIntegersFromAssetAuditLogTable.js';
+import { getAssetDetails } from '../useCases/getAssetDetails.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
-import { updateAssetCondition } from '../persistence/updateAssetCondition.js';
+import { updateAssetCondition } from './updateAssetCondition.js';
 
 export async function updateAssetAuditLog(assetId, body) {
   // Fetch asset details and choice mapping
@@ -10,7 +10,7 @@ export async function updateAssetAuditLog(assetId, body) {
   const choices = await getChoiceFieldIntegersFromAssetAuditLogTable();
 
   // Normalize asset name
-  const assetName = assetDetails.assetName.replace(/#/g, '%23');
+  const assetName = assetDetails.assetName;
 
   // body.condition must exist in request
   const conditionLabel = body?.condition?.trim();

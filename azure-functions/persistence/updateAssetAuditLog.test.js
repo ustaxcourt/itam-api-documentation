@@ -1,14 +1,14 @@
 import { updateAssetAuditLog } from './updateAssetAuditLog.js';
 import { addNewEntryToAssetAuditLog } from '../persistence/addNewEntryToAssetAuditLog.js';
 import { getChoiceFieldIntegersFromAssetAuditLogTable } from '../persistence/getChoiceFieldIntegersFromAssetAuditLogTable.js';
-import { getAssetDetails } from './getAssetDetails.js';
+import { getAssetDetails } from '../useCases/getAssetDetails.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 import { updateAssetCondition } from '../persistence/updateAssetCondition.js';
 
 jest.mock('../persistence/addNewEntryToAssetAuditLog.js');
 jest.mock('../persistence/getChoiceFieldIntegersFromAssetAuditLogTable.js');
-jest.mock('./getAssetDetails.js');
+jest.mock('../useCases/getAssetDetails.js');
 jest.mock('../persistence/updateAssetCondition.js');
 
 describe('updateAssetAuditLog', () => {
@@ -44,7 +44,7 @@ describe('updateAssetAuditLog', () => {
     });
 
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
-      'Device %231', // "#" encoded
+      'Device #1',
       1, // Good
       123123, // numeric
       'Condition changed to Good',
@@ -55,7 +55,7 @@ describe('updateAssetAuditLog', () => {
     expect(updateAssetCondition).toHaveBeenCalledWith('asset123', 1);
   });
 
-  it('encodes assetName by replacing "#" with "%23"', async () => {
+  it('does NOT encode assetName; preserves "#" characters', async () => {
     getAssetDetails.mockResolvedValue({
       assetName: 'HP EliteDisplay E241i #22',
       condition: 'Poor',
@@ -69,7 +69,7 @@ describe('updateAssetAuditLog', () => {
     });
 
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
-      'HP EliteDisplay E241i %2322',
+      'HP EliteDisplay E241i #22',
       2, // Poor
       555, // transformed to numeric
       'encoding test',
@@ -87,7 +87,7 @@ describe('updateAssetAuditLog', () => {
     });
 
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
-      'Device %231',
+      'Device #1',
       2,
       999,
       'ticket as string',
@@ -105,7 +105,7 @@ describe('updateAssetAuditLog', () => {
     });
 
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
-      'Device %231',
+      'Device #1',
       2,
       321,
       null,
@@ -123,7 +123,7 @@ describe('updateAssetAuditLog', () => {
     });
 
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
-      'Device %231',
+      'Device #1',
       1,
       101,
       'no action provided',

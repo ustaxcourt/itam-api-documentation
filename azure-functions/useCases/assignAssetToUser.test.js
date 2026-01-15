@@ -1,9 +1,9 @@
 import { assignAssetToUser } from './assignAssetToUser.js';
 import { assignAssetOwner } from '../persistence/assignAssetOwner.js';
-import { updateAssetAuditLog } from './updateAssetAuditLog.js';
+import { updateAssetAuditLog } from '../persistence/updateAssetAuditLog.js';
 import { expect } from '@jest/globals';
 
-jest.mock('./updateAssetAuditLog.js');
+jest.mock('../persistence/updateAssetAuditLog.js');
 jest.mock('../persistence/assignAssetOwner.js');
 
 describe('assignAssetToUser', () => {
