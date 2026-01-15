@@ -17,12 +17,12 @@ export async function assignmentsHandler(request, context) {
       const body = await request.json();
 
       if (
-        !Object.hasOwn(body, 'zenDeskTicketId') ||
+        !Object.hasOwn(body, 'zendeskTicketId') ||
         body === null ||
         body === undefined
       ) {
         throw new BadRequest(
-          'Missing required ZenDeskTicketId in body of request ',
+          'Missing required zendeskTicketId in body of request ',
         );
       }
 

@@ -47,7 +47,7 @@ describe('Integration testing for ITAM Project', () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          zenDeskTicketId: 123,
+          zendeskTicketId: 123,
           condition: 'Good',
           notes: 'these are notes',
         }),
@@ -69,7 +69,7 @@ describe('Integration testing for ITAM Project', () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          zenDeskTicketId: 123,
+          zendeskTicketId: 123,
           condition: 'Good',
           notes: 'these are notes',
         }),
@@ -104,7 +104,7 @@ describe('Integration testing for ITAM Project', () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          zenDeskTicketId: 123,
+          zendeskTicketId: 123,
           condition: 'Good',
           notes: 'these are notes',
         }),

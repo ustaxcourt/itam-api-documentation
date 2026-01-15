@@ -27,7 +27,7 @@ export async function updateAssetAuditLog(assetId, body) {
   await addNewEntryToAssetAuditLog(
     assetName,
     conditionCode,
-    Number(body.zenDeskTicketId),
+    Number(body.zendeskTicketId),
     body?.notes ?? null,
     body?.action ?? null,
   );

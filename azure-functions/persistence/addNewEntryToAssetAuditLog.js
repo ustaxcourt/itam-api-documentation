@@ -5,7 +5,7 @@ import { dataverseCall } from './dataverseCall.js';
 export async function addNewEntryToAssetAuditLog(
   assetName,
   condition,
-  zenDeskTicketId,
+  zendeskTicketId,
   notes,
   action,
 ) {
@@ -15,7 +15,7 @@ export async function addNewEntryToAssetAuditLog(
     let body = {
       crf7f_name: assetName,
       crf7f_condition: condition,
-      crf7f_zendesk_ticket_number: zenDeskTicketId,
+      crf7f_zendesk_ticket_number: zendeskTicketId,
       crf7f_notes: notes,
       crf7f_action: action,
     };

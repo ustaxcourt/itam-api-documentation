@@ -37,7 +37,7 @@ describe('updateAssetAuditLog', () => {
 
   it('uses condition from body (required) and passes user-defined action', async () => {
     await updateAssetAuditLog('asset123', {
-      zenDeskTicketId: 123123,
+      zendeskTicketId: 123123,
       notes: 'Condition changed to Good',
       condition: 'Good',
       action: 'Asset Assignment',
@@ -62,7 +62,7 @@ describe('updateAssetAuditLog', () => {
     });
 
     await updateAssetAuditLog('asset123', {
-      zenDeskTicketId: '555',
+      zendeskTicketId: '555',
       notes: 'encoding test',
       condition: 'Poor',
       action: 'Transfer',
@@ -78,9 +78,9 @@ describe('updateAssetAuditLog', () => {
     expect(updateAssetCondition).toHaveBeenCalledWith('asset123', 2);
   });
 
-  it('transforms zenDeskTicketId to a number', async () => {
+  it('transforms zendeskTicketId to a number', async () => {
     await updateAssetAuditLog('asset123', {
-      zenDeskTicketId: '999', // string input
+      zendeskTicketId: '999', // string input
       notes: 'ticket as string',
       condition: 'Poor',
       action: 'Return',
@@ -98,7 +98,7 @@ describe('updateAssetAuditLog', () => {
 
   it('passes notes as null when not provided', async () => {
     await updateAssetAuditLog('asset123', {
-      zenDeskTicketId: 321,
+      zendeskTicketId: 321,
       // notes omitted
       condition: 'Poor',
       action: 'Dispose',
@@ -116,7 +116,7 @@ describe('updateAssetAuditLog', () => {
 
   it('passes action as null when not provided', async () => {
     await updateAssetAuditLog('asset123', {
-      zenDeskTicketId: 101,
+      zendeskTicketId: 101,
       notes: 'no action provided',
       condition: 'Good',
       // action omitted
@@ -135,7 +135,7 @@ describe('updateAssetAuditLog', () => {
   it('throws InternalServerError when condition is missing from body', async () => {
     await expect(
       updateAssetAuditLog('asset123', {
-        zenDeskTicketId: 123,
+        zendeskTicketId: 123,
         notes: 'missing condition',
         // condition omitted
         action: 'Asset Assignment',
@@ -149,7 +149,7 @@ describe('updateAssetAuditLog', () => {
   it('throws InternalServerError when condition label is not in the choices map', async () => {
     await expect(
       updateAssetAuditLog('asset123', {
-        zenDeskTicketId: 123,
+        zendeskTicketId: 123,
         notes: 'bad label',
         condition: 'NotInMap',
         action: 'Asset Assignment',
@@ -167,7 +167,7 @@ describe('updateAssetAuditLog', () => {
 
     await expect(
       updateAssetAuditLog('asset123', {
-        zenDeskTicketId: 100,
+        zendeskTicketId: 100,
         notes: 'token error',
         condition: 'Good',
         action: 'Repair',
@@ -182,7 +182,7 @@ describe('updateAssetAuditLog', () => {
 
     await expect(
       updateAssetAuditLog('asset123', {
-        zenDeskTicketId: 100,
+        zendeskTicketId: 100,
         notes: 'internal error',
         condition: 'Good',
         action: 'Repair',

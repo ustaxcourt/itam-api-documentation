@@ -19,7 +19,7 @@ describe('assignmentsHandler', () => {
       method: 'POST',
       params: { assetid: 'asset123', userid: 'user456' },
       json: jest.fn().mockResolvedValue({
-        zenDeskTicketId: 123123,
+        zendeskTicketId: 123123,
         notes: 'this is a very big note',
       }),
     };
@@ -27,7 +27,7 @@ describe('assignmentsHandler', () => {
     const result = await assignmentsHandler(request, context);
 
     expect(assignAssetToUser).toHaveBeenCalledWith('user456', 'asset123', {
-      zenDeskTicketId: 123123,
+      zendeskTicketId: 123123,
       notes: 'this is a very big note',
     });
     expect(result).toEqual({
@@ -84,7 +84,7 @@ describe('assignmentsHandler', () => {
       method: 'POST',
       params: { assetid: 'asset123', userid: 'user456' },
       json: jest.fn().mockResolvedValue({
-        zenDeskTicketId: 123123,
+        zendeskTicketId: 123123,
         notes: 'this is a very big note',
       }),
     };

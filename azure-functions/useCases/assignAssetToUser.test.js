@@ -14,7 +14,7 @@ describe('assignAssetToUser', () => {
   //Basic test if function is being called correctly
   it('calls assignAssetOwner with the given userID and assetID', async () => {
     await assignAssetToUser('testUser', 'asset123', {
-      zenDeskTicketId: '123123',
+      zendeskTicketId: '123123',
       notes: 'this is a very big note',
     });
 
@@ -23,7 +23,7 @@ describe('assignAssetToUser', () => {
 
     expect(updateAssetAuditLog).toHaveBeenCalledTimes(1);
     expect(updateAssetAuditLog).toHaveBeenCalledWith('asset123', {
-      zenDeskTicketId: '123123',
+      zendeskTicketId: '123123',
       notes: 'this is a very big note',
     });
   });
