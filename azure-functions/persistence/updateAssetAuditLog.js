@@ -2,7 +2,6 @@ import { addNewEntryToAssetAuditLog } from './addNewEntryToAssetAuditLog.js';
 import { getChoiceFieldIntegersFromAssetAuditLogTable } from './getChoiceFieldIntegersFromAssetAuditLogTable.js';
 import { getAssetDetails } from '../useCases/getAssetDetails.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
-import { updateAssetCondition } from './updateAssetCondition.js';
 
 export async function updateAssetAuditLog(assetId, body) {
   // Fetch asset details and choice mapping
@@ -24,7 +23,7 @@ export async function updateAssetAuditLog(assetId, body) {
   }
 
   // Write audit log entry
-  await addNewEntryToAssetAuditLog(
+  const auditLogResponse = await addNewEntryToAssetAuditLog(
     assetName,
     conditionCode,
     Number(body.zendeskTicketId),
@@ -32,6 +31,8 @@ export async function updateAssetAuditLog(assetId, body) {
     body?.action ?? null,
   );
 
-  // Run update to condition field in base table
-  await updateAssetCondition(assetId, conditionCode);
+  return {
+    auditId: auditLogResponse?.id ?? null,
+    conditionCode,
+  };
 }
