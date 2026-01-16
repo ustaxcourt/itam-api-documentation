@@ -4,7 +4,7 @@ import { assignAssetToUser } from '../useCases/assignAssetToUser.js';
 import { unassignAsset } from '../useCases/unassignAsset.js';
 import { BadRequest } from '../errors/BadRequest.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
-import { getChoiceFieldIntegersFromAssetAuditLogTable } from '../persistence/getChoiceFieldIntegersFromAssetAuditLogTable.js';
+import { AUDIT_LOG_CHOICES } from '../entityConstants.js';
 
 export async function assignmentsHandler(request, context) {
   try {
@@ -15,9 +15,6 @@ export async function assignmentsHandler(request, context) {
     }
 
     const body = await request.json();
-    // May want to consider caching these choices if this is used a lot
-    const conditionChoices =
-      await getChoiceFieldIntegersFromAssetAuditLogTable();
 
     //Verifies if there even is a body (null and undefined are falsey) then checks if zendeskTicketId is available
     if (!body || !Object.hasOwn(body, 'zendeskTicketId')) {
@@ -30,7 +27,7 @@ export async function assignmentsHandler(request, context) {
       throw new BadRequest('Missing required condition in body of request');
     }
     // Verifies that body.condition is a valid condition
-    if (!(body.condition.trim() in conditionChoices)) {
+    if (!(body.condition.trim() in AUDIT_LOG_CHOICES)) {
       throw new BadRequest(`Invalid condition '${body.condition}'`);
     }
 
