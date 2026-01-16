@@ -1,4 +1,5 @@
 import { InternalServerError } from '../errors/InternalServerError.js';
+import { NotFoundError } from '../errors/NotFoundError.js';
 import { assignAssetOwner } from '../persistence/assignAssetOwner.js';
 import { deleteAssetAuditLogEntry } from '../persistence/deleteAssetAuditLogEntry.js';
 import { updateAssetAuditLog } from '../persistence/updateAssetAuditLog.js';
@@ -15,7 +16,7 @@ export async function assignAssetToUser(userId, assetId, body) {
 
     // Tries to assign the asset to the provided user
     await withRetry(() => assignAssetOwner(userId, assetId));
-  } catch {
+  } catch (error) {
     try {
       // If either of the above fails, we delete the inital audit log entry
       await deleteAssetAuditLogEntry(auditId);
@@ -24,6 +25,11 @@ export async function assignAssetToUser(userId, assetId, body) {
         `Failed to delete the audit entry: ${auditId}`,
         deleteError.message,
       );
+    }
+
+    // Unless specifically called out, useCase swallows errors BE CAREFUL
+    if (error instanceof NotFoundError) {
+      throw error;
     }
 
     throw new InternalServerError(
