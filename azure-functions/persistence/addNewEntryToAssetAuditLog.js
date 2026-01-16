@@ -20,7 +20,12 @@ export async function addNewEntryToAssetAuditLog(
       crf7f_action: action,
     };
 
-    return await dataverseCall({ query: url, method: 'POST', body: body });
+    return await dataverseCall({
+      query: url,
+      method: 'POST',
+      body: body,
+      responseMode: 'id',
+    });
   } catch (error) {
     if (
       error instanceof InternalServerError ||

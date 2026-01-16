@@ -1,7 +1,12 @@
 import { getDataverseAccessToken } from './getDataverseAccessToken.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
 
-export async function dataverseCall({ query, method, body = null }) {
+export async function dataverseCall({
+  query,
+  method,
+  body = null,
+  responseMode = 'default',
+}) {
   const token = await getDataverseAccessToken();
   if (!process.env.DATAVERSE_URL) {
     throw new InternalServerError('DATAVERSE_URL is missing');
@@ -34,12 +39,40 @@ export async function dataverseCall({ query, method, body = null }) {
       throw new Error(`Dataverse call failed with status ${response.status}`);
     }
 
+    // Collect headers (always safe; never forwarded)
+    const allHeaders = {};
+    response.headers.forEach((value, key) => {
+      allHeaders[key] = value;
+    });
+
     // Handle empty body (204 No Content)
     if (response.status === 204) {
+      const entityUrl =
+        response.headers.get('OData-EntityId') ||
+        response.headers.get('odata-entityid');
+
+      const id = entityUrl?.match(/\(([^)]+)\)/)?.[1] ?? null;
+
+      if (responseMode === 'id') {
+        return { id };
+      }
+
+      if (responseMode === 'headers') {
+        return { id, headers: allHeaders };
+      }
+
+      // Backwards compatible
       return null;
     }
 
-    return response.json();
+    // For non-204 (GET, etc.)
+    const data = await response.json();
+
+    if (responseMode === 'headers') {
+      return { ...data, headers: allHeaders };
+    }
+
+    return data;
   } catch (error) {
     console.error('Fetch error in dataverseCall:', error.message);
     throw error;

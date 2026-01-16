@@ -23,7 +23,8 @@ describe('addNewEntryToAssetAuditLog', () => {
   });
 
   it('should call dataverseCall with correct URL, method, and body', async () => {
-    dataverseCall.mockResolvedValue({ success: true });
+    // Should now return { id } since responseMode: 'id' is used
+    dataverseCall.mockResolvedValue({ id: 'mock-created-id' });
 
     const result = await addNewEntryToAssetAuditLog(
       'assetName',
@@ -43,8 +44,10 @@ describe('addNewEntryToAssetAuditLog', () => {
       },
       method: 'POST',
       query: 'crf7f_ois_asset_audit_logs',
+      responseMode: 'id',
     });
-    expect(result).toEqual({ success: true });
+
+    expect(result).toEqual({ id: 'mock-created-id' });
   });
 
   it('should rethrow InternalServerError if caught', async () => {
