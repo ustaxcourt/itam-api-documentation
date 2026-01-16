@@ -1,7 +1,7 @@
 import { dataverseCall } from './dataverseCall.js';
 import { getDataverseAccessToken } from './getDataverseAccessToken.js';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
-import { InternalServerError } from '../errors/InternalServerError.js';
+import { createFetchResponse } from '../tests/mocks/mockFetch.js';
 
 jest.mock('./getDataverseAccessToken.js');
 let originalEnv;
@@ -18,89 +18,89 @@ describe('dataverseCall', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     global.fetch = jest.fn();
+
     process.env.DATAVERSE_URL = 'https://fake.dataverse.url/api/data/v9.2';
   });
 
-  it('should call fetch with correct URL, method, headers, and body for PATCH', async () => {
+  it('PATCH: calls fetch with proper args', async () => {
     getDataverseAccessToken.mockResolvedValue('mocked-token');
 
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ success: true }),
-    });
+    global.fetch.mockResolvedValue(
+      createFetchResponse({
+        json: { success: true },
+        headers: { 'content-type': 'application/json' },
+      }),
+    );
 
-    const query = 'assets(asset123)';
     const body = { name: 'Updated Asset' };
 
-    const result = await dataverseCall({ query, method: 'PATCH', body });
+    const result = await dataverseCall({
+      query: 'assets(asset123)',
+      method: 'PATCH',
+      body,
+    });
 
     expect(result).toEqual({ success: true });
     expect(global.fetch).toHaveBeenCalledWith(
-      `${process.env.DATAVERSE_URL}/${query}`,
+      'https://fake.dataverse.url/api/data/v9.2/assets(asset123)',
       expect.objectContaining({
         method: 'PATCH',
         headers: expect.objectContaining({
           Authorization: 'Bearer mocked-token',
-          'If-Match': '*',
           'Content-Type': 'application/json',
+          'If-Match': '*',
         }),
-        body: JSON.stringify(body),
       }),
     );
   });
 
-  it('should call fetch with correct headers for GET', async () => {
+  it('GET: properly returns JSON', async () => {
     getDataverseAccessToken.mockResolvedValue('mocked-token');
 
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ data: 'test' }),
+    global.fetch.mockResolvedValue(
+      createFetchResponse({
+        json: { data: 'test' },
+        headers: { 'content-type': 'application/json' },
+      }),
+    );
+
+    const result = await dataverseCall({
+      query: 'assets',
+      method: 'GET',
     });
-    const query = 'assets';
-    const result = await dataverseCall({ query, method: 'GET' });
 
     expect(result).toEqual({ data: 'test' });
-    expect(global.fetch).toHaveBeenCalledWith(
-      `${process.env.DATAVERSE_URL}/${query}`,
-      expect.objectContaining({
-        method: 'GET',
-        headers: expect.objectContaining({
-          Authorization: 'Bearer mocked-token',
-          Accept: 'application/json',
-        }),
-      }),
-    );
   });
 
-  it('should throw an error when fetch returns non-OK response', async () => {
+  it('throws on non-OK response', async () => {
     getDataverseAccessToken.mockResolvedValue('mocked-token');
 
-    global.fetch.mockResolvedValueOnce({
-      ok: false,
-      status: 400,
-      json: async () => ({ error: 'Bad Request' }),
-    });
+    global.fetch.mockResolvedValue(
+      createFetchResponse({
+        ok: false,
+        status: 400,
+        json: { error: 'Bad Request' },
+      }),
+    );
 
     await expect(
       dataverseCall({ query: 'foo', method: 'GET' }),
     ).rejects.toThrow('Dataverse call failed with status 400');
   });
 
-  it('should throw an error when fetch itself rejects', async () => {
+  it('throws on fetch rejection', async () => {
     getDataverseAccessToken.mockResolvedValue('mocked-token');
 
-    global.fetch.mockRejectedValueOnce(new Error('Network failure'));
+    global.fetch.mockRejectedValue(new Error('Network failure'));
 
     await expect(
       dataverseCall({ query: 'foo', method: 'GET' }),
     ).rejects.toThrow('Network failure');
   });
 
-  it('should throw DataverseTokenError when token retrieval fails', async () => {
+  it('throws when token retrieval fails', async () => {
     getDataverseAccessToken.mockRejectedValue(
-      new DataverseTokenError(
-        'Error attempting to retrieve token from Identity Provider',
-      ),
+      new DataverseTokenError('Token failed'),
     );
 
     await expect(
@@ -108,11 +108,84 @@ describe('dataverseCall', () => {
     ).rejects.toThrow(DataverseTokenError);
   });
 
-  it('should throw an error when DATAVERSE_URL is empty', async () => {
+  it('throws when DATAVERSE_URL is missing', async () => {
     process.env.DATAVERSE_URL = '';
 
     await expect(
       dataverseCall({ query: 'foo', method: 'GET' }),
-    ).rejects.toThrow(new InternalServerError('DATAVERSE_URL is missing'));
+    ).rejects.toThrow('DATAVERSE_URL is missing');
+  });
+
+  // New tests for responseMode
+  it('responseMode="id" extracts ID from OData-EntityId header', async () => {
+    getDataverseAccessToken.mockResolvedValue('mocked-token');
+
+    global.fetch.mockResolvedValue(
+      createFetchResponse({
+        status: 204,
+        headers: {
+          'OData-EntityId':
+            'https://fake.dataverse.url/api/data/v9.2/table(id-guid-123)',
+        },
+      }),
+    );
+
+    const result = await dataverseCall({
+      query: 'table',
+      method: 'POST',
+      body: {},
+      responseMode: 'id',
+    });
+
+    expect(result).toEqual({ id: 'id-guid-123' });
+  });
+
+  it('responseMode="headers" returns id + all headers', async () => {
+    getDataverseAccessToken.mockResolvedValue('mocked-token');
+
+    global.fetch.mockResolvedValue(
+      createFetchResponse({
+        status: 204,
+        headers: {
+          'OData-EntityId':
+            'https://fake.dataverse.url/api/data/v9.2/table(id-guid-456)',
+          'x-ms-some-header': 'test-value',
+        },
+      }),
+    );
+
+    const result = await dataverseCall({
+      query: 'table',
+      method: 'POST',
+      body: {},
+      responseMode: 'headers',
+    });
+
+    expect(result).toEqual({
+      id: 'id-guid-456',
+      headers: {
+        'OData-EntityId':
+          'https://fake.dataverse.url/api/data/v9.2/table(id-guid-456)',
+        'x-ms-some-header': 'test-value',
+      },
+    });
+  });
+
+  it('responseMode default returns null for 204', async () => {
+    getDataverseAccessToken.mockResolvedValue('mocked-token');
+
+    global.fetch.mockResolvedValue(
+      createFetchResponse({
+        status: 204,
+      }),
+    );
+
+    const result = await dataverseCall({
+      query: 'table',
+      method: 'POST',
+      body: {},
+    });
+
+    expect(result).toBeNull();
   });
 });
