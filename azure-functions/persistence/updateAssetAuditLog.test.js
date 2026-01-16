@@ -1,12 +1,10 @@
 import { updateAssetAuditLog } from './updateAssetAuditLog.js';
 import { addNewEntryToAssetAuditLog } from '../persistence/addNewEntryToAssetAuditLog.js';
-import { getChoiceFieldIntegersFromAssetAuditLogTable } from '../persistence/getChoiceFieldIntegersFromAssetAuditLogTable.js';
 import { getAssetDetails } from '../useCases/getAssetDetails.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
 import { DataverseTokenError } from '../errors/DataverseTokenError.js';
 
 jest.mock('../persistence/addNewEntryToAssetAuditLog.js');
-jest.mock('../persistence/getChoiceFieldIntegersFromAssetAuditLogTable.js');
 jest.mock('../useCases/getAssetDetails.js');
 
 describe('updateAssetAuditLog', () => {
@@ -16,15 +14,6 @@ describe('updateAssetAuditLog', () => {
     getAssetDetails.mockResolvedValue({
       assetName: 'Device #1',
       condition: 'Poor',
-    });
-
-    getChoiceFieldIntegersFromAssetAuditLogTable.mockResolvedValue({
-      Excellent: 0,
-      Good: 1,
-      Poor: 2,
-      Garbage: 3,
-      Damaged: 4,
-      New: 5,
     });
 
     addNewEntryToAssetAuditLog.mockResolvedValue({ id: 'mock-created-id' });

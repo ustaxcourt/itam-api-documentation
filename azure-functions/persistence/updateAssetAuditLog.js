@@ -1,12 +1,12 @@
 import { addNewEntryToAssetAuditLog } from './addNewEntryToAssetAuditLog.js';
-import { getChoiceFieldIntegersFromAssetAuditLogTable } from './getChoiceFieldIntegersFromAssetAuditLogTable.js';
 import { getAssetDetails } from '../useCases/getAssetDetails.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
+import { AUDIT_LOG_CHOICES } from '../entityConstants.js';
 
 export async function updateAssetAuditLog(assetId, body) {
   // Fetch asset details and choice mapping
   const assetDetails = await getAssetDetails(assetId);
-  const choices = await getChoiceFieldIntegersFromAssetAuditLogTable();
+  const choices = AUDIT_LOG_CHOICES;
 
   // Normalize asset name
   const assetName = assetDetails.assetName;
@@ -32,7 +32,7 @@ export async function updateAssetAuditLog(assetId, body) {
   );
 
   return {
-    auditId: auditLogResponse ?? null,
+    auditId: auditLogResponse.id ?? null,
     conditionCode,
   };
 }
