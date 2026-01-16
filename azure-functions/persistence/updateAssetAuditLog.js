@@ -32,7 +32,7 @@ export async function updateAssetAuditLog(assetId, body) {
   );
 
   return {
-    auditId: auditLogResponse?.id ?? null,
+    auditId: auditLogResponse ?? null,
     conditionCode,
   };
 }
