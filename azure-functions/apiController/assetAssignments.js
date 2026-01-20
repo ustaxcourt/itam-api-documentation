@@ -4,21 +4,39 @@ import { assignAssetToUser } from '../useCases/assignAssetToUser.js';
 import { unassignAsset } from '../useCases/unassignAsset.js';
 import { BadRequest } from '../errors/BadRequest.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
+import { AUDIT_LOG_CHOICES } from '../entityConstants.js';
 
 export async function assignmentsHandler(request, context) {
   try {
     const assetId = request.params.assetid;
-
+    const userId = request.params.userid;
     if (!assetId) {
       throw new BadRequest('Missing asset ID');
     }
 
+    const body = await request.json();
+
+    //Verifies if there even is a body (null and undefined are falsey) then checks if zendeskTicketId is available
+    if (!body || !Object.hasOwn(body, 'zendeskTicketId')) {
+      throw new BadRequest(
+        'Missing required zendeskTicketId in body of request ',
+      );
+    }
+    // Verifies that body has a 'condition' property
+    if (!Object.hasOwn(body, 'condition')) {
+      throw new BadRequest('Missing required condition in body of request');
+    }
+    // Verifies that body.condition is a valid condition
+    if (!(body.condition.trim() in AUDIT_LOG_CHOICES)) {
+      throw new BadRequest(`Invalid condition '${body.condition}'`);
+    }
+
+    // If the above validations pass, then we can POST / DELETE
     if (request.method === 'POST') {
-      const userId = request.params.userid;
       if (!userId) {
         throw new BadRequest('Missing user ID for assignment');
       }
-      await assignAssetToUser(userId, assetId);
+      await assignAssetToUser(userId, assetId, body);
     } else if (request.method === 'DELETE') {
       await unassignAsset(assetId);
     } else {

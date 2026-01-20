@@ -8,6 +8,12 @@ jest.mock('../useCases/unassignAsset.js');
 describe('assignmentsHandler', () => {
   const context = { error: jest.fn() };
 
+  const validBody = {
+    zendeskTicketId: 123123,
+    condition: 'Good',
+    notes: 'this is a very big note',
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -18,11 +24,16 @@ describe('assignmentsHandler', () => {
     const request = {
       method: 'POST',
       params: { assetid: 'asset123', userid: 'user456' },
+      json: jest.fn().mockResolvedValue(validBody),
     };
 
     const result = await assignmentsHandler(request, context);
 
-    expect(assignAssetToUser).toHaveBeenCalledWith('user456', 'asset123');
+    expect(assignAssetToUser).toHaveBeenCalledWith(
+      'user456',
+      'asset123',
+      validBody,
+    );
     expect(result).toEqual({
       status: 200,
       jsonBody: {
@@ -38,6 +49,7 @@ describe('assignmentsHandler', () => {
     const request = {
       method: 'DELETE',
       params: { assetid: 'asset123' },
+      json: jest.fn().mockResolvedValue(validBody),
     };
 
     const result = await assignmentsHandler(request, context);
@@ -56,6 +68,7 @@ describe('assignmentsHandler', () => {
     const request = {
       method: 'GET',
       params: { assetid: 'asset123' },
+      json: jest.fn().mockResolvedValue(validBody),
     };
 
     const result = await assignmentsHandler(request, context);
@@ -71,12 +84,12 @@ describe('assignmentsHandler', () => {
   });
 
   it('should handle 401 error gracefully', async () => {
-    const error = { response: { status: 401 } };
-    assignAssetToUser.mockRejectedValue(error);
+    assignAssetToUser.mockRejectedValue({ response: { status: 401 } });
 
     const request = {
       method: 'POST',
       params: { assetid: 'asset123', userid: 'user456' },
+      json: jest.fn().mockResolvedValue(validBody),
     };
 
     const result = await assignmentsHandler(request, context);

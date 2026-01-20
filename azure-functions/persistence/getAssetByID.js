@@ -12,7 +12,6 @@ export async function getAssetByID(id) {
   if (!response?.value || response.value.length === 0) {
     throw new NotFoundError(`No asset found for ID: ${id}`);
   }
-
   // Normalize data
   return filterDictionary(response.value[0]);
 }
