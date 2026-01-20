@@ -54,7 +54,7 @@ describe('assignmentsHandler', () => {
 
     const result = await assignmentsHandler(request, context);
 
-    expect(unassignAsset).toHaveBeenCalledWith('asset123');
+    expect(unassignAsset).toHaveBeenCalledWith('asset123', validBody);
     expect(result).toEqual({
       status: 200,
       jsonBody: {
