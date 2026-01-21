@@ -38,7 +38,7 @@ export async function assignmentsHandler(request, context) {
       }
       await assignAssetToUser(userId, assetId, body);
     } else if (request.method === 'DELETE') {
-      await unassignAsset(assetId);
+      await unassignAsset(assetId, body);
     } else {
       throw new BadRequest('Invalid REST Method');
     }
