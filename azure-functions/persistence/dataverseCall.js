@@ -35,8 +35,10 @@ export async function dataverseCall({
     const response = await fetch(url, options);
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      const errorMessage = errorData?.error?.message ?? '';
+
       if (
-        errorData.error.message.includes(
+        errorMessage.includes(
           "incompatible types was detected. Found operand types 'Edm.Guid' and 'Edm.String' for operator kind 'Equal'.",
         )
       ) {

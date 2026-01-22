@@ -79,7 +79,11 @@ describe('dataverseCall', () => {
       createFetchResponse({
         ok: false,
         status: 400,
-        json: { error: 'Bad Request' },
+        json: {
+          error: 'Bad Request',
+        },
+        message:
+          "A binary operator with incompatible types was detected. Found operand types 'Edm.Guid' and 'Edm.String' for operator kind 'Equal'.",
       }),
     );
 
