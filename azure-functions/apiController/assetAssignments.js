@@ -14,7 +14,11 @@ export async function assignmentsHandler(request, context) {
       throw new BadRequest('Missing asset ID');
     }
 
-    const body = await request.json();
+    try {
+      var body = await request.json();
+    } catch {
+      throw new BadRequest('Missing body within request');
+    }
 
     //Verifies if there even is a body (null and undefined are falsey) then checks if zendeskTicketId is available
     if (!body || !Object.hasOwn(body, 'zendeskTicketId')) {
