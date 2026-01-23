@@ -1,8 +1,8 @@
 openapi: "3.0.3"
 info:
-  title: IT Asset Management API
+  title: USTC IT Asset Management API
   version: "1.0"
-  description: "The USTC IT Asset Management API provides secure, centralized access to asset data stored in Microsoft Dataverse, enabling Zendesk to retrieve, update, and manage assets directly within support workflows"
+  description: "The USTC IT Asset Management API provides secure, centralized access to asset data stored, enabling clients to retrieve, update, and manage assets directly within support workflows"
 
 servers:
   - url: https://ustc-itam-apis-prod.azurewebsites.net/api
@@ -208,10 +208,10 @@ components:
 security:
   - clientCredentialsAuth: []
 paths:
-  /v1/assets/{itemguid}:
+  /v1/assets/{assetId}:
     get:
       parameters:
-        - name: itemguid
+        - name: assetId
           in: path
           required: true
           schema:
@@ -236,14 +236,14 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "500": { $ref: "#/components/responses/InternalServerError" }
 
-  /v1/assets/{assetid}/assignments/{userid}:
+  /v1/assets/{assetId}/assignments/{userId}:
     post:
       parameters:
-        - name: assetid
+        - name: assetId
           in: path
           required: true
           schema: { type: string }
-        - name: userid
+        - name: userId
           in: path
           required: true
           schema: { type: string }
@@ -284,10 +284,10 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "500": { $ref: "#/components/responses/InternalServerError" }
 
-  /v1/assets/{assetid}/assignments:
+  /v1/assets/{assetId}/assignments:
     delete:
       parameters:
-        - name: assetid
+        - name: assetId
           in: path
           required: true
           schema: { type: string }
@@ -328,10 +328,10 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "500": { $ref: "#/components/responses/InternalServerError" }
 
-  /v1/assets/{assetid}/location/{locationId}:
+  /v1/assets/{assetId}/location/{locationId}:
     post:
       parameters:
-        - name: assetid
+        - name: assetId
           in: path
           required: true
           schema: { type: string }
@@ -357,10 +357,10 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "500": { $ref: "#/components/responses/InternalServerError" }
 
-  /v1/assets/{assetid}/location:
+  /v1/assets/{assetId}/location:
     delete:
       parameters:
-        - name: assetid
+        - name: assetId
           in: path
           required: true
           schema: { type: string }
@@ -407,10 +407,10 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "500": { $ref: "#/components/responses/InternalServerError" }
 
-  /v1/job-titles/{jobTitleid}/requirements:
+  /v1/job-titles/{jobTitleId}/requirements:
     get:
       parameters:
-        - name: jobTitleid
+        - name: jobTitleId
           in: path
           required: true
           schema: { type: string }
