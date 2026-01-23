@@ -116,8 +116,10 @@ components:
           nullable: true
         assetName:
           type: string
+          example: "EliteDisplay 231i #22"
         condition:
           type: string
+          example: Good
           enum: [Excellent, Good, Poor, Garbage, Damaged, New]
         itemStatus:
           type: string
@@ -135,13 +137,16 @@ components:
             ]
         location:
           type: string
+          example: 316
           nullable: true
         osVersion:
           type: string
+          example: Windows 11 24H2
           nullable: true
           enum: [Windows 11 23H2, Windows 11 24H2, Windows 10]
         phone:
           type: string
+          example: 111-111-1111
           nullable: true
         user:
           type: object
@@ -149,20 +154,27 @@ components:
           properties:
             email:
               type: string
+              example: email@ustaxcourt.gov
               format: email
             isActive:
               type: boolean
+              example: true
             isContractor:
               type: boolean
+              example: false
             phone:
               type: string
+              example: 111-111-1111
               nullable: true
             jobTitle:
               type: string
+              example: Accountant
             location:
               type: string
+              example: 316
             name:
               type: string
+              example: Joe Doe
     JobTitles:
       type: object
       properties:
@@ -210,6 +222,11 @@ security:
 paths:
   /v1/assets/{assetId}:
     get:
+      description: >
+        Retrieves asset information given an asset Id. Information includes activation, asset name, asset condition, item assignment status, item location,
+        item OS version, item phone number, and information about user who is assigned this asset. These includes email, activity status, contractor status, phone number,
+        job title, location, and name.
+        Please note: Not all assets may have these values.
       parameters:
         - name: assetId
           in: path
@@ -220,7 +237,7 @@ paths:
 
       responses:
         "200":
-          description: OK
+          description: Retrieve asset information
           content:
             application/json:
               schema:
@@ -238,6 +255,8 @@ paths:
 
   /v1/assets/{assetId}/assignments/{userId}:
     post:
+      description: >
+        Assigns an asset to a user given a assetId and userId
       parameters:
         - name: assetId
           in: path
@@ -268,7 +287,7 @@ paths:
                   enum: [Excellent, Good, Poor, Garbage, Damaged, New]
       responses:
         "200":
-          description: Successful update
+          description: Assigns user to asset
           content:
             application/json:
               schema:
@@ -286,6 +305,8 @@ paths:
 
   /v1/assets/{assetId}/assignments:
     delete:
+      description: >
+        Removes asset assignment from a user given a assetId and userId
       parameters:
         - name: assetId
           in: path
@@ -312,7 +333,7 @@ paths:
                   enum: [Excellent, Good, Poor, Garbage, Damaged, New]
       responses:
         "200":
-          description: Successful update
+          description: Removes user assignment from asset
           content:
             application/json:
               schema:
@@ -330,6 +351,8 @@ paths:
 
   /v1/assets/{assetId}/location/{locationId}:
     post:
+      description: >
+        Assigns an location to a asset given a assetId and locationId
       parameters:
         - name: assetId
           in: path
@@ -342,7 +365,7 @@ paths:
         - $ref: "#/components/parameters/AuthorizationHeader"
       responses:
         "200":
-          description: Successful update
+          description: Adds location to asset
           content:
             application/json:
               schema:
@@ -359,6 +382,8 @@ paths:
 
   /v1/assets/{assetId}/location:
     delete:
+      description: >
+        Removes location from asset given a assetId
       parameters:
         - name: assetId
           in: path
@@ -367,7 +392,7 @@ paths:
         - $ref: "#/components/parameters/AuthorizationHeader"
       responses:
         "200":
-          description: Successful update
+          description: Removes location from asset
           content:
             application/json:
               schema:
@@ -384,6 +409,8 @@ paths:
 
   /v1/users/email/{email}/assets:
     get:
+      description: >
+        Returns all assets assigned to a user
       parameters:
         - name: email
           in: path
@@ -409,6 +436,8 @@ paths:
 
   /v1/job-titles/{jobTitleId}/requirements:
     get:
+      description: >
+        Returns all asset requirements given a jobTitleId
       parameters:
         - name: jobTitleId
           in: path
