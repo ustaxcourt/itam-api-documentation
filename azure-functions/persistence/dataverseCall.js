@@ -1,5 +1,6 @@
 import { getDataverseAccessToken } from './getDataverseAccessToken.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
+import { NotFoundError } from '../errors/NotFoundError.js';
 
 export async function dataverseCall({
   query,
@@ -32,9 +33,18 @@ export async function dataverseCall({
 
   try {
     const response = await fetch(url, options);
-
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      const errorMessage = errorData?.error?.message ?? '';
+
+      if (
+        errorMessage.includes(
+          "incompatible types was detected. Found operand types 'Edm.Guid' and 'Edm.String' for operator kind 'Equal'.",
+        )
+      ) {
+        throw new NotFoundError('Resource not found');
+      }
+
       console.error('Dataverse API error:', errorData);
       throw new Error(`Dataverse call failed with status ${response.status}`);
     }

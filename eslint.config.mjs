@@ -10,6 +10,10 @@ export default defineConfig([
     plugins: { js },
     extends: ['js/recommended'],
     languageOptions: { globals: globals.node },
+    rules: {
+      'no-var': 'error'
+    }
+
   },
 
   // ✅ Override for test files

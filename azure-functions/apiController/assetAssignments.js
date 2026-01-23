@@ -10,18 +10,29 @@ export async function assignmentsHandler(request, context) {
   try {
     const assetId = request.params.assetid;
     const userId = request.params.userid;
+    let body;
     if (!assetId) {
       throw new BadRequest('Missing asset ID');
     }
 
-    const body = await request.json();
+    try {
+      body = await request.json();
+    } catch (error) {
+      console.log(error);
+      throw new BadRequest('Missing body within request');
+    }
 
     //Verifies if there even is a body (null and undefined are falsey) then checks if zendeskTicketId is available
     if (!body || !Object.hasOwn(body, 'zendeskTicketId')) {
       throw new BadRequest(
-        'Missing required zendeskTicketId in body of request ',
+        'Missing required zendeskTicketId in body of request',
       );
     }
+
+    if (typeof body.zendeskTicketId !== 'number') {
+      throw new BadRequest('zendeskTicketId must be number');
+    }
+
     // Verifies that body has a 'condition' property
     if (!Object.hasOwn(body, 'condition')) {
       throw new BadRequest('Missing required condition in body of request');

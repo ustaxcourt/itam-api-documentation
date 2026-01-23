@@ -1,16 +1,20 @@
 const baseUrl = 'http://localhost:7071';
 const existingAssetId = '8d204fa8-69d7-f011-8543-000d3a5928e0';
+const malformedAssetId = '8d204fa8-69d7-f011-85';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
 const existingUserId = '2c5d33ef-d4f3-4574-b49a-69e376ee43bb';
 const nonExistentUserId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
 const existingLocationId = 'df164d9a-69d7-f011-8544-000d3a35fa12';
+const malformedLocationId = 'df164d9a-69d7-f011-854';
 const existingLocationName = 'San Francisco';
 const nonExistentLocationId = '04d494f4-b5b9-f011-bbd2-000d3a56dc3b';
-const existingJobTitleId = 'b09cf686-30d5-f011-8544-7c1e52177972';
+const existingJobTitleId = '76c0a78f-5cd4-f011-8544-000d3a5b5036';
 const nonExistingJobTitleId = 'b09cf686-30d5-f011-8544-7c1e52177973';
+const malformedJobTitleId = 'b09cf686-30d5-f0';
 
 describe('Integration testing for ITAM Project', () => {
-  it('should fetch an existing asset successfully', async () => {
+  //GET an asset
+  it('GET Assets - should fetch an existing asset successfully', async () => {
     const res = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
       method: 'GET',
       headers: { Authorization: 'Bearer mocked-token' },
@@ -27,7 +31,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toHaveProperty('user');
   });
 
-  it('should return 404 when querying for a non-existent asset', async () => {
+  it('GET Assets - should return 404 when querying for a non-existent asset', async () => {
     const res = await fetch(`${baseUrl}/api/v1/assets/${nonExistentAssetId}`, {
       method: 'GET',
       headers: { Authorization: 'Bearer mocked-token' },
@@ -37,7 +41,20 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.message).toBe(`No asset found for ID: ${nonExistentAssetId}`);
   });
 
-  it('should assign an asset to an existing user successfully', async () => {
+  it('GET Assets - should return 400 when querying for a malformed asset', async () => {
+    const res = await fetch(`${baseUrl}/api/v1/assets/${malformedAssetId}`, {
+      method: 'GET',
+      headers: { Authorization: 'Bearer mocked-token' },
+    });
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.message).toBe(`Resource not found`);
+    expect(body.data).toBe(null);
+  });
+
+  // assign a user an asset
+
+  it('POST User Assignments - should assign an asset to an existing user successfully', async () => {
     const res = await fetch(
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${existingUserId}`,
       {
@@ -59,7 +76,68 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toBe(existingAssetId);
   });
 
-  it('should display proper user assignment information in query after new assignment', async () => {
+  it('POST User Assignments - should return 400 when zendeskTicketId is a string', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${existingUserId}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer mocked-token',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          zendeskTicketId: 'this is a string',
+          condition: 'Good',
+          notes: 'these are notes',
+        }),
+      },
+    );
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.message).toMatch('zendeskTicketId must be number');
+    expect(body.data).toBe(null);
+  });
+
+  it('POST User Assignments - should return 404 when passing a malformed asset id', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${malformedAssetId}/assignments/${existingUserId}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer mocked-token',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          zendeskTicketId: 123,
+          condition: 'Good',
+          notes: 'these are notes',
+        }),
+      },
+    );
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.message).toMatch('Resource not found');
+    expect(body.data).toBe(null);
+  });
+
+  it('POST User Assignments - should return 400 when passing request with a missing body', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${existingUserId}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer mocked-token',
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.message).toMatch('Missing body within request');
+    expect(body.data).toBe(null);
+  });
+
+  it('POST User Assignments - should display proper user assignment information in query after new assignment', async () => {
     const assignRes = await fetch(
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${existingUserId}`,
       {
@@ -94,7 +172,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toHaveProperty('user.name');
   });
 
-  it('should return 404 when trying to assign a user that does not exist', async () => {
+  it('POST User Assignments - should return 404 when trying to assign a user that does not exist', async () => {
     const res = await fetch(
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${nonExistentUserId}`,
       {
@@ -115,7 +193,28 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.message).toBe(`No user found for ID: ${nonExistentUserId}`);
   });
 
-  it('should remove assignment successfully', async () => {
+  it('POST User Assignments - should return 404 when trying to assign a user that does not exist (Malformed userId)', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${nonExistentUserId}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer mocked-token',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          zendeskTicketId: 123,
+          condition: 'Good',
+          notes: 'these are notes',
+        }),
+      },
+    );
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.message).toBe(`No user found for ID: ${nonExistentUserId}`);
+  });
+
+  it('DELETE User Assignments - should remove assignment successfully', async () => {
     const res = await fetch(
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments`,
       {
@@ -137,7 +236,29 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toBe(existingAssetId);
   });
 
-  it('should display proper assignment information in query after new unassignment', async () => {
+  it('DELETE User Assignments - should show 404 when malformed assetid is passed', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${malformedAssetId}/assignments`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer mocked-token',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          zendeskTicketId: 123,
+          condition: 'Good',
+          notes: 'these are notes',
+        }),
+      },
+    );
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.message).toMatch('Resource not found');
+    expect(body.data).toBe(null);
+  });
+
+  it('DELETE User Assignments - should display proper assignment information in query after new unassignment', async () => {
     const unassignRes = await fetch(
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/`,
       {
@@ -265,6 +386,34 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.message).toBe(`No asset found for ID: ${nonExistentAssetId}`);
   });
 
+  it('POST Location - should return 404 when assigning for a malformed asset', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${malformedAssetId}/location/${existingLocationId}`,
+      {
+        method: 'POST',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.message).toMatch('Resource not found');
+    expect(body.data).toBe(null);
+  });
+
+  it('POST Location - should return 404 when assigning for a malformed location', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/location/${malformedLocationId}`,
+      {
+        method: 'POST',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.message).toMatch('Resource not found');
+    expect(body.data).toBe(null);
+  });
+
   it('POST Location - should return 404 when trying to assign a location that does not exist', async () => {
     const res = await fetch(
       `${baseUrl}/api/v1/assets/${existingAssetId}/location/${nonExistentLocationId}`,
@@ -293,6 +442,7 @@ describe('Integration testing for ITAM Project', () => {
 
     const body = await getTitleInfoResult.json();
     expect(body).toHaveProperty('message', 'Success');
+
     expect(body.data).toHaveProperty('requiredAssets');
     expect(body.data).toHaveProperty('jobTitle');
     expect(body.data.requiredAssets[0]).toHaveProperty('assetType');
@@ -320,5 +470,20 @@ describe('Integration testing for ITAM Project', () => {
     expect(getTitleInfoResult.status).toBe(404);
     const body = await getTitleInfoResult.json();
     expect(body.message).toBe(`Resource not found`);
+  });
+
+  it('GET Job Titles - should return 404 when trying to query a malformed job title id that does not exist', async () => {
+    const getTitleInfoResult = await fetch(
+      `${baseUrl}/api/v1/job-titles/${malformedJobTitleId}/requirements`,
+      {
+        method: 'GET',
+        headers: { Authorization: 'Bearer mocked-token' },
+      },
+    );
+
+    expect(getTitleInfoResult.status).toBe(404);
+    const body = await getTitleInfoResult.json();
+    expect(body.message).toMatch('Resource not found');
+    expect(body.data).toBe(null);
   });
 });

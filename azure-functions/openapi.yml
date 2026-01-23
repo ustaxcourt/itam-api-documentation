@@ -1,12 +1,43 @@
 openapi: "3.0.3"
 info:
-  title: Query Assets
+  title: USTC IT Asset Management API
   version: "1.0"
+  description: "The USTC IT Asset Management API provides secure, centralized access to asset data stored, enabling clients to retrieve, update, and manage assets directly within support workflows"
 
 servers:
-  - url: /api
+  - url: https://ustc-itam-apis-prod.azurewebsites.net/api
+    description: Production
+
+  - url: https://ustc-itam-apis-test.azurewebsites.net/api
+    description: Test
 
 components:
+  parameters:
+    AuthorizationHeader:
+      in: header
+      name: Authorization
+      required: true
+      description: >
+        Bearer token authentication header.
+        Format: "Bearer <token>"
+      schema:
+        type: string
+      example: "Bearer <token>"
+
+  securitySchemes:
+    clientCredentialsAuth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://login.microsoftonline.com/{{TENTANTID}}/oauth2/v2.0/token
+          scopes:
+            api://ustc-itam-apis-authentication-prod/.default: Use Production
+            api://ustc-itam-apis-authentication-dev/.default: Use Development
+
+      description: >
+        Send the token in the Authorization header:
+        "Authorization: Bearer <token>"
+
   responses:
     BadRequest:
       description: Bad Request
@@ -25,7 +56,7 @@ components:
           schema:
             $ref: "#/components/schemas/ApiResponse"
           example:
-            message: "Missing client secret"
+            message: "IDX10223: Lifetime validation failed. The token is expired"
             data: null
 
     Forbidden:
@@ -75,8 +106,10 @@ components:
           nullable: true
         assetName:
           type: string
+          example: "EliteDisplay 231i #22"
         condition:
           type: string
+          example: Good
           enum: [Excellent, Good, Poor, Garbage, Damaged, New]
         itemStatus:
           type: string
@@ -94,13 +127,16 @@ components:
             ]
         location:
           type: string
+          example: 316
           nullable: true
         osVersion:
           type: string
+          example: Windows 11 24H2
           nullable: true
           enum: [Windows 11 23H2, Windows 11 24H2, Windows 10]
         phone:
           type: string
+          example: 111-111-1111
           nullable: true
         user:
           type: object
@@ -108,20 +144,27 @@ components:
           properties:
             email:
               type: string
+              example: email@ustaxcourt.gov
               format: email
             isActive:
               type: boolean
+              example: true
             isContractor:
               type: boolean
+              example: false
             phone:
               type: string
+              example: 111-111-1111
               nullable: true
             jobTitle:
               type: string
+              example: Accountant
             location:
               type: string
+              example: 316
             name:
               type: string
+              example: Joe Doe
     JobTitles:
       type: object
       properties:
@@ -130,6 +173,7 @@ components:
           example: "Engineer"
           nullable: false
         requiredAssets:
+          nullable: true
           type: array
           items:
             type: object
@@ -163,19 +207,27 @@ components:
                       type: integer
                       example: 1
                       description: Minimum number of assets required for this specfic model
-
+security:
+  - clientCredentialsAuth: []
 paths:
-  /v1/assets/{itemguid}:
+  /v1/assets/{assetId}:
     get:
+      description: >
+        Retrieves asset information given an asset Id. Information includes activation, asset name, asset condition, item assignment status, item location,
+        item OS version, item phone number, and information about user who is assigned this asset. These includes email, activity status, contractor status, phone number,
+        job title, location, and name.
+        Please note: Not all assets may have these values.
       parameters:
-        - name: itemguid
+        - name: assetId
           in: path
           required: true
           schema:
             type: string
+        - $ref: "#/components/parameters/AuthorizationHeader"
+
       responses:
         "200":
-          description: OK
+          description: Retrieve asset information
           content:
             application/json:
               schema:
@@ -189,21 +241,43 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
 
-  /v1/assets/{assetid}/assignments/{userid}:
+  /v1/assets/{assetId}/assignments/{userId}:
     post:
+      description: >
+        Assigns an asset to a user given a assetId and userId
       parameters:
-        - name: assetid
+        - name: assetId
           in: path
           required: true
           schema: { type: string }
-        - name: userid
+        - name: userId
           in: path
           required: true
           schema: { type: string }
+        - $ref: "#/components/parameters/AuthorizationHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - zendeskTicketId
+                - condition
+              properties:
+                notes:
+                  type: string
+                  example: "these are notes I want to add"
+                zendeskTicketId:
+                  type: integer
+                condition:
+                  type: string
+                  enum: [Excellent, Good, Poor, Garbage, Damaged, New]
       responses:
         "200":
-          description: Successful update
+          description: Assigns user to asset
           content:
             application/json:
               schema:
@@ -213,19 +287,43 @@ paths:
                     properties:
                       data:
                         type: string
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
 
-  /v1/assets/{assetid}/assignments:
+  /v1/assets/{assetId}/assignments:
     delete:
+      description: >
+        Removes asset assignment from a user given a assetId and userId
       parameters:
-        - name: assetid
+        - name: assetId
           in: path
           required: true
           schema: { type: string }
+        - $ref: "#/components/parameters/AuthorizationHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - zendeskTicketId
+                - condition
+              properties:
+                notes:
+                  type: string
+                  example: "these are notes I want to add"
+                zendeskTicketId:
+                  type: integer
+                condition:
+                  type: string
+                  enum: [Excellent, Good, Poor, Garbage, Damaged, New]
       responses:
         "200":
-          description: Successful update
+          description: Removes user assignment from asset
           content:
             application/json:
               schema:
@@ -235,13 +333,18 @@ paths:
                     properties:
                       data:
                         type: string
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
 
-  /v1/assets/{assetid}/location/{locationId}:
+  /v1/assets/{assetId}/location/{locationId}:
     post:
+      description: >
+        Assigns an location to a asset given a assetId and locationId
       parameters:
-        - name: assetid
+        - name: assetId
           in: path
           required: true
           schema: { type: string }
@@ -249,9 +352,10 @@ paths:
           in: path
           required: true
           schema: { type: string }
+        - $ref: "#/components/parameters/AuthorizationHeader"
       responses:
         "200":
-          description: Successful update
+          description: Adds location to asset
           content:
             application/json:
               schema:
@@ -261,19 +365,24 @@ paths:
                     properties:
                       data:
                         type: string
+        "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
 
-  /v1/assets/{assetid}/location:
+  /v1/assets/{assetId}/location:
     delete:
+      description: >
+        Removes location from asset given a assetId
       parameters:
-        - name: assetid
+        - name: assetId
           in: path
           required: true
           schema: { type: string }
+        - $ref: "#/components/parameters/AuthorizationHeader"
       responses:
         "200":
-          description: Successful update
+          description: Removes location from asset
           content:
             application/json:
               schema:
@@ -283,16 +392,21 @@ paths:
                     properties:
                       data:
                         type: string
+        "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
 
   /v1/users/email/{email}/assets:
     get:
+      description: >
+        Returns all assets assigned to a user
       parameters:
         - name: email
           in: path
           required: true
           schema: { type: string }
+        - $ref: "#/components/parameters/AuthorizationHeader"
       responses:
         "200":
           description: Returns all assets assigned to a user
@@ -307,17 +421,22 @@ paths:
                         type: array
                         items:
                           $ref: "#/components/schemas/Asset"
+        "401": { $ref: "#/components/responses/Unauthorized" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /v1/job-titles/{jobTitle}/requirements:
+
+  /v1/job-titles/{jobTitleId}/requirements:
     get:
+      description: >
+        Returns all asset requirements given a jobTitleId
       parameters:
-        - name: jobTitle
+        - name: jobTitleId
           in: path
           required: true
           schema: { type: string }
+        - $ref: "#/components/parameters/AuthorizationHeader"
       responses:
         "200":
-          description: Returns all assets required by Job Title
+          description: Returns all assets required by Job Title Id
           content:
             application/json:
               schema:
@@ -328,5 +447,6 @@ paths:
                       data:
                         type: object
                         $ref: "#/components/schemas/JobTitles"
-        "500": { $ref: "#/components/responses/InternalServerError" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
         "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
