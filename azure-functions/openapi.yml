@@ -1,12 +1,43 @@
 openapi: "3.0.3"
 info:
-  title: Query Assets
+  title: IT Asset Management API
   version: "1.0"
+  description: "The USTC IT Asset Management API provides secure, centralized access to asset data stored in Microsoft Dataverse, enabling Zendesk to retrieve, update, and manage assets directly within support workflows"
 
 servers:
-  - url: /api
+  - url: https://ustc-itam-apis-prod.azurewebsites.net/api
+    description: Production
+
+  - url: https://ustc-itam-apis-test.azurewebsites.net/api
+    description: Test
 
 components:
+  parameters:
+    AuthorizationHeader:
+      in: header
+      name: Authorization
+      required: true
+      description: >
+        Bearer token authentication header.
+        Format: "Bearer <token>"
+      schema:
+        type: string
+      example: "Bearer <token>"
+
+  securitySchemes:
+    clientCredentialsAuth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://login.microsoftonline.com/{{TENTANTID}}/oauth2/v2.0/token
+          scopes:
+            api://ustc-itam-apis-authentication-prod/.default: Use Production
+            api://ustc-itam-apis-authentication-dev/.default: Use Development
+
+      description: >
+        Send the token in the Authorization header:
+        "Authorization: Bearer <token>"
+
   responses:
     BadRequest:
       description: Bad Request
@@ -18,6 +49,16 @@ components:
             message: "Dataverse query failed"
             data: "Request failed with status code 400"
 
+    BadRequestNoBody:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiResponse"
+          example:
+            message: "Missing body within request"
+            data: null
+
     Unauthorized:
       description: Unauthorized – Authentication required
       content:
@@ -25,7 +66,7 @@ components:
           schema:
             $ref: "#/components/schemas/ApiResponse"
           example:
-            message: "Missing client secret"
+            message: "IDX10223: Lifetime validation failed. The token is expired"
             data: null
 
     Forbidden:
@@ -130,6 +171,7 @@ components:
           example: "Engineer"
           nullable: false
         requiredAssets:
+          nullable: true
           type: array
           items:
             type: object
@@ -163,7 +205,8 @@ components:
                       type: integer
                       example: 1
                       description: Minimum number of assets required for this specfic model
-
+security:
+  - clientCredentialsAuth: []
 paths:
   /v1/assets/{itemguid}:
     get:
@@ -173,6 +216,8 @@ paths:
           required: true
           schema:
             type: string
+        - $ref: "#/components/parameters/AuthorizationHeader"
+
       responses:
         "200":
           description: OK
@@ -189,6 +234,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
 
   /v1/assets/{assetid}/assignments/{userid}:
     post:
@@ -201,6 +247,25 @@ paths:
           in: path
           required: true
           schema: { type: string }
+        - $ref: "#/components/parameters/AuthorizationHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - zendeskTicketId
+                - condition
+              properties:
+                notes:
+                  type: string
+                  example: "these are notes I want to add"
+                zendeskTicketId:
+                  type: integer
+                condition:
+                  type: string
+                  enum: [Excellent, Good, Poor, Garbage, Damaged, New]
       responses:
         "200":
           description: Successful update
@@ -213,8 +278,11 @@ paths:
                     properties:
                       data:
                         type: string
+        "400": { $ref: "#/components/responses/BadRequestNoBody" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
 
   /v1/assets/{assetid}/assignments:
     delete:
@@ -223,6 +291,25 @@ paths:
           in: path
           required: true
           schema: { type: string }
+        - $ref: "#/components/parameters/AuthorizationHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - zendeskTicketId
+                - condition
+              properties:
+                notes:
+                  type: string
+                  example: "these are notes I want to add"
+                zendeskTicketId:
+                  type: integer
+                condition:
+                  type: string
+                  enum: [Excellent, Good, Poor, Garbage, Damaged, New]
       responses:
         "200":
           description: Successful update
@@ -235,8 +322,11 @@ paths:
                     properties:
                       data:
                         type: string
+        "400": { $ref: "#/components/responses/BadRequestNoBody" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
 
   /v1/assets/{assetid}/location/{locationId}:
     post:
@@ -249,6 +339,7 @@ paths:
           in: path
           required: true
           schema: { type: string }
+        - $ref: "#/components/parameters/AuthorizationHeader"
       responses:
         "200":
           description: Successful update
@@ -261,8 +352,10 @@ paths:
                     properties:
                       data:
                         type: string
+        "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
 
   /v1/assets/{assetid}/location:
     delete:
@@ -271,6 +364,7 @@ paths:
           in: path
           required: true
           schema: { type: string }
+        - $ref: "#/components/parameters/AuthorizationHeader"
       responses:
         "200":
           description: Successful update
@@ -283,8 +377,10 @@ paths:
                     properties:
                       data:
                         type: string
+        "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
 
   /v1/users/email/{email}/assets:
     get:
@@ -293,6 +389,7 @@ paths:
           in: path
           required: true
           schema: { type: string }
+        - $ref: "#/components/parameters/AuthorizationHeader"
       responses:
         "200":
           description: Returns all assets assigned to a user
@@ -307,17 +404,20 @@ paths:
                         type: array
                         items:
                           $ref: "#/components/schemas/Asset"
+        "401": { $ref: "#/components/responses/Unauthorized" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /v1/job-titles/{jobTitle}/requirements:
+
+  /v1/job-titles/{jobTitleid}/requirements:
     get:
       parameters:
-        - name: jobTitle
+        - name: jobTitleid
           in: path
           required: true
           schema: { type: string }
+        - $ref: "#/components/parameters/AuthorizationHeader"
       responses:
         "200":
-          description: Returns all assets required by Job Title
+          description: Returns all assets required by Job Title Id
           content:
             application/json:
               schema:
@@ -328,5 +428,6 @@ paths:
                       data:
                         type: object
                         $ref: "#/components/schemas/JobTitles"
-        "500": { $ref: "#/components/responses/InternalServerError" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
         "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }

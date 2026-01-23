@@ -15,12 +15,11 @@ export async function getRequirementsForJobTitleRequestHandler(
     }
 
     if (request.method === 'GET') {
-      var data = await getJobTitleRequirementsInteractor(jobTitleId);
+      const data = await getJobTitleRequirementsInteractor(jobTitleId);
+      return buildResponse(200, 'Success', data);
     } else {
       throw new BadRequest('Invalid REST Method');
     }
-
-    return buildResponse(200, 'Success', data);
   } catch (error) {
     context.error(
       'Unable to query job title',

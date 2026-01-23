@@ -10,13 +10,15 @@ export async function assignmentsHandler(request, context) {
   try {
     const assetId = request.params.assetid;
     const userId = request.params.userid;
+    let body;
     if (!assetId) {
       throw new BadRequest('Missing asset ID');
     }
 
     try {
-      var body = await request.json();
-    } catch {
+      body = await request.json();
+    } catch (error) {
+      console.log(error);
       throw new BadRequest('Missing body within request');
     }
 

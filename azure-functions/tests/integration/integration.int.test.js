@@ -8,14 +8,13 @@ const existingLocationId = 'df164d9a-69d7-f011-8544-000d3a35fa12';
 const malformedLocationId = 'df164d9a-69d7-f011-854';
 const existingLocationName = 'San Francisco';
 const nonExistentLocationId = '04d494f4-b5b9-f011-bbd2-000d3a56dc3b';
-const existingJobTitleId = 'b09cf686-30d5-f011-8544-7c1e52177972';
+const existingJobTitleId = '76c0a78f-5cd4-f011-8544-000d3a5b5036';
 const nonExistingJobTitleId = 'b09cf686-30d5-f011-8544-7c1e52177973';
 const malformedJobTitleId = 'b09cf686-30d5-f0';
 
 describe('Integration testing for ITAM Project', () => {
   //GET an asset
-
-  it('should fetch an existing asset successfully', async () => {
+  it('GET Assets - should fetch an existing asset successfully', async () => {
     const res = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
       method: 'GET',
       headers: { Authorization: 'Bearer mocked-token' },
@@ -32,7 +31,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toHaveProperty('user');
   });
 
-  it('should return 404 when querying for a non-existent asset', async () => {
+  it('GET Assets - should return 404 when querying for a non-existent asset', async () => {
     const res = await fetch(`${baseUrl}/api/v1/assets/${nonExistentAssetId}`, {
       method: 'GET',
       headers: { Authorization: 'Bearer mocked-token' },
@@ -42,7 +41,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.message).toBe(`No asset found for ID: ${nonExistentAssetId}`);
   });
 
-  it('GET - should return 400 when querying for a malformed asset', async () => {
+  it('GET Assets - should return 400 when querying for a malformed asset', async () => {
     const res = await fetch(`${baseUrl}/api/v1/assets/${malformedAssetId}`, {
       method: 'GET',
       headers: { Authorization: 'Bearer mocked-token' },
@@ -53,9 +52,9 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toBe(null);
   });
 
-  // assign a suer an asset
+  // assign a user an asset
 
-  it('should assign an asset to an existing user successfully', async () => {
+  it('POST User Assignments - should assign an asset to an existing user successfully', async () => {
     const res = await fetch(
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${existingUserId}`,
       {
@@ -77,7 +76,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toBe(existingAssetId);
   });
 
-  it('should return 400 when zendeskTicketId is a string', async () => {
+  it('POST User Assignments - should return 400 when zendeskTicketId is a string', async () => {
     const res = await fetch(
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${existingUserId}`,
       {
@@ -99,7 +98,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toBe(null);
   });
 
-  it('should return 404 when passing a malformed asset id', async () => {
+  it('POST User Assignments - should return 404 when passing a malformed asset id', async () => {
     const res = await fetch(
       `${baseUrl}/api/v1/assets/${malformedAssetId}/assignments/${existingUserId}`,
       {
@@ -121,7 +120,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toBe(null);
   });
 
-  it('should return 400 when passing request with a missing body', async () => {
+  it('POST User Assignments - should return 400 when passing request with a missing body', async () => {
     const res = await fetch(
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${existingUserId}`,
       {
@@ -138,7 +137,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toBe(null);
   });
 
-  it('should display proper user assignment information in query after new assignment', async () => {
+  it('POST User Assignments - should display proper user assignment information in query after new assignment', async () => {
     const assignRes = await fetch(
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${existingUserId}`,
       {
@@ -173,7 +172,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toHaveProperty('user.name');
   });
 
-  it('should return 404 when trying to assign a user that does not exist', async () => {
+  it('POST User Assignments - should return 404 when trying to assign a user that does not exist', async () => {
     const res = await fetch(
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${nonExistentUserId}`,
       {
@@ -194,7 +193,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.message).toBe(`No user found for ID: ${nonExistentUserId}`);
   });
 
-  it('POST - should return 404 when trying to assign a user that does not exist (Malformed userId)', async () => {
+  it('POST User Assignments - should return 404 when trying to assign a user that does not exist (Malformed userId)', async () => {
     const res = await fetch(
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${nonExistentUserId}`,
       {
@@ -215,23 +214,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.message).toBe(`No user found for ID: ${nonExistentUserId}`);
   });
 
-  it('POST -  should return 400 when body is missing', async () => {
-    const res = await fetch(
-      `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/${existingUserId}`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: 'Bearer mocked-token',
-          'Content-Type': 'application/json',
-        },
-      },
-    );
-    expect(res.status).toBe(400);
-    const body = await res.json();
-    expect(body.message).toBe(`Missing body within request`);
-  });
-
-  it('DELETE - should remove assignment successfully', async () => {
+  it('DELETE User Assignments - should remove assignment successfully', async () => {
     const res = await fetch(
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments`,
       {
@@ -253,7 +236,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toBe(existingAssetId);
   });
 
-  it('DELETE - should show 404 when malformed assetid is passed', async () => {
+  it('DELETE User Assignments - should show 404 when malformed assetid is passed', async () => {
     const res = await fetch(
       `${baseUrl}/api/v1/assets/${malformedAssetId}/assignments`,
       {
@@ -275,7 +258,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toBe(null);
   });
 
-  it('POST - should display proper assignment information in query after new unassignment', async () => {
+  it('DELETE User Assignments - should display proper assignment information in query after new unassignment', async () => {
     const unassignRes = await fetch(
       `${baseUrl}/api/v1/assets/${existingAssetId}/assignments/`,
       {
@@ -459,6 +442,7 @@ describe('Integration testing for ITAM Project', () => {
 
     const body = await getTitleInfoResult.json();
     expect(body).toHaveProperty('message', 'Success');
+
     expect(body.data).toHaveProperty('requiredAssets');
     expect(body.data).toHaveProperty('jobTitle');
     expect(body.data.requiredAssets[0]).toHaveProperty('assetType');
