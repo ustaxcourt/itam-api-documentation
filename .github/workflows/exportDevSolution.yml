@@ -51,13 +51,13 @@ jobs:
           client-secret: ${{ secrets.PowerPlatformSPN }}
           tenant-id: ${{env.TENANT_ID}}
           solution-name: ${{ env.SOLUTION_NAME }}
-          solution-output-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
+          solution-output-file: .${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
 
       - name: unpack-solution action
         uses: microsoft/powerplatform-actions/unpack-solution@latest
         with:
-          solution-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
-          solution-folder: ${{ env.SOLUTION_FOLDER }}/${{ env.SOLUTION_NAME }}
+          solution-file: .${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
+          solution-folder: .${{ env.SOLUTION_FOLDER }}/${{ env.SOLUTION_NAME }}
           solution-type: "Unmanaged"
           overwrite-files: true
 
