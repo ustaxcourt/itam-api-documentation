@@ -15,6 +15,10 @@ env:
   SOLUTION_FOLDER: /solution
   SOLUTION_TARGET_FOLDER: solution
 
+  BUILD_ENVIRONMENT_URL: <BUILDENVIRONMENTURL>
+  PRODUCTION_ENVIRONMENT_URL: <PRODENVIRONMENTURL>
+  USERNAME: <USERNAME>
+
 permissions:
   contents: write
 jobs:
@@ -60,6 +64,22 @@ jobs:
 
       - name: Commit changes
         run: |
+
+          if git ls-remote --exit-code --heads origin DeploymentsToTest >/dev/null 2>&1; then
+            echo "Remote branch DeploymentsToTest exists."
+            # Ensure we have an up-to-date local tracking branch
+            if git show-ref --verify --quiet "refs/heads/DeploymentsToTest"; then
+              git checkout DeploymentsToTest
+              git pull --rebase origin DeploymentsToTest
+            else
+              git checkout -b DeploymentsToTest --track "origin/DeploymentsToTest"
+            fi
+          else
+            echo "Remote branch DeploymentsToTest does not exist. Creating from origin"
+            # Create local branch from BASE and push
+            git checkout -B DeploymentsToTest origin/main
+          fi
+
           cp -r ${{ env.SOLUTION_FOLDER }}/${{ env.SOLUTION_NAME }} ./${{ env.SOLUTION_FOLDER }}/${{ github.event.inputs.solution_name }}
           git config --global user.email "no-reply@github.com"
           git config --global user.name "GitHub Actions"
