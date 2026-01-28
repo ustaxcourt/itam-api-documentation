@@ -64,11 +64,11 @@ jobs:
       - name: Commit changes
         run: |
           git fetch origin
-          cp -r .${{ env.SOLUTION_FOLDER }}/${{ env.SOLUTION_NAME }} ./${{ env.SOLUTION_FOLDER }}/${{ github.event.inputs.solution_name }}
+          cp -r ".${{ env.SOLUTION_FOLDER }}/${{ env.SOLUTION_NAME }}" "./${{ env.SOLUTION_FOLDER }}/${{ env.SOLUTION_NAME }}"
           git config --global user.email "no-reply@github.com"
           git config --global user.name "GitHub Actions"
           git checkout deploymentToPowerPlatformTestEnv || git checkout -b deploymentToPowerPlatformTestEnv
           git add --all
-          git commit -m "Deploying updates from the dev environment"
+          git commit -m "Deploying updates from the dev environment" --allow-empty
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git push
