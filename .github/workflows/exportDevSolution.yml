@@ -1,30 +1,31 @@
-name: export-and-branch-solution
+name: export-solution-on-dev
 # Export solution from DEV environment
 #  unpack it and prepare, commit and push a git branch with the changes
 
 on:
-  pull_request:
+  workflow_dispatch:
+
 env:
   #edit your values here
   ENVIRONMENT_URL: ${{ secrets.DevEnviromentURL }}
   CLIENT_ID: ${{ secrets.DevAppId }}
   TENANT_ID: ${{ secrets.DevTenantId }}
-  solution_name: "POCImportSolution"
-  solution_exported_folder: "out/exported/"
-  solution_folder: "out/solutions/"
-  solution_target_folder: "solutions/"
+  SOLUTION_NAME: "POCImportSolution"
+  SOLUTION_EXPORTED_FOLDER: /out
+  SOLUTION_FOLDER: /solution
+  SOLUTION_TARGET_FOLDER: solution
 
 permissions:
   contents: write
 jobs:
   export-from-dev:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     # or you can say runs-on: ubuntu-latest
     env:
       RUNNER_DEBUG: 1
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           lfs: true
 
@@ -43,21 +44,24 @@ jobs:
           app-id: ${{env.CLIENT_ID}}
           client-secret: ${{ secrets.PowerPlatformSPN }}
           tenant-id: ${{env.TENANT_ID}}
-          solution-name: ${{env.solution_name}}
-          solution-output-file: ${{ env.solution_exported_folder}}/${{ env.solution_name }}.zip
+          solution-name: ${{ env.SOLUTION_NAME }}
+          solution-output-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
 
       - name: unpack-solution action
         uses: microsoft/powerplatform-actions/unpack-solution@v0
         with:
-          solution-file: ${{ env.solution_exported_folder}}/${{ env.solution_name }}.zip
-          solution-folder: ${{ env.solution_folder}}/${{ env.solution_name }}
-          solution-type: "Managed"
+          solution-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
+          solution-folder: ${{ env.SOLUTION_FOLDER }}/${{ env.SOLUTION_NAME }}
+          solution-type: "Unmanaged"
           overwrite-files: true
 
-      - name: branch-solution, prepare it for a PullRequest
-        uses: microsoft/powerplatform-actions/branch-solution@v0
-        with:
-          solution-folder: ${{ env.solution_folder}}/${{ env.solution_name }}
-          solution-target-folder: ${{ env.solution_target_folder}}/${{ env.solution_name }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          allow-empty-commit: true
+      - name: Commit changes
+        run: |
+          cp -r ${{ env.SOLUTION_FOLDER }}/${{ env.SOLUTION_NAME }} ./${{ env.SOLUTION_FOLDER }}/${{ github.event.inputs.solution_name }}
+          git config --global user.email "no-reply@github.com"
+          git config --global user.name "GitHub Actions"
+          git checkout main
+          git add --all
+          git commit -m "Updates from the dev environment"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git push
