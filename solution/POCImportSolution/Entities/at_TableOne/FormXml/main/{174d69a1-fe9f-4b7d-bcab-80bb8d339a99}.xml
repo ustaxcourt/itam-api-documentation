@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{174d69a1-fe9f-4b7d-bcab-80bb8d339a99}</formid>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab verticallayout="true" id="{98586aa8-aa5d-4168-adde-be004f226860}" IsUserDefined="1">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{f12316a5-8c15-424a-aab7-64a18959b185}">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{c82bf716-ba62-418a-8ca6-0c81b08a815d}">
+                        <labels>
+                          <label description="New column" languagecode="1033" />
+                        </labels>
+                        <control id="at_newcolumn" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="at_newcolumn" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{4bd4cd61-5751-4ee7-aa08-30731699c69e}">
+                        <labels>
+                          <label description="Owner" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b774d260-2b56-407d-9592-f85b03c31344}">
+                        <labels>
+                          <label description="Date" languagecode="1033" />
+                        </labels>
+                        <control id="at_date" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="at_date" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d7c94e19-caad-4517-acf1-1b658ad4f435}">
+                        <labels>
+                          <label description="Number" languagecode="1033" />
+                        </labels>
+                        <control id="at_number" classid="{c6d124ca-7eda-4a60-aea9-7fb8d318b68f}" datafieldname="at_number" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0b309c83-fda5-43bf-93a7-331ee31da10c}">
+                        <labels>
+                          <label description="Choice" languagecode="1033" />
+                        </labels>
+                        <control id="at_choice" classid="{3ef39988-22bb-4f0b-bbbe-64b5a3748aee}" datafieldname="at_choice" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{2cbd246a-921b-4675-baa4-a9b55aae0c83}">
+                        <labels>
+                          <label description="YesNo" languagecode="1033" />
+                        </labels>
+                        <control id="at_yesno" classid="{67fac785-cd58-4f9f-abb3-4b7ddc6ed5ed}" datafieldname="at_yesno" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

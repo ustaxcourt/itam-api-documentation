@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EntityRelationships xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <EntityRelationship Name="at_tabletwo_Lookup_at_tabletwo" />
+  <EntityRelationship Name="business_unit_at_tableone" />
+  <EntityRelationship Name="business_unit_at_tabletwo" />
+  <EntityRelationship Name="lk_at_tableone_createdby" />
+  <EntityRelationship Name="lk_at_tableone_modifiedby" />
+  <EntityRelationship Name="lk_at_tabletwo_createdby" />
+  <EntityRelationship Name="lk_at_tabletwo_modifiedby" />
+  <EntityRelationship Name="owner_at_tableone" />
+  <EntityRelationship Name="owner_at_tabletwo" />
+  <EntityRelationship Name="team_at_tableone" />
+  <EntityRelationship Name="team_at_tabletwo" />
+  <EntityRelationship Name="user_at_tableone" />
+  <EntityRelationship Name="user_at_tabletwo" />
+</EntityRelationships>

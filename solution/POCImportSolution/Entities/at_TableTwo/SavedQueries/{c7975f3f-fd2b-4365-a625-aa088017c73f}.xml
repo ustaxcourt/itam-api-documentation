@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{c7975f3f-fd2b-4365-a625-aa088017c73f}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="at_newcolumn" select="1" icon="1" preview="1">
+        <row name="result" id="at_tabletwoid">
+          <cell name="at_newcolumn" width="300" />
+          <cell name="at_lookup" width="150" />
+          <cell name="at_email" width="150" />
+          <cell name="at_phonenumber" width="150" />
+          <cell name="at_textarea" width="150" />
+          <cell name="at_url" width="150" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="at_tabletwo">
+          <attribute name="at_tabletwoid" />
+          <attribute name="at_newcolumn" />
+          <attribute name="createdon" />
+          <order attribute="at_newcolumn" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <attribute name="at_lookup" />
+          <attribute name="at_email" />
+          <attribute name="at_phonenumber" />
+          <attribute name="at_textarea" />
+          <attribute name="at_url" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Active Table Twos" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>
