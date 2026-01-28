@@ -3,7 +3,7 @@ name: export-solution-on-dev
 #  unpack it and prepare, commit and push a git branch with the changes
 
 on:
-  workflow_dispatch:
+  pull_request:
 
 env:
   #edit your values here
