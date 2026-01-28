@@ -64,27 +64,12 @@ jobs:
 
       - name: Commit changes
         run: |
-
-          if git ls-remote --exit-code --heads origin DeploymentsToTest >/dev/null 2>&1; then
-            echo "Remote branch DeploymentsToTest exists."
-            # Ensure we have an up-to-date local tracking branch
-            if git show-ref --verify --quiet "refs/heads/DeploymentsToTest"; then
-              git checkout DeploymentsToTest
-              git pull --rebase origin DeploymentsToTest
-            else
-              git checkout -b DeploymentsToTest --track "origin/DeploymentsToTest"
-            fi
-          else
-            echo "Remote branch DeploymentsToTest does not exist. Creating from origin"
-            # Create local branch from BASE and push
-            git checkout -B DeploymentsToTest origin/main
-          fi
-
+          git fetch origin
           cp -r ${{ env.SOLUTION_FOLDER }}/${{ env.SOLUTION_NAME }} ./${{ env.SOLUTION_FOLDER }}/${{ github.event.inputs.solution_name }}
           git config --global user.email "no-reply@github.com"
           git config --global user.name "GitHub Actions"
-          git checkout main
+          git checkout deploymentToPowerPlatformTestEnv || git checkout -b deploymentToPowerPlatformTestEnv
           git add --all
-          git commit -m "Updates from the dev environment"
+          git commit -m "Deploying updates from the dev environment"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git push
