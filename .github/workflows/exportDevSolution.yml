@@ -90,6 +90,10 @@ jobs:
           solution-file: .${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
           solution-type: "Managed"
 
+      - name: import solution without action
+        run: |
+          pac solution import --path /home/runner/work/itam-api-documentation/itam-api-documentation/out/POCImportSolution.zip --async false --import-as-holding false --force-overwrite true --publish-changes false --skip-dependency-check false --convert-to-managed false --max-async-wait-time 60 --activate-plugins true
+
       - name: Import solution as Managed to build env
         uses: microsoft/powerplatform-actions/import-solution@v0
         with:
