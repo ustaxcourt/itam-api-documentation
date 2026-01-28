@@ -29,6 +29,9 @@ jobs:
         with:
           lfs: true
 
+      - name: Install PAC
+        uses: microsoft/powerplatform-actions/actions-install
+
       - name: who-am-i action
         uses: microsoft/powerplatform-actions/who-am-i@latest
         with:
