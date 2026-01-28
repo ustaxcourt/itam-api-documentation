@@ -100,3 +100,4 @@ jobs:
           solution-file: .${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
           force-overwrite: true
           publish-changes: true
+          convert-to-managed: true
