@@ -83,6 +83,13 @@ jobs:
           client-secret: ${{ secrets.TESTCLIENTSECRET }}
           tenant-id: ${{env.TESTTENANT_ID}}
 
+      - name: Pack solution
+        uses: microsoft/powerplatform-actions/pack-solution@v0
+        with:
+          solution-folder: .${{ env.SOLUTION_FOLDER }}/${{ env.SOLUTION_NAME }}
+          solution-file: .${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
+          solution-type: Managed
+
       - name: Import solution as Managed to build env
         uses: microsoft/powerplatform-actions/import-solution@latest
         with:
