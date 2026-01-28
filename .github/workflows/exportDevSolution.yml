@@ -91,7 +91,7 @@ jobs:
           solution-type: "Managed"
 
       - name: Import solution as Managed to build env
-        uses: microsoft/powerplatform-actions/import-solution@latest
+        uses: microsoft/powerplatform-actions/import-solution@v0
         with:
           environment-url: ${{env.TESTENVIROMENTURL}}
           app-id: ${{env.TESTCLIENT_ID}}
