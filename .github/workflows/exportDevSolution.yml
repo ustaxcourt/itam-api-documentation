@@ -30,7 +30,7 @@ jobs:
           lfs: true
 
       - name: Install PAC
-        uses: https://github.com/microsoft/powerplatform-actions/blob/main/actions-install/action.yml
+        uses: microsoft/powerplatform-actions/actions-install@latest
 
       - name: who-am-i action
         uses: microsoft/powerplatform-actions/who-am-i@latest
