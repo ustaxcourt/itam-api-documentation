@@ -9,7 +9,7 @@
       <Description description="Dummy POC Solution to see if we can make a github workflows action to deploy this solution to Dev. &#xA;&#xA;https://ustc-isd.monday.com/boards/9287479664/views/197476734/pulses/11060005024" languagecode="1033" />
     </Descriptions>
     <Version>1.0.0.0</Version>
-    <Managed>0</Managed>
+    <Managed>1</Managed>
     <Publisher>
       <UniqueName>AutomationTeam</UniqueName>
       <LocalizedNames>
