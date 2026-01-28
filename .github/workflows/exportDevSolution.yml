@@ -70,7 +70,7 @@ jobs:
           git commit -m "Deploying updates from the dev environment" --allow-empty
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git pull --rebase -X theirs origin deploymentToPowerPlatformTestEnv
-          git push
+          git push -u origin deploymentToPowerPlatformTestEnv
 
   import-into-test:
     needs: export-from-dev
