@@ -75,6 +75,14 @@ jobs:
           git pull --rebase -X theirs origin deploymentToPowerPlatformTestEnv
           git push -u origin deploymentToPowerPlatformTestEnv
 
+      - name: reautheticate as test app
+        uses: microsoft/powerplatform-actions/who-am-i@latest
+        with:
+          environment-url: ${{env.TESTENVIROMENTURL}}
+          app-id: ${{env.TESTCLIENT_ID}}
+          client-secret: ${{ secrets.TESTCLIENTSECRET }}
+          tenant-id: ${{env.TESTTENANT_ID}}
+
       - name: Import solution as Managed to build env
         uses: microsoft/powerplatform-actions/import-solution@latest
         with:
