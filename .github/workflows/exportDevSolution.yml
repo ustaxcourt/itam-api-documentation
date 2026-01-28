@@ -30,7 +30,7 @@ jobs:
           lfs: true
 
       - name: who-am-i action
-        uses: microsoft/powerplatform-actions/who-am-i@v0
+        uses: microsoft/powerplatform-actions/who-am-i@latest
         with:
           environment-url: ${{env.ENVIRONMENT_URL}}
           app-id: ${{env.CLIENT_ID}}
@@ -38,7 +38,7 @@ jobs:
           tenant-id: ${{env.TENANT_ID}}
 
       - name: export-solution action
-        uses: microsoft/powerplatform-actions/export-solution@v0
+        uses: microsoft/powerplatform-actions/export-solution@latest
         with:
           environment-url: ${{env.ENVIRONMENT_URL}}
           app-id: ${{env.CLIENT_ID}}
@@ -48,7 +48,7 @@ jobs:
           solution-output-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
 
       - name: unpack-solution action
-        uses: microsoft/powerplatform-actions/unpack-solution@v0
+        uses: microsoft/powerplatform-actions/unpack-solution@latest
         with:
           solution-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
           solution-folder: ${{ env.SOLUTION_FOLDER }}/${{ env.SOLUTION_NAME }}
