@@ -23,8 +23,7 @@ permissions:
   contents: write
 jobs:
   export-from-dev:
-    runs-on: windows-latest
-    # or you can say runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     env:
       RUNNER_DEBUG: 1
 
