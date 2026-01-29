@@ -106,3 +106,4 @@ jobs:
           force-overwrite: false
           stage-and-upgrade: true
           publish-changes: true
+          import-as-holding: true
