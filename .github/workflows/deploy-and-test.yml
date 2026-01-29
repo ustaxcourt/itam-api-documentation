@@ -151,7 +151,7 @@ jobs:
           set -euo pipefail
 
 
-          resp=$(curl -sS -f -X POST "https://login.microsoftonline.com/${env.TENANTID}}/oauth2/v2.0/token" \
+          resp=$(curl -sS -f -X POST "https://login.microsoftonline.com/${{env.TENANTID}}/oauth2/v2.0/token" \
             -H "Authorization: Bearer $API_KEY" \
             -H "Content-Type: application/json" \
             -d '{
