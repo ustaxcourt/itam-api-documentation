@@ -100,3 +100,4 @@ jobs:
           solution-file: .${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
           activate-plugins: true
           use-deployment-settings-file: true
+          force-overwrite: true
