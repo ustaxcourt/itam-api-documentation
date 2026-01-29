@@ -105,14 +105,14 @@ jobs:
             dev)
               echo "APP_NAME=${APP_NAME_DEV}" >> $GITHUB_OUTPUT
               echo "PUBLISH_PROFILE=${PUBLISH_PROFILE_DEV}" >> $GITHUB_OUTPUT
-              echo "CLIENTID=${ DEVCLIENT_ID }" >> $GITHUB_OUTPUT
-              echo "CLIENTSECRET=${ DEVCLIENT_SECRET }" >> $GITHUB_OUTPUT
+              echo "CLIENTID=${DEVCLIENT_ID}" >> $GITHUB_OUTPUT
+              echo "CLIENTSECRET=${DEVCLIENT_SECRET}" >> $GITHUB_OUTPUT
               ;;
             test)
               echo "APP_NAME=${APP_NAME_TEST}" >> $GITHUB_OUTPUT
               echo "PUBLISH_PROFILE=${PUBLISH_PROFILE_TEST}" >> $GITHUB_OUTPUT
-              echo "CLIENTID=${ TESTCLIENT_ID }" >> $GITHUB_OUTPUT
-              echo "CLIENTSECRET=${ TESTCLIENT_SECRET }" >> $GITHUB_OUTPUT
+              echo "CLIENTID=${TESTCLIENT_ID}" >> $GITHUB_OUTPUT
+              echo "CLIENTSECRET=${TESTCLIENT_SECRET}" >> $GITHUB_OUTPUT
               ;;
             prod)
               echo "APP_NAME=${APP_NAME_PROD}" >> $GITHUB_OUTPUT
