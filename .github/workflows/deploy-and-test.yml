@@ -32,6 +32,16 @@ jobs:
       PUBLISH_PROFILE_DEV: ${{ secrets.AZURE_PUBLISH_PROFILE_DEV }}
       PUBLISH_PROFILE_TEST: ${{ secrets.AZURE_PUBLISH_PROFILE_TEST }}
       PUBLISH_PROFILE_PROD: ${{ secrets.AZURE_PUBLISH_PROFILE_PROD }}
+      TENANTID: ${{ secrets.EXTERNALAUTHTENANTID }}
+
+      DEVENVIROMENTURL: ${{ secrets.DevEnviromentURL }}
+      TESTENVIROMENTURL: ${{ secrets.TestEnviromentURL }}
+
+      DEVCLIENT_ID: ${{ secrets.DevAppId }}
+      DEVCLIENT_SECRET: ${{ secrets.EXTERNALAUTHDEVCLIENTSECRET }}
+
+      TESTCLIENT_ID: ${{ secrets.TestAppId }}
+      TESTCLIENT_SECRET: ${{ secrets.EXTERNALAUTHTESTCLIENTSECRET }}
 
     steps:
       - name: Checkout code
@@ -95,10 +105,14 @@ jobs:
             dev)
               echo "APP_NAME=${APP_NAME_DEV}" >> $GITHUB_OUTPUT
               echo "PUBLISH_PROFILE=${PUBLISH_PROFILE_DEV}" >> $GITHUB_OUTPUT
+              echo "CLIENTID=${ DEVCLIENT_ID }" >> $GITHUB_OUTPUT
+              echo "CLIENTSECRET=${ DEVCLIENT_SECRET }" >> $GITHUB_OUTPUT
               ;;
             test)
               echo "APP_NAME=${APP_NAME_TEST}" >> $GITHUB_OUTPUT
               echo "PUBLISH_PROFILE=${PUBLISH_PROFILE_TEST}" >> $GITHUB_OUTPUT
+              echo "CLIENTID=${ TESTCLIENT_ID }" >> $GITHUB_OUTPUT
+              echo "CLIENTSECRET=${ TESTCLIENT_SECRET }" >> $GITHUB_OUTPUT
               ;;
             prod)
               echo "APP_NAME=${APP_NAME_PROD}" >> $GITHUB_OUTPUT
@@ -128,6 +142,36 @@ jobs:
 
       - name: Clean up temporary functionapp folder
         run: rm -rf functionapp
+
+      - name: POST and parse JSON response
+        id: api
+        shell: bash
+
+        run: |
+          set -euo pipefail
+
+
+          resp=$(curl -sS -f -X POST "https://login.microsoftonline.com/${env.TENANTID}}/oauth2/v2.0/token" \
+            -H "Authorization: Bearer $API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{
+            "scope":"api://ustc-itam-apis-authentication-${steps.resolve_env.outputs.env_name}/.default"
+            "grant_type": "client_credentials",
+            "client_id": ${{ steps.pick.outputs.APP_NAME }},
+            "client_secret": ${{ steps.pick.outputs.CLIENTSECRET }}
+            }')
+
+          echo "Raw response: $resp"
+
+          token=$(echo "$resp" | jq -r '.access_token')
+
+          if [[ -z "$token" || "$token" == "null" ]]; then
+            echo "ERROR: token missing from response"
+            exit 1
+          fi
+
+          # Export as outputs for later steps
+          echo "token=$token" >> "$GITHUB_OUTPUT"
 
       - name: Run integration tests
         if: |

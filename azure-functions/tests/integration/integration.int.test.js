@@ -1,4 +1,6 @@
 const baseUrl = process.env.API_BASE_URL || 'http://localhost:7071';
+const bearerToken = process.env.bearerToken || 'Bearer mocked-token';
+
 const existingAssetId = '8d204fa8-69d7-f011-8543-000d3a5928e0';
 const malformedAssetId = '8d204fa8-69d7-f011-85';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
@@ -17,7 +19,7 @@ describe('Integration testing for ITAM Project', () => {
   it('GET Assets - should fetch an existing asset successfully', async () => {
     const res = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
       method: 'GET',
-      headers: { Authorization: 'Bearer mocked-token' },
+      headers: { Authorization: bearerToken },
     });
     expect(res.status).toBe(200);
     const body = await res.json();
@@ -34,7 +36,7 @@ describe('Integration testing for ITAM Project', () => {
   it('GET Assets - should return 404 when querying for a non-existent asset', async () => {
     const res = await fetch(`${baseUrl}/api/v1/assets/${nonExistentAssetId}`, {
       method: 'GET',
-      headers: { Authorization: 'Bearer mocked-token' },
+      headers: { Authorization: bearerToken },
     });
     expect(res.status).toBe(404);
     const body = await res.json();
@@ -44,7 +46,7 @@ describe('Integration testing for ITAM Project', () => {
   it('GET Assets - should return 400 when querying for a malformed asset', async () => {
     const res = await fetch(`${baseUrl}/api/v1/assets/${malformedAssetId}`, {
       method: 'GET',
-      headers: { Authorization: 'Bearer mocked-token' },
+      headers: { Authorization: bearerToken },
     });
     expect(res.status).toBe(404);
     const body = await res.json();
@@ -60,7 +62,7 @@ describe('Integration testing for ITAM Project', () => {
       {
         method: 'POST',
         headers: {
-          Authorization: 'Bearer mocked-token',
+          Authorization: bearerToken,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -82,7 +84,7 @@ describe('Integration testing for ITAM Project', () => {
       {
         method: 'POST',
         headers: {
-          Authorization: 'Bearer mocked-token',
+          Authorization: bearerToken,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -104,7 +106,7 @@ describe('Integration testing for ITAM Project', () => {
       {
         method: 'POST',
         headers: {
-          Authorization: 'Bearer mocked-token',
+          Authorization: bearerToken,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -126,7 +128,7 @@ describe('Integration testing for ITAM Project', () => {
       {
         method: 'POST',
         headers: {
-          Authorization: 'Bearer mocked-token',
+          Authorization: bearerToken,
           'Content-Type': 'application/json',
         },
       },
@@ -143,7 +145,7 @@ describe('Integration testing for ITAM Project', () => {
       {
         method: 'POST',
         headers: {
-          Authorization: 'Bearer mocked-token',
+          Authorization: bearerToken,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -156,7 +158,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(assignRes.status).toBe(200);
     const res = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
       method: 'GET',
-      headers: { Authorization: 'Bearer mocked-token' },
+      headers: { Authorization: bearerToken },
     });
     expect(res.status).toBe(200);
     const body = await res.json();
@@ -178,7 +180,7 @@ describe('Integration testing for ITAM Project', () => {
       {
         method: 'POST',
         headers: {
-          Authorization: 'Bearer mocked-token',
+          Authorization: bearerToken,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -199,7 +201,7 @@ describe('Integration testing for ITAM Project', () => {
       {
         method: 'POST',
         headers: {
-          Authorization: 'Bearer mocked-token',
+          Authorization: bearerToken,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -220,7 +222,7 @@ describe('Integration testing for ITAM Project', () => {
       {
         method: 'DELETE',
         headers: {
-          Authorization: 'Bearer mocked-token',
+          Authorization: bearerToken,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -242,7 +244,7 @@ describe('Integration testing for ITAM Project', () => {
       {
         method: 'DELETE',
         headers: {
-          Authorization: 'Bearer mocked-token',
+          Authorization: bearerToken,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -264,7 +266,7 @@ describe('Integration testing for ITAM Project', () => {
       {
         method: 'DELETE',
         headers: {
-          Authorization: 'Bearer mocked-token',
+          Authorization: bearerToken,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -277,7 +279,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(unassignRes.status).toBe(200);
     const res = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
       method: 'GET',
-      headers: { Authorization: 'Bearer mocked-token' },
+      headers: { Authorization: bearerToken },
     });
     expect(res.status).toBe(200);
     const body = await res.json();
@@ -299,13 +301,13 @@ describe('Integration testing for ITAM Project', () => {
       `${baseUrl}/api/v1/assets/${existingAssetId}/location/${existingLocationId}`,
       {
         method: 'DELETE',
-        headers: { Authorization: 'Bearer mocked-token' },
+        headers: { Authorization: bearerToken },
       },
     );
     expect(unassignRes.status).toBe(200);
     const res = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
       method: 'GET',
-      headers: { Authorization: 'Bearer mocked-token' },
+      headers: { Authorization: bearerToken },
     });
     expect(res.status).toBe(200);
     const body = await res.json();
@@ -324,7 +326,7 @@ describe('Integration testing for ITAM Project', () => {
     //get and save current location
     let result = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
       method: 'GET',
-      headers: { Authorization: 'Bearer mocked-token' },
+      headers: { Authorization: bearerToken },
     });
     expect(result.status).toBe(200);
     let body = await result.json();
@@ -334,7 +336,7 @@ describe('Integration testing for ITAM Project', () => {
       `${baseUrl}/api/v1/assets/${existingAssetId}/location/${existingLocationId}`,
       {
         method: 'POST',
-        headers: { Authorization: 'Bearer mocked-token' },
+        headers: { Authorization: bearerToken },
       },
     );
     expect(result.status).toBe(200);
@@ -344,7 +346,7 @@ describe('Integration testing for ITAM Project', () => {
     //check if location name is changed to be expected
     result = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
       method: 'GET',
-      headers: { Authorization: 'Bearer mocked-token' },
+      headers: { Authorization: bearerToken },
     });
     expect(result.status).toBe(200);
     body = await result.json();
@@ -378,7 +380,7 @@ describe('Integration testing for ITAM Project', () => {
       `${baseUrl}/api/v1/assets/${nonExistentAssetId}/location/${existingLocationId}`,
       {
         method: 'POST',
-        headers: { Authorization: 'Bearer mocked-token' },
+        headers: { Authorization: bearerToken },
       },
     );
     expect(res.status).toBe(404);
@@ -391,7 +393,7 @@ describe('Integration testing for ITAM Project', () => {
       `${baseUrl}/api/v1/assets/${malformedAssetId}/location/${existingLocationId}`,
       {
         method: 'POST',
-        headers: { Authorization: 'Bearer mocked-token' },
+        headers: { Authorization: bearerToken },
       },
     );
     expect(res.status).toBe(404);
@@ -405,7 +407,7 @@ describe('Integration testing for ITAM Project', () => {
       `${baseUrl}/api/v1/assets/${existingAssetId}/location/${malformedLocationId}`,
       {
         method: 'POST',
-        headers: { Authorization: 'Bearer mocked-token' },
+        headers: { Authorization: bearerToken },
       },
     );
     expect(res.status).toBe(404);
@@ -419,7 +421,7 @@ describe('Integration testing for ITAM Project', () => {
       `${baseUrl}/api/v1/assets/${existingAssetId}/location/${nonExistentLocationId}`,
       {
         method: 'POST',
-        headers: { Authorization: 'Bearer mocked-token' },
+        headers: { Authorization: bearerToken },
       },
     );
     expect(res.status).toBe(404);
@@ -434,7 +436,7 @@ describe('Integration testing for ITAM Project', () => {
       `${baseUrl}/api/v1/job-titles/${existingJobTitleId}/requirements`,
       {
         method: 'GET',
-        headers: { Authorization: 'Bearer mocked-token' },
+        headers: { Authorization: bearerToken },
       },
     );
 
@@ -463,7 +465,7 @@ describe('Integration testing for ITAM Project', () => {
       `${baseUrl}/api/v1/job-titles/${nonExistingJobTitleId}/requirements`,
       {
         method: 'GET',
-        headers: { Authorization: 'Bearer mocked-token' },
+        headers: { Authorization: bearerToken },
       },
     );
 
@@ -477,7 +479,7 @@ describe('Integration testing for ITAM Project', () => {
       `${baseUrl}/api/v1/job-titles/${malformedJobTitleId}/requirements`,
       {
         method: 'GET',
-        headers: { Authorization: 'Bearer mocked-token' },
+        headers: { Authorization: bearerToken },
       },
     );
 
