@@ -104,6 +104,4 @@ jobs:
           activate-plugins: true
           use-deployment-settings-file: true
           force-overwrite: false
-          stage-and-upgrade: true
           publish-changes: true
-          import-as-holding: true
