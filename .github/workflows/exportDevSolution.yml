@@ -54,6 +54,9 @@ jobs:
           solution-name: ${{ env.SOLUTION_NAME }}
           solution-output-file: .${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
           managed: true
+          export-general-settings: true
+          export-customization-settings: true
+          export-relationship-roles: true
 
       - name: unpack-solution action
         uses: microsoft/powerplatform-actions/unpack-solution@latest
