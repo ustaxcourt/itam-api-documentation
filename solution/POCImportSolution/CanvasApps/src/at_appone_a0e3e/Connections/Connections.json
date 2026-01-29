@@ -1,0 +1,38 @@
+{
+  "9b8c2d16-0d31-4471-a220-77f9848f9c7d": {
+    "connectionRef": {
+      "displayName": "Logic flows",
+      "iconUri": "https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/v1.0.1774/1.0.1774.4397/logicflows/icon.png",
+      "id": "/providers/microsoft.powerapps/apis/shared_logicflows",
+      "parameterHints": {
+        "workflowDisplayName": {
+          "value": "FlowOne"
+        },
+        "workflowEntityId": {
+          "value": "d5dd5b40-b3fb-f011-8406-7ced8d6e95f7"
+        },
+        "workflowName": {
+          "value": "c73c0ef7-aa04-27ec-973a-134bfbf0a86c"
+        }
+      },
+      "parameterHintsV2": {
+        "workflowDisplayName": {
+          "value": "FlowOne"
+        },
+        "workflowEntityId": {
+          "value": "d5dd5b40-b3fb-f011-8406-7ced8d6e95f7"
+        },
+        "workflowName": {
+          "value": "c73c0ef7-aa04-27ec-973a-134bfbf0a86c"
+        }
+      }
+    },
+    "datasets": {},
+    "dataSources": [
+      "PowerAppV2->Response"
+    ],
+    "dependencies": {},
+    "dependents": [],
+    "id": "9b8c2d16-0d31-4471-a220-77f9848f9c7d"
+  }
+}

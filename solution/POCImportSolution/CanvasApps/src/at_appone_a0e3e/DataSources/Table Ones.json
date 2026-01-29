@@ -1,0 +1,141 @@
+[
+  {
+    "CdsFCBContext": "{\"FileType\":true,\"ImageExternalStorage\":true}",
+    "EntitySetName": "at_tableones",
+    "IsHidden": false,
+    "IsSampleData": false,
+    "IsWritable": true,
+    "LogicalName": "at_tableone",
+    "Name": "Table Ones",
+    "NativeCDSDataSourceInfoNameMapping": {
+      "_ownerid_value": "Owner",
+      "at_choice": "Choice",
+      "at_date": "Date",
+      "at_newcolumn": "New column",
+      "at_number": "Number",
+      "at_tableone_AsyncOperations": "System Jobs",
+      "at_tableone_BulkDeleteFailures": "Bulk Delete Failures",
+      "at_tableone_DuplicateBaseRecord": "Duplicate Records (at_tableone_DuplicateBaseRecord)",
+      "at_tableone_DuplicateMatchingRecord": "Duplicate Records (at_tableone_DuplicateMatchingRecord)",
+      "at_tableone_MailboxTrackingFolders": "Mailbox Auto Tracking Folders",
+      "at_tableone_PrincipalObjectAttributeAccesses": "Field Sharing",
+      "at_tableone_ProcessSession": "Process Sessions",
+      "at_tableone_SyncErrors": "Sync Errors",
+      "at_tableoneid": "Table One",
+      "at_yesno": "YesNo",
+      "createdby": "Created By",
+      "createdon": "Created On",
+      "createdonbehalfby": "Created By (Delegate)",
+      "importsequencenumber": "Import Sequence Number",
+      "modifiedby": "Modified By",
+      "modifiedon": "Modified On",
+      "modifiedonbehalfby": "Modified By (Delegate)",
+      "overriddencreatedon": "Record Created On",
+      "owningbusinessunit": "Owning Business Unit",
+      "owningteam": "Owning Team",
+      "owninguser": "Owning User",
+      "statecode": "Status",
+      "statuscode": "Status Reason",
+      "timezoneruleversionnumber": "Time Zone Rule Version Number",
+      "utcconversiontimezonecode": "UTC Conversion Time Zone Code",
+      "versionnumber": "Version Number"
+    },
+    "PreferredName": "Table Ones",
+    "Type": "NativeCDSDataSourceInfo"
+  },
+  {
+    "DisplayName": "Table Ones (Views)",
+    "Name": "_at_tableone_views",
+    "RelatedEntityName": "Table Ones",
+    "TrimmedViewName": true,
+    "Type": "ViewInfo",
+    "ViewInfoNameMapping": {
+      "3077a57f-78e2-49c0-9762-e0bfda43ea1e": "Table One Lookup View",
+      "a09e674b-5837-4dec-8882-c5c96dba079f": "Active Table Ones",
+      "a55e1c81-4c90-4d50-80da-af7eb66a6de1": "Table One Associated View",
+      "a93d80a2-7295-4b6c-a3d1-cc0569fafbec": "Inactive Table Ones",
+      "ebb42c13-a445-446e-86c1-bd0942dd9087": "Table One Advanced Find View"
+    }
+  },
+  {
+    "DisplayName": "Choice (Table Ones)",
+    "Name": "at_tableone_at_choice",
+    "OptionSetInfoNameMapping": {
+      "416700000": "One",
+      "416700001": "Two",
+      "416700002": "Three"
+    },
+    "OptionSetIsBooleanValued": false,
+    "OptionSetIsGlobal": false,
+    "OptionSetReference": {
+      "OptionSetReferenceItem0": {
+        "OptionSetReferenceColumnName": "at_choice",
+        "OptionSetReferenceEntityName": "Table Ones"
+      }
+    },
+    "OptionSetTypeKey": "PicklistType",
+    "RelatedColumnInvariantName": "at_choice",
+    "RelatedEntityName": "Table Ones",
+    "Type": "OptionSetInfo"
+  },
+  {
+    "DisplayName": "YesNo (Table Ones)",
+    "Name": "at_tableone_at_yesno",
+    "OptionSetInfoNameMapping": {
+      "0": "No",
+      "1": "Yes"
+    },
+    "OptionSetIsBooleanValued": true,
+    "OptionSetIsGlobal": false,
+    "OptionSetReference": {
+      "OptionSetReferenceItem0": {
+        "OptionSetReferenceColumnName": "at_yesno",
+        "OptionSetReferenceEntityName": "Table Ones"
+      }
+    },
+    "OptionSetTypeKey": "BooleanType",
+    "RelatedColumnInvariantName": "at_yesno",
+    "RelatedEntityName": "Table Ones",
+    "Type": "OptionSetInfo"
+  },
+  {
+    "DisplayName": "Status (Table Ones)",
+    "Name": "at_tableone_statecode",
+    "OptionSetInfoNameMapping": {
+      "0": "Active",
+      "1": "Inactive"
+    },
+    "OptionSetIsBooleanValued": false,
+    "OptionSetIsGlobal": false,
+    "OptionSetReference": {
+      "OptionSetReferenceItem0": {
+        "OptionSetReferenceColumnName": "statecode",
+        "OptionSetReferenceEntityName": "Table Ones"
+      }
+    },
+    "OptionSetTypeKey": "StateType",
+    "RelatedColumnInvariantName": "statecode",
+    "RelatedEntityName": "Table Ones",
+    "Type": "OptionSetInfo"
+  },
+  {
+    "DisplayName": "Status Reason (Table Ones)",
+    "Name": "at_tableone_statuscode",
+    "OptionSetInfoNameMapping": {
+      "1": "Active",
+      "2": "Inactive"
+    },
+    "OptionSetIsBooleanValued": false,
+    "OptionSetIsGlobal": false,
+    "OptionSetReference": {
+      "OptionSetReferenceItem0": {
+        "OptionSetReferenceColumnName": "statuscode",
+        "OptionSetReferenceEntityName": "Table Ones"
+      }
+    },
+    "OptionSetTypeKey": "StatusType",
+    "RelatedColumnInvariantName": "statuscode",
+    "RelatedEntityName": "Table Ones",
+    "Type": "OptionSetInfo"
+  }
+]

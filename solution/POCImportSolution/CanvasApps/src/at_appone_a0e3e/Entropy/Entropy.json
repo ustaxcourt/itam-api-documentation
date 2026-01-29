@@ -1,0 +1,94 @@
+{
+  "ComponentIndexes": {},
+  "ControlUniqueGuids": {},
+  "ControlUniqueIds": {
+    "App": 1,
+    "Button1": 14,
+    "Flow Screen": 13,
+    "Gallery1": 5,
+    "galleryTemplate1": 6,
+    "Host": 3,
+    "Image1": 7,
+    "NextArrow1": 10,
+    "Rectangle1": 12,
+    "Screen1": 4,
+    "Separator1": 11,
+    "Subtitle1": 9,
+    "Title1": 8
+  },
+  "FunctionParamsInvariantScripts": {},
+  "FunctionParamsInvariantScriptsOnInstances": {},
+  "HeaderLastSavedDateTimeUTC": "01/27/2026 19:26:33",
+  "IsLegacyComponentAllowGlobalScopeCase": false,
+  "LocalConnectionIDReferences": {
+    "9b8c2d16-0d31-4471-a220-77f9848f9c7d": "\"/providers/Microsoft.PowerApps/apis/shared_logicflows/connections/C73C0EF7AA0427EC973A134BFBF0A86C-467B015F89906D99\""
+  },
+  "LocalDatabaseReferencesAsEmpty": false,
+  "LocalResourceFileNames": {},
+  "LocalResourceRootPaths": {},
+  "OrderComponentMetadata": {},
+  "OrderComponentTemplate": {},
+  "OrderDataSource": {
+    "CustomGallerySample": 6,
+    "PowerAppV2->Response": 0,
+    "Table Ones": 7,
+    "Table Ones\\at_tableone_at_choice": 2,
+    "Table Ones\\at_tableone_at_yesno": 1,
+    "Table Ones\\at_tableone_statecode": 3,
+    "Table Ones\\at_tableone_statuscode": 4,
+    "Table Ones\\default.cds_at_tableone_views": 5
+  },
+  "OrderGroupControls": {},
+  "OrderPcfTemplate": {},
+  "OrderTemplate": {},
+  "OrderXMLTemplate": {
+    "button": 5,
+    "gallery": 0,
+    "icon": 3,
+    "image": 2,
+    "label": 4,
+    "rectangle": 1
+  },
+  "OverridablePropertiesEntry": {
+    "App": {},
+    "Button1": {},
+    "Flow Screen": {},
+    "Gallery1": {},
+    "galleryTemplate1": {},
+    "Host": {},
+    "Image1": {},
+    "NextArrow1": {},
+    "Rectangle1": {},
+    "Screen1": {},
+    "Separator1": {},
+    "Subtitle1": {},
+    "Title1": {}
+  },
+  "PCFDynamicSchemaForIRRetrievalEntry": {},
+  "PCFTemplateEntry": {},
+  "PublishOrderIndices": {
+    "App": 0,
+    "Button1": 8,
+    "Flow Screen": 0,
+    "Gallery1": 0,
+    "galleryTemplate1": 1,
+    "Host": 0,
+    "Image1": 3,
+    "NextArrow1": 4,
+    "Rectangle1": 2,
+    "Screen1": 0,
+    "Separator1": 7,
+    "Subtitle1": 6,
+    "Title1": 5
+  },
+  "ResourcesJsonIndices": {
+    "Image-SampleImage": 0
+  },
+  "RuleScreenIdWithoutScreen": {},
+  "TemplateVersions": {},
+  "VolatileProperties": {
+    "AnalysisLoadTime": 0.0823014,
+    "ControlCount": {}
+  },
+  "WasLocalDatabaseReferencesEmpty": false
+}
