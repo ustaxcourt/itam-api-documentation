@@ -3,11 +3,13 @@ name: export-solution-on-dev
 #  unpack it and prepare, commit and push a git branch with the changes
 
 on:
-  workflow_dispatch:
+  pull_request:
 
 env:
   #edit your values here
-  ENVIRONMENT_URL: ${{ secrets.DevEnviromentURL }}
+  DEVENVIROMENTURL: ${{ secrets.DevEnviromentURL }}
+  TESTENVIROMENTURL: ${{ secrets.TestEnviromentURL }}
+
   CLIENT_ID: ${{ secrets.DevAppId }}
   TENANT_ID: ${{ secrets.DevTenantId }}
   SOLUTION_NAME: "POCImportSolution"
@@ -15,24 +17,29 @@ env:
   SOLUTION_FOLDER: /solution
   SOLUTION_TARGET_FOLDER: solution
 
+  TESTCLIENT_ID: ${{ secrets.TestAppId }}
+  TESTTENANT_ID: ${{ secrets.TestTenantId }}
+
 permissions:
   contents: write
 jobs:
   export-from-dev:
-    runs-on: windows-latest
-    # or you can say runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     env:
       RUNNER_DEBUG: 1
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           lfs: true
+
+      - name: Install PAC
+        uses: microsoft/powerplatform-actions/actions-install@latest
 
       - name: who-am-i action
         uses: microsoft/powerplatform-actions/who-am-i@latest
         with:
-          environment-url: ${{env.ENVIRONMENT_URL}}
+          environment-url: ${{env.DEVENVIROMENTURL}}
           app-id: ${{env.CLIENT_ID}}
           client-secret: ${{ secrets.PowerPlatformSPN }}
           tenant-id: ${{env.TENANT_ID}}
@@ -40,28 +47,64 @@ jobs:
       - name: export-solution action
         uses: microsoft/powerplatform-actions/export-solution@latest
         with:
-          environment-url: ${{env.ENVIRONMENT_URL}}
+          environment-url: ${{env.DEVENVIROMENTURL}}
           app-id: ${{env.CLIENT_ID}}
           client-secret: ${{ secrets.PowerPlatformSPN }}
           tenant-id: ${{env.TENANT_ID}}
           solution-name: ${{ env.SOLUTION_NAME }}
-          solution-output-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
+          solution-output-file: .${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
+          managed: true
+          export-general-settings: true
+          export-customization-settings: true
+          export-relationship-roles: true
 
       - name: unpack-solution action
         uses: microsoft/powerplatform-actions/unpack-solution@latest
         with:
-          solution-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
-          solution-folder: ${{ env.SOLUTION_FOLDER }}/${{ env.SOLUTION_NAME }}
-          solution-type: "Unmanaged"
+          solution-file: .${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
+          solution-folder: .${{ env.SOLUTION_FOLDER }}/${{ env.SOLUTION_NAME }}
+          solution-type: "Managed"
+          process-canvas-apps: true
           overwrite-files: true
 
       - name: Commit changes
         run: |
-          cp -r ${{ env.SOLUTION_FOLDER }}/${{ env.SOLUTION_NAME }} ./${{ env.SOLUTION_FOLDER }}/${{ github.event.inputs.solution_name }}
+          git fetch origin
           git config --global user.email "no-reply@github.com"
           git config --global user.name "GitHub Actions"
-          git checkout main
+          git checkout deploymentToPowerPlatformTestEnv || git checkout -b deploymentToPowerPlatformTestEnv
           git add --all
-          git commit -m "Updates from the dev environment"
+          git commit -m "Deploying updates from the dev environment" --allow-empty
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git push
+          git pull --rebase -X theirs origin deploymentToPowerPlatformTestEnv
+          git push -u origin deploymentToPowerPlatformTestEnv
+
+      - name: reautheticate as test app
+        uses: microsoft/powerplatform-actions/who-am-i@latest
+        with:
+          environment-url: ${{env.TESTENVIROMENTURL}}
+          app-id: ${{env.TESTCLIENT_ID}}
+          client-secret: ${{ secrets.TESTCLIENTSECRET }}
+          tenant-id: ${{env.TESTTENANT_ID}}
+
+      - name: Pack solution
+        uses: microsoft/powerplatform-actions/pack-solution@latest
+        with:
+          solution-folder: .${{ env.SOLUTION_FOLDER }}/${{ env.SOLUTION_NAME }}
+          solution-file: .${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
+          solution-type: "Managed"
+          process-canvas-apps: true
+
+      - name: Import solution as Managed to build env
+        uses: microsoft/powerplatform-actions/import-solution@latest
+        with:
+          environment-url: ${{env.TESTENVIROMENTURL}}
+          app-id: ${{env.TESTCLIENT_ID}}
+          client-secret: ${{ secrets.TESTCLIENTSECRET }}
+          tenant-id: ${{env.TESTTENANT_ID}}
+          solution-file: .${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
+          activate-plugins: true
+          use-deployment-settings-file: true
+          force-overwrite: false
+          publish-changes: true
+          import-as-holding: true
