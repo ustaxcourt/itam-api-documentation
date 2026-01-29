@@ -3,9 +3,7 @@ export default {
     '^.+\\.js$': 'babel-jest',
   },
   testEnvironment: 'node',
-  modulePathIgnorePatterns: [
-    '<rootDir>/functionapp/', // Trying to ignore function app globally
-  ],
+
   collectCoverage: true,
   collectCoverageFrom: [
     '**/*.{js,jsx,ts,tsx}',
@@ -34,7 +32,6 @@ export default {
       testMatch: ['**/azure-functions/**/*.test.js'],
       testPathIgnorePatterns: [
         '/azure-functions/tests/integration/',
-        '/functionapp/',
         'jest.setup.js',
         'jest.teardown.js',
       ],
@@ -42,10 +39,10 @@ export default {
     {
       displayName: 'integration',
       testMatch: ['**/integration/**/*.int.test.js'],
-      testPathIgnorePatterns: ['/functionapp/'],
       globalSetup: './jest.setup.js',
       globalTeardown: './jest.teardown.js',
       testTimeout: 60000,
+      testNamePattern: '.*', // This line should get jest to ignore the trailing API_BASE_URL token
     },
   ],
 };
