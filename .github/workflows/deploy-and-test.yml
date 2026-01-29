@@ -132,6 +132,7 @@ jobs:
           steps.resolve_env.outputs.env_name == 'test'
         env:
           API_BASE_URL: https://${{ steps.pick.outputs.APP_NAME }}.azurewebsites.net
+          FUNCTIONS_WORKER_RUNTIME: node
         run: npm run test:integration
 
       # Tag the deployed commit so it can be promoted later
