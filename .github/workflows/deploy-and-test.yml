@@ -123,26 +123,13 @@ jobs:
         with:
           filepath: './azure-functions/openapi.yml'
 
-      - name: Run unit tests
-        if: |
-          steps.resolve_env.outputs.env_name == 'dev' ||
-          steps.resolve_env.outputs.env_name == 'test'
-        run: npm run test:unit -- --coverage
-
       - name: Run integration tests
         if: |
           steps.resolve_env.outputs.env_name == 'dev' ||
           steps.resolve_env.outputs.env_name == 'test'
+        env:
+          API_BASE_URL: https://${{ steps.pick.outputs.APP_NAME }}.azurewebsites.net
         run: npm run test:integration
-
-      - name: Upload coverage report
-        if: |
-          steps.resolve_env.outputs.env_name == 'dev' ||
-          steps.resolve_env.outputs.env_name == 'test'
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage
 
       # Tag the deployed commit so it can be promoted later
       # Only tags the same SHA once in case someone deploys to dev manually

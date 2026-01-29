@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:7071';
+const baseUrl = process.env.API_BASE_URL || 'http://localhost:7071';
 const existingAssetId = '8d204fa8-69d7-f011-8543-000d3a5928e0';
 const malformedAssetId = '8d204fa8-69d7-f011-85';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
