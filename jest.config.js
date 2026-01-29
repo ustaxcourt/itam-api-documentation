@@ -42,7 +42,6 @@ export default {
       globalSetup: './jest.setup.js',
       globalTeardown: './jest.teardown.js',
       testTimeout: 60000,
-      testNamePattern: '.*', // This line should get jest to ignore the trailing API_BASE_URL token
     },
   ],
 };

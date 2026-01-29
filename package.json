@@ -8,7 +8,7 @@
     "start": "func start",
     "test": "jest",
     "test:unit": "jest --selectProjects unit",
-    "test:integration": "jest --selectProjects integration --coverage=false",
+    "test:integration": "jest --selectProjects integration --coverage=false --",
     "prepare": "husky"
   },
   "dependencies": {
