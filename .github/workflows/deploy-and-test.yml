@@ -133,7 +133,7 @@ jobs:
         env:
           API_BASE_URL: https://${{ steps.pick.outputs.APP_NAME }}.azurewebsites.net
           FUNCTIONS_WORKER_RUNTIME: node
-        run: npm run test:integration
+        run: npm run test:integration API_BASE_URL="${API_BASE_URL}"
 
       # Tag the deployed commit so it can be promoted later
       # Only tags the same SHA once in case someone deploys to dev manually
