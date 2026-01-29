@@ -31,6 +31,7 @@ export default {
       testMatch: ['**/azure-functions/**/*.test.js'],
       testPathIgnorePatterns: [
         '/azure-functions/tests/integration/',
+        '/functionapp/',
         'jest.setup.js',
         'jest.teardown.js',
       ],
@@ -38,6 +39,7 @@ export default {
     {
       displayName: 'integration',
       testMatch: ['**/integration/**/*.int.test.js'],
+      testPathIgnorePatterns: ['/functionapp/'],
       globalSetup: './jest.setup.js',
       globalTeardown: './jest.teardown.js',
       testTimeout: 60000,
