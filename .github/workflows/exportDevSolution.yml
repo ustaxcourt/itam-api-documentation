@@ -105,3 +105,4 @@ jobs:
           use-deployment-settings-file: true
           force-overwrite: false
           publish-changes: true
+          import-as-holding: true
