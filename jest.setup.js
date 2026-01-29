@@ -3,6 +3,9 @@ import fetch from 'node-fetch';
 
 let funcProcess;
 
+const isRemote = !!process.env.API_BASE_URL;
+const baseUrl = process.env.API_BASE_URL || 'http://localhost:7071';
+
 async function waitForServer(url, timeout = 60000) {
   const start = Date.now();
   while (Date.now() - start < timeout) {
@@ -21,6 +24,11 @@ async function waitForServer(url, timeout = 60000) {
 }
 
 module.exports = async () => {
+  if (isRemote) {
+    console.log(`Using deployed remote function at ${baseUrl}`);
+    return; // Doesn't spin up the func start
+  }
+
   console.log('Starting Azure Functions...');
   funcProcess = spawn('func', ['start'], {
     shell: true, // Important for Windows
@@ -28,7 +36,7 @@ module.exports = async () => {
   });
 
   // Wait for the Functions host to respond
-  await waitForServer('http://localhost:7071/api/authTest', 60000);
+  await waitForServer(`${baseUrl}/api/authTest`, 60000);
 
   // Store process globally for teardown
   global.__FUNC_PROCESS__ = funcProcess;
