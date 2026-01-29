@@ -99,3 +99,4 @@ jobs:
           tenant-id: ${{env.TESTTENANT_ID}}
           solution-file: .${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
           activate-plugins: true
+          use-deployment-settings-file: true
