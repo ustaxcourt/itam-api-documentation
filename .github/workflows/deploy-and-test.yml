@@ -126,6 +126,9 @@ jobs:
         with:
           filepath: "./azure-functions/openapi.yml"
 
+      - name: Clean up temporary functionapp folder
+        run: rm -rf functionapp
+
       - name: Run integration tests
         if: |
           steps.resolve_env.outputs.env_name == 'dev' ||
@@ -152,6 +155,3 @@ jobs:
           git push origin "${TAG}"
 
           echo "Tagged dev release: ${TAG}"
-
-      - name: Clean up temporary functionapp folder
-        run: rm -rf functionapp
