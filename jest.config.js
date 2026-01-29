@@ -3,6 +3,9 @@ export default {
     '^.+\\.js$': 'babel-jest',
   },
   testEnvironment: 'node',
+  modulePathIgnorePatterns: [
+    '<rootDir>/functionapp/', // Trying to ignore function app globally
+  ],
   collectCoverage: true,
   collectCoverageFrom: [
     '**/*.{js,jsx,ts,tsx}',
