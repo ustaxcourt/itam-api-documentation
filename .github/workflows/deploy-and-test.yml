@@ -198,6 +198,7 @@ jobs:
           steps.resolve_env.outputs.env_name == 'test'
         env:
           API_BASE_URL: https://${{ steps.pick.outputs.APP_NAME }}.azurewebsites.net
+          BEARERTOKEN: ${{ steps.pick.outputs.token }}
         run: npx jest --selectProjects integration --coverage=false
 
       # Tag the deployed commit so it can be promoted later
