@@ -88,13 +88,13 @@ jobs:
           else
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             branch="${{ github.base_ref }}"
-
             case "$branch" in
               main)        env_name="dev" ;;
               deployTest)  env_name="test" ;;
               deployDev)         env_name="dev"  ;;
               *)           echo "Unsupported branch for auto-deploy: $branch"; exit 1 ;;
             esac
+          fi
           fi
           echo "env_name=$env_name" >> $GITHUB_OUTPUT
           echo "Resolved environment: $env_name"
