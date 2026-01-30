@@ -1,4 +1,4 @@
-name: Deploy Azure Function App (JavaScript ESM)
+name: Deploy and Test Deployed ITAM Function App
 
 permissions:
   contents: write
