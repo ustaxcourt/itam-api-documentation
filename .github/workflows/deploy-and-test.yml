@@ -4,7 +4,7 @@ permissions:
   contents: write
 
 on:
-  push:
+  pull_request:
     branches:
       - main
       - deployTest
