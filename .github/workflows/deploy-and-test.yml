@@ -157,7 +157,7 @@ jobs:
             curl -sS -X POST "$url" \
               -H "Content-Type: application/x-www-form-urlencoded" \
               --data-urlencode "grant_type=client_credentials" \
-              --data-urlencode "client_id=${{ steps.pick.outputs.APP_NAME }}" \
+              --data-urlencode "client_id=${{ steps.pick.outputs.CLIENTID }}" \
               --data-urlencode "client_secret=${{ steps.pick.outputs.CLIENTSECRET }}" \
               --data-urlencode "scope=api://ustc-itam-apis-authentication-${{ steps.resolve_env.outputs.env_name }}/.default" \
               -o "$tmp_body" \
