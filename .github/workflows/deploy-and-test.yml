@@ -37,10 +37,10 @@ jobs:
       DEVENVIROMENTURL: ${{ secrets.DevEnviromentURL }}
       TESTENVIROMENTURL: ${{ secrets.TestEnviromentURL }}
 
-      DEVCLIENT_ID: ${{ secrets.DevAppId }}
+      DEVCLIENT_ID: ${{ secrets.EXTERNALAUTHDEVCLIENTID }}
       DEVCLIENT_SECRET: ${{ secrets.EXTERNALAUTHDEVCLIENTSECRET }}
 
-      TESTCLIENT_ID: ${{ secrets.TestAppId }}
+      TESTCLIENT_ID: ${{ secrets.EXTERNALAUTHTESTCLIENTID }}
       TESTCLIENT_SECRET: ${{ secrets.EXTERNALAUTHTESTCLIENTSECRET }}
 
     steps:
