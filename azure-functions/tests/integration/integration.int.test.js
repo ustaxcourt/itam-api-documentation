@@ -1,14 +1,14 @@
 const baseUrl = process.env.API_BASE_URL || 'http://localhost:7071';
 const bearerToken = process.env.BEARERTOKEN || 'Bearer mocked-token';
 
-const existingAssetId = '8d204fa8-69d7-f011-8543-000d3a5928e0';
+const existingAssetId = 'da43c4ac-e4fd-f011-8406-000d3a370040';
 const malformedAssetId = '8d204fa8-69d7-f011-85';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
-const existingUserId = '2c5d33ef-d4f3-4574-b49a-69e376ee43bb';
+const existingUserId = '00674e1a-bd05-4c6c-a0a1-344404d4b2e4';
 const nonExistentUserId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
-const existingLocationId = 'df164d9a-69d7-f011-8544-000d3a35fa12';
+const existingLocationId = 'dae8e698-e4fd-f011-8406-000d3a37071f';
 const malformedLocationId = 'df164d9a-69d7-f011-854';
-const existingLocationName = 'San Francisco';
+const existingLocationName = '233';
 const nonExistentLocationId = '04d494f4-b5b9-f011-bbd2-000d3a56dc3b';
 const existingJobTitleId = '76c0a78f-5cd4-f011-8544-000d3a5b5036';
 const nonExistingJobTitleId = 'b09cf686-30d5-f011-8544-7c1e52177973';
