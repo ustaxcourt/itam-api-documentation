@@ -1,5 +1,5 @@
 const baseUrl = process.env.API_BASE_URL || 'http://localhost:7071';
-const bearerToken = process.env.BEARERTOKEN || 'mocked-token';
+const bearerToken = process.env.BEARERTOKEN || 'Bearer mocked-token';
 
 const existingAssetId = '8d204fa8-69d7-f011-8543-000d3a5928e0';
 const malformedAssetId = '8d204fa8-69d7-f011-85';
