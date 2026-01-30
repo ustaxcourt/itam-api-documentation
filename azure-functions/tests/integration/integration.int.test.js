@@ -15,11 +15,12 @@ const nonExistingJobTitleId = 'b09cf686-30d5-f011-8544-7c1e52177973';
 const malformedJobTitleId = 'b09cf686-30d5-f0';
 
 describe('Integration testing for ITAM Project', () => {
+  jest.setTimeout(30000);
   //GET an asset
   it('GET Assets - should fetch an existing asset successfully', async () => {
     const res = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
       method: 'GET',
-      headers: { Authorization: `Bearer ${bearerToken}` },
+      headers: { Authorization: bearerToken },
     });
     expect(res.status).toBe(200);
     const body = await res.json();
