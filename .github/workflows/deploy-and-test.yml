@@ -151,14 +151,15 @@ jobs:
           set -euo pipefail
 
 
-          resp=$(curl -sS -f -X POST "https://login.microsoftonline.com/${{env.TENANTID}}/oauth2/v2.0/token" \
-            -H "Content-Type: application/json" \
-            -d '{
-            "scope":"api://ustc-itam-apis-authentication-${steps.resolve_env.outputs.env_name}/.default"
-            "grant_type": "client_credentials",
-            "client_id": ${{ steps.pick.outputs.APP_NAME }},
-            "client_secret": ${{ steps.pick.outputs.CLIENTSECRET }}
-            }')
+
+          resp=$(curl -sS -f -X POST "https://login.microsoftonline.com/${{ env.TENANTID }}/oauth2/v2.0/token" \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            --data-urlencode "grant_type=client_credentials" \
+            --data-urlencode "client_id=${{ steps.pick.outputs.APP_NAME }}" \
+            --data-urlencode "client_secret=${{ steps.pick.outputs.CLIENTSECRET }}" \
+            --data-urlencode "scope=api://ustc-itam-apis-authentication-${{ steps.resolve_env.outputs.env_name }}/.default"
+          )
+
 
           echo "Raw response: $resp"
 
