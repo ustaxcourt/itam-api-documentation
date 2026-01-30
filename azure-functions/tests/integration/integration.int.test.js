@@ -1,5 +1,5 @@
 const baseUrl = process.env.API_BASE_URL || 'http://localhost:7071';
-const bearerToken = process.env.BEARERTOKEN || 'mocked-token';
+const bearerToken = process.env.BEARERTOKEN || 'Bearer mocked-token';
 
 const existingAssetId = '8d204fa8-69d7-f011-8543-000d3a5928e0';
 const malformedAssetId = '8d204fa8-69d7-f011-85';
@@ -15,11 +15,12 @@ const nonExistingJobTitleId = 'b09cf686-30d5-f011-8544-7c1e52177973';
 const malformedJobTitleId = 'b09cf686-30d5-f0';
 
 describe('Integration testing for ITAM Project', () => {
+  jest.setTimeout(30000);
   //GET an asset
   it('GET Assets - should fetch an existing asset successfully', async () => {
     const res = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
       method: 'GET',
-      headers: { Authorization: `Bearer ${bearerToken}` },
+      headers: { Authorization: bearerToken },
     });
     expect(res.status).toBe(200);
     const body = await res.json();
