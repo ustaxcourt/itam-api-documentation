@@ -83,6 +83,9 @@ export async function assignmentsHandler(request, context) {
   }
 }
 
+console.log('[endpoint] module loaded');
+console.log('[endpoint] typeof app.http =', typeof app.http);
+
 app.http('assignments', {
   methods: ['POST', 'DELETE'],
   authLevel: 'anonymous',

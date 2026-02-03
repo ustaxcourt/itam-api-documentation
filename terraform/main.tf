@@ -57,7 +57,7 @@ resource "azurerm_linux_function_app" "function" {
     TENANT_ID            = var.all_tenant_id
     SCOPE                = var.scope
     DATAVERSE_URL        = var.dataverse_url
-    GLOBAL_MAINTENENCE   = "false"
+    GLOBAL_MAINTENANCE   = "false"
 
     # This now makes it managed by terraform - to update just terraform apply with new end date and verify change in azure function app per env
     DATAVERSE_INTERNAL                       = azuread_application_password.dataverse_app_secret.value
