@@ -62,6 +62,14 @@ jobs:
       - name: Install dependencies from root
         run: npm ci
 
+      - name: Validate OpenAPI schema
+        if: |
+          steps.resolve_env.outputs.env_name == 'dev' ||
+          steps.resolve_env.outputs.env_name == 'test'
+        uses: thiyagu06/openapi-validator-action@v1
+        with:
+          filepath: "./azure-functions/openapi.yml"
+
       - name: Prepare function app package
         run: |
           mkdir functionapp
@@ -134,13 +142,6 @@ jobs:
 
       # Starts off the testing piece in the same workflow
       # Currently set to run on dev/test only
-      - name: Validate OpenAPI schema
-        if: |
-          steps.resolve_env.outputs.env_name == 'dev' ||
-          steps.resolve_env.outputs.env_name == 'test'
-        uses: thiyagu06/openapi-validator-action@v1
-        with:
-          filepath: "./azure-functions/openapi.yml"
 
       - name: Clean up temporary functionapp folder
         run: rm -rf functionapp
