@@ -132,6 +132,13 @@ jobs:
               ;;
           esac
 
+      - name: Deploy to Azure Functions
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ steps.pick.outputs.APP_NAME }}
+          package: functionapp.zip
+          publish-profile: ${{ steps.pick.outputs.PUBLISH_PROFILE }}
+
       - name: Dump Kudu deployment logs (on failure)
         if: failure()
         shell: bash
@@ -169,13 +176,6 @@ jobs:
 
           echo "---- Kudu deployment details ----"
           curl -sS -u "$user:$pass" "$scm/api/deployments/$id" | python3 -m json.tool || true
-
-      - name: Deploy to Azure Functions
-        uses: Azure/functions-action@v1
-        with:
-          app-name: ${{ steps.pick.outputs.APP_NAME }}
-          package: functionapp.zip
-          publish-profile: ${{ steps.pick.outputs.PUBLISH_PROFILE }}
 
       # Starts off the testing piece in the same workflow
       # Currently set to run on dev/test only
