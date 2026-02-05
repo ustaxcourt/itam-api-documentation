@@ -85,14 +85,6 @@ jobs:
           echo "env_name=$env_name" >> $GITHUB_OUTPUT
           echo "Resolved environment: $env_name"
 
-      - name: Validate OpenAPI schema
-        if: |
-          steps.resolve_env.outputs.env_name == 'dev' ||
-          steps.resolve_env.outputs.env_name == 'test'
-        uses: thiyagu06/openapi-validator-action@v1
-        with:
-          filepath: "./azure-functions/openapi.yml"
-
       - name: Prepare function app package
         run: |
           mkdir functionapp
@@ -131,6 +123,14 @@ jobs:
               echo "Unknown environment: ${{ steps.resolve_env.outputs.env_name }}"; exit 1;
               ;;
           esac
+
+      - name: Validate OpenAPI schema
+        if: |
+          steps.resolve_env.outputs.env_name == 'dev' ||
+          steps.resolve_env.outputs.env_name == 'test'
+        uses: thiyagu06/openapi-validator-action@v1
+        with:
+          filepath: "./azure-functions/openapi.yml"
 
       - name: Deploy to Azure Functions
         uses: Azure/functions-action@v1
