@@ -12,7 +12,7 @@ describe('index.js setup', () => {
     // Spy on app.setup and app.http before importing index.js
     const setupSpy = jest
       .spyOn(azureFunctions.app, 'setup')
-      .mockImplementation(() => {}); // no operation
+      .mockImplementation(() => {}); // No operation
 
     const httpSpy = jest
       .spyOn(azureFunctions.app, 'http')

@@ -1,5 +1,5 @@
 export function patchAppHttp(app) {
-  const _httpOriginal = app.http; // original reference for unpatch later
+  const _httpOriginal = app.http; // Original reference for unpatch later
 
   // This section here will check for maintenance flag prior to the endpoints booting up
   // Ambiguity check and safeguard - if not true or false, it is just false for maintenance mode. 3 cases for true
@@ -22,7 +22,7 @@ export function patchAppHttp(app) {
     jsonBody: { error: msg },
   });
 
-  // flag check with override when maintenance flag is raised
+  // Flag check with override when maintenance flag is raised
   app.http = function (name, options) {
     const originalHandler = options?.handler;
     if (typeof originalHandler === 'function') {
@@ -34,11 +34,11 @@ export function patchAppHttp(app) {
         return originalHandler(req, ctx);
       };
     }
-    // call to original
+    // Call to original
     return _httpOriginal.apply(app, [name, options]);
   };
 
-  // unpatch to restore the exact original reference
+  // Unpatch to restore the exact original reference
   return () => {
     app.http = _httpOriginal;
   };

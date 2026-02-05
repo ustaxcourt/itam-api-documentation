@@ -65,3 +65,10 @@ For full reading on the task related to Terraform Provisioning - you can review 
 2. Go to the Environment you would like to Migrate data to and select Dataflows. Ex. If I imported my data to test and I want to migrate it to Dev or Prod. In the dataflows section you can search for "Test to Prod" and see 4 dataflows pop up in sequential order
 3. Run the Dataflows in sequential order and the data will be populated in the target environment. Data Migration Complete!
 4. (optional) If you have a migration pattern that has not been created yet (like Dev to Prod). You can copy the formatting and ordering of the existing migration Dataflows for your desired migration structure
+
+## To enable Maintenance Mode
+
+Maintenance mode is the per environment feature that allows for developers to go in and shut down each of the endpoints so that they return a 503 with a message indicating they are undergoing maintenance at the moment. To turn on this feature you can:
+Visit the azure function application for your desired environment and set the environment variable GLOBAL_MAINTENANCE to either "true", "1", or "yes" - no quotations when setting the variable.
+
+Once maintenance is complete you can go back in and set the variable back to "false" or any other value to turn the maintenance feature off.

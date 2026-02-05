@@ -26,9 +26,9 @@ describe('patchAppHttp', () => {
     const unpatch = patchAppHttp(app);
 
     expect(typeof unpatch).toBe('function');
-    expect(app.http).not.toBe(originalHttpMock); // patched
+    expect(app.http).not.toBe(originalHttpMock); // Patched
     unpatch();
-    expect(app.http).toBe(originalHttpMock); // restored
+    expect(app.http).toBe(originalHttpMock); // Restored
   });
 
   test('forwards name and options to original http (no handler) to indicate process does not mess with proper routing / registration when no handler is present', () => {
@@ -48,12 +48,12 @@ describe('patchAppHttp', () => {
     const options = { handler };
     app.http('endpoint', options);
 
-    // the registration itself calls into originalHttpMock
+    // The registration itself calls into originalHttpMock
     expect(originalHttpMock).toHaveBeenCalledTimes(1);
     const [, registeredOptions] = originalHttpMock.mock.calls[0];
 
     expect(typeof registeredOptions.handler).toBe('function');
-    expect(registeredOptions.handler).not.toBe(handler); // wrapped
+    expect(registeredOptions.handler).not.toBe(handler); // Wrapped
   });
 
   test('when GLOBAL_MAINTENANCE is off (default), calls the original handler', async () => {
@@ -90,7 +90,7 @@ describe('patchAppHttp', () => {
       const ctx = makeCtx();
       const res = await registeredOptions.handler(makeReq(), ctx);
 
-      expect(handler).not.toHaveBeenCalled(); // blocked by maintenance mode
+      expect(handler).not.toHaveBeenCalled(); // Blocked by maintenance mode
       expect(res.status).toBe(503);
       expect(res.headers['Content-Type']).toBe('application/json');
       expect(res.headers['Retry-After']).toBe('120');
@@ -104,7 +104,7 @@ describe('patchAppHttp', () => {
   );
 
   test('when GLOBAL_MAINTENANCE is an unrecognized value, handler proceeds - maintenance mode is off', async () => {
-    process.env.GLOBAL_MAINTENANCE = 'nope'; // not in true/1/yes flag options
+    process.env.GLOBAL_MAINTENANCE = 'nope'; // Not in true/1/yes flag options
 
     patchAppHttp(app);
 
@@ -122,9 +122,9 @@ describe('patchAppHttp', () => {
   test('does not break if app / endpoint options are undefined or if the handler is missing', () => {
     patchAppHttp(app);
 
-    // no options
+    // No options
     app.http('endpoint1');
-    // options without handler
+    // Options without handler
     app.http('endpoint2', { methods: ['POST'] });
 
     expect(originalHttpMock).toHaveBeenCalledTimes(2);
@@ -136,7 +136,7 @@ describe('patchAppHttp', () => {
 
   test('unpatch restores original behavior - no wrapper in place', async () => {
     const unpatch = patchAppHttp(app);
-    unpatch(); // restore
+    unpatch(); // Restore
 
     const handler = jest.fn().mockResolvedValue({ status: 201 });
     const options = { handler };
