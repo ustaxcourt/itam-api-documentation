@@ -132,28 +132,43 @@ jobs:
               ;;
           esac
 
-      - name: Validate functionapp.zip structure
+      - name: Dump Kudu deployment logs (on failure)
+        if: failure()
         shell: bash
+        env:
+          PUBLISH_PROFILE: ${{ steps.pick.outputs.PUBLISH_PROFILE }}
+          APP_NAME: ${{ steps.pick.outputs.APP_NAME }}
         run: |
           set -euo pipefail
-          echo "ZIP size:"
-          ls -lh functionapp.zip
 
-          echo "Top of ZIP listing:"
-          unzip -l functionapp.zip | head -n 80
+          # Extract SCM user/pass from publish profile XML (do not echo them)
+          user=$(python3 - <<'PY'
+          import os, re
+          xml=os.environ["PUBLISH_PROFILE"]
+          m=re.search(r'userName="([^"]+)"', xml)
+          print(m.group(1) if m else "")
+          PY
+          )
+              pass=$(python3 - <<'PY'
+          import os, re
+          xml=os.environ["PUBLISH_PROFILE"]
+          m=re.search(r'userPWD="([^"]+)"', xml)
+          print(m.group(1) if m else "")
+          PY
+          )
 
-          echo "Check host.json is at ZIP root..."
-          if unzip -l functionapp.zip | grep -Eq '(^| )host\.json$'; then
-            echo "✅ host.json found at ZIP root"
-          else
-            echo "❌ host.json NOT at ZIP root (common ZipDeploy failure)"
-            echo "Expected: host.json"
-            echo "Not: functionapp/host.json (or nested)"
-            exit 1
-          fi
+          scm="https://${APP_NAME}.scm.azurewebsites.net"
+          echo "Querying Kudu logs from: $scm"
 
-          echo "Check zip integrity:"
-          zipinfo -t functionapp.zip
+          # Get latest deployment id
+          id=$(curl -sS -u "$user:$pass" "$scm/api/deployments/latest" | python3 -c "import sys,json; print(json.load(sys.stdin).get('id',''))")
+          echo "Latest deployment id: $id"
+
+          echo "---- Kudu deployment log ----"
+          curl -sS -u "$user:$pass" "$scm/api/deployments/$id/log" | python3 -m json.tool || true
+
+          echo "---- Kudu deployment details ----"
+          curl -sS -u "$user:$pass" "$scm/api/deployments/$id" | python3 -m json.tool || true
 
       - name: Deploy to Azure Functions
         uses: Azure/functions-action@v1
