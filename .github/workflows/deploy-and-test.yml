@@ -107,6 +107,16 @@ jobs:
           cd functionapp
           zip -r ../functionapp.zip .
 
+      - name: Verify ZIP integrity and contents
+        shell: bash
+        run: |
+          set -euo pipefail
+          ls -lah functionapp.zip
+          file functionapp.zip
+          unzip -t functionapp.zip
+          echo "---- top of zip ----"
+          unzip -l functionapp.zip | head -n 50
+
       - name: Select env-specific secrets
         id: pick
         shell: bash
