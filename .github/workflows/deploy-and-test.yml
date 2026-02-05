@@ -93,6 +93,7 @@ jobs:
           # Root-level host + package definition
           cp host.json functionapp/
           cp package.json functionapp/
+          cp package-lock.json functionapp/
 
           # IMPORTANT: copy the CONTENTS of azure-functions into package root
           cp -R azure-functions/* functionapp/
