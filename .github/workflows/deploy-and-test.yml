@@ -131,6 +131,18 @@ jobs:
               ;;
           esac
 
+      - name: Inspect functionapp.zip contents (debug)
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Top of ZIP listing:"
+          unzip -l functionapp.zip | head -n 50
+
+          echo ""
+          echo "Looking for host.json at ZIP root:"
+          unzip -l functionapp.zip | grep -E '(^| )host\.json$' || true
+
       - name: Deploy to Azure Functions
         uses: Azure/functions-action@v1
         with:
