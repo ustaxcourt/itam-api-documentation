@@ -61,27 +61,6 @@ jobs:
       - name: Install dependencies from root
         run: npm ci
 
-      - name: Validate OpenAPI schema
-        if: |
-          steps.resolve_env.outputs.env_name == 'dev' ||
-          steps.resolve_env.outputs.env_name == 'test'
-        uses: thiyagu06/openapi-validator-action@v1
-        with:
-          filepath: "./azure-functions/openapi.yml"
-
-      - name: Prepare function app package
-        run: |
-          mkdir functionapp
-          cp host.json functionapp/
-          cp package.json functionapp/
-          cp -R azure-functions functionapp/
-          cp -R node_modules functionapp/
-
-      - name: Zip function app
-        run: |
-          cd functionapp
-          zip -r ../functionapp.zip .
-
       # Decide environment:
       # - If workflow_dispatch has input, use it.
       # - Else map from branch: main -> dev, deployTest -> test, deployDev -> dev.
@@ -105,6 +84,27 @@ jobs:
           fi
           echo "env_name=$env_name" >> $GITHUB_OUTPUT
           echo "Resolved environment: $env_name"
+
+      - name: Validate OpenAPI schema
+        if: |
+          steps.resolve_env.outputs.env_name == 'dev' ||
+          steps.resolve_env.outputs.env_name == 'test'
+        uses: thiyagu06/openapi-validator-action@v1
+        with:
+          filepath: "./azure-functions/openapi.yml"
+
+      - name: Prepare function app package
+        run: |
+          mkdir functionapp
+          cp host.json functionapp/
+          cp package.json functionapp/
+          cp -R azure-functions functionapp/
+          cp -R node_modules functionapp/
+
+      - name: Zip function app
+        run: |
+          cd functionapp
+          zip -r ../functionapp.zip .
 
       - name: Select env-specific secrets
         id: pick
