@@ -45,6 +45,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        # fetch depth 0 means we are getting full history, valuable for our tags
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -81,17 +85,17 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ github.event.inputs.environment }}" ]]; then
             env_name="${{ github.event.inputs.environment }}"
           else
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            branch="${{ github.base_ref }}"
-            case "$branch" in
-              main)        env_name="dev" ;;
-              deployTest)  env_name="test" ;;
-              deployDev)         env_name="dev"  ;;
-              *)           echo "Unsupported branch for auto-deploy: $branch"; exit 1 ;;
-            esac
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              branch="${{ github.base_ref }}"
+              case "$branch" in
+                main)       env_name="dev"  ;;
+                deployTest) env_name="test" ;;
+                deployDev)  env_name="dev"  ;;
+                *) echo "Unsupported branch for auto-deploy: $branch"; exit 1 ;;
+              esac
+            fi
           fi
-          fi
-          echo "env_name=$env_name" >> $GITHUB_OUTPUT
+          echo "env_name=$env_name" >> "$GITHUB_OUTPUT"
           echo "Resolved environment: $env_name"
 
       - name: Select env-specific secrets
