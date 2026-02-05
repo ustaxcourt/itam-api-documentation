@@ -7,8 +7,6 @@ on:
   pull_request:
     branches:
       - main
-      - deployTest
-      - deployDev
   workflow_dispatch:
     inputs:
       environment:
