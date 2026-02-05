@@ -5,6 +5,7 @@ import { unassignAsset } from '../useCases/unassignAsset.js';
 import { BadRequest } from '../errors/BadRequest.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
 import { AUDIT_LOG_CHOICES } from '../entityConstants.js';
+import { patchAppHttp } from '../useCases/maintenanceMode.js';
 
 export async function assignmentsHandler(request, context) {
   try {
@@ -83,8 +84,7 @@ export async function assignmentsHandler(request, context) {
   }
 }
 
-console.log('[endpoint] module loaded');
-console.log('[endpoint] typeof app.http =', typeof app.http);
+patchAppHttp(app);
 
 app.http('assignments', {
   methods: ['POST', 'DELETE'],

@@ -1,4 +1,5 @@
 import { app } from '@azure/functions';
+import { patchAppHttp } from '../useCases/maintenanceMode.js';
 
 export async function authTest() {
   return {
@@ -8,6 +9,8 @@ export async function authTest() {
     },
   };
 }
+
+patchAppHttp(app);
 
 app.http('authTest', {
   methods: ['GET'],

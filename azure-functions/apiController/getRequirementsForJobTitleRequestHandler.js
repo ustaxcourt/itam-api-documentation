@@ -2,6 +2,7 @@ import { app } from '@azure/functions';
 import { buildResponse } from './buildResponse.js';
 import { getJobTitleRequirementsInteractor } from '../useCases/getJobTitleRequirementsInteractor.js';
 import { BadRequest } from '../errors/BadRequest.js';
+import { patchAppHttp } from '../useCases/maintenanceMode.js';
 
 export async function getRequirementsForJobTitleRequestHandler(
   request,
@@ -28,6 +29,8 @@ export async function getRequirementsForJobTitleRequestHandler(
     return buildResponse(error.statusCode, error.message);
   }
 }
+
+patchAppHttp(app);
 
 app.http('jobTitle', {
   methods: ['GET'],
