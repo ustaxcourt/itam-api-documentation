@@ -132,17 +132,28 @@ jobs:
               ;;
           esac
 
-      - name: Inspect functionapp.zip contents (debug)
+      - name: Validate functionapp.zip structure
         shell: bash
         run: |
           set -euo pipefail
+          echo "ZIP size:"
+          ls -lh functionapp.zip
 
           echo "Top of ZIP listing:"
-          unzip -l functionapp.zip | head -n 50
+          unzip -l functionapp.zip | head -n 80
 
-          echo ""
-          echo "Looking for host.json at ZIP root:"
-          unzip -l functionapp.zip | grep -E '(^| )host\.json$' || true
+          echo "Check host.json is at ZIP root..."
+          if unzip -l functionapp.zip | grep -Eq '(^| )host\.json$'; then
+            echo "✅ host.json found at ZIP root"
+          else
+            echo "❌ host.json NOT at ZIP root (common ZipDeploy failure)"
+            echo "Expected: host.json"
+            echo "Not: functionapp/host.json (or nested)"
+            exit 1
+          fi
+
+          echo "Check zip integrity:"
+          zipinfo -t functionapp.zip
 
       - name: Deploy to Azure Functions
         uses: Azure/functions-action@v1
