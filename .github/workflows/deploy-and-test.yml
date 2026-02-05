@@ -87,11 +87,19 @@ jobs:
 
       - name: Prepare function app package
         run: |
+          rm -rf functionapp functionapp.zip
           mkdir functionapp
+
+          # Root-level host + package definition
           cp host.json functionapp/
           cp package.json functionapp/
-          cp -R azure-functions functionapp/
-          cp -R node_modules functionapp/
+
+          # IMPORTANT: copy the CONTENTS of azure-functions into package root
+          cp -R azure-functions/* functionapp/
+
+          # Install runtime dependencies into the package
+          cd functionapp
+          npm ci --omit=dev
 
       - name: Zip function app
         run: |
