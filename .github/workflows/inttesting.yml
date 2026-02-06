@@ -1,4 +1,4 @@
-name: Deploy and Test Deployed ITAM Function App
+name: Run integration tests
 
 permissions:
   contents: write
