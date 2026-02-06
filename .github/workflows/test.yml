@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - deployTest
+      - deployDev
   workflow_dispatch:
 
 jobs:
@@ -18,15 +19,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.18.0'
+          node-version: "22.18.0"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: 'validate openapi schema'
+      - name: "validate openapi schema"
         uses: thiyagu06/openapi-validator-action@v1
         with:
-          filepath: './azure-functions/openapi.yml'
+          filepath: "./azure-functions/openapi.yml"
 
       - name: Run unit tests with coverage
         run: npm run test:unit -- --coverage

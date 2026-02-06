@@ -3,6 +3,11 @@ import { exec } from 'child_process';
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 export default async () => {
+  if (process.env.API_BASE_URL) {
+    console.log('Testing off deployed remote, no teardown needed.');
+    return;
+  }
+
   console.log('Stopping Azure Functions...');
 
   const childP = global.__FUNC_PROCESS__;
