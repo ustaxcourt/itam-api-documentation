@@ -1,4 +1,4 @@
-name: Integration Test Azure Function App
+name: Integration Test Azure Function App (JavaScript ESM)
 
 permissions:
   contents: write
