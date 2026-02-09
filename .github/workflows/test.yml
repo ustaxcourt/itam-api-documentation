@@ -1,4 +1,4 @@
-name: Test Azure Function App (JavaScript ESM)
+name: Unit Test Azure Function App (JavaScript ESM)
 
 on:
   pull_request:

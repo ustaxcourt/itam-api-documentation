@@ -1,4 +1,4 @@
-name: Run integration tests
+name: Integration Test Azure Function App
 
 permissions:
   contents: write
@@ -20,7 +20,7 @@ on:
           - prod
 
 jobs:
-  build-deploy-and-test:
+  integration-test:
     runs-on: ubuntu-latest
 
     # Expose env-specific secrets; we'll pick the right ones later.
