@@ -19,9 +19,9 @@ describe('assignAssetOwner', () => {
 
     const result = await assignAssetOwner(userId, assetId);
 
-    const expectedQuery = `crf7f_ois_asset_rela_item_orgs(${assetId})`;
+    const expectedQuery = `crf7f_ois_assetses(${assetId})`;
     const expectedBody = {
-      'crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind': `crf7f_ois_asset_entra_dat_users(row-123)`,
+      'crf7f_userCurrentOwnerLookup@odata.bind': `crf7f_ois_asset_entra_dat_users(row-123)`,
       crf7f_asset_item_status: 0,
     };
 

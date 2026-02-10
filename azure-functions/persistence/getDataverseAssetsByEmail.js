@@ -6,9 +6,9 @@ import { filterDictionaryByList } from './filterDictbyList.js';
 export async function getDataverseAssetsByEmail(email) {
   try {
     const url =
-      'crf7f_ois_asset_rela_item_orgs' +
-      `?$filter=crf7f_ois_asset_entra_dat_userCurrentOw/crf7f_email eq '${email}'` +
-      `&$expand=crf7f_ois_asset_entra_dat_userCurrentOw($select=crf7f_email,crf7f_jobtitle,crf7f_name,crf7f_isactive,crf7f_iscontractor,crf7f_location)`;
+      'crf7f_ois_assetses' +
+      `?$filter=crf7f_userCurrentOwnerLookup/crf7f_email eq '${email}'` +
+      `&$expand=crf7f_userCurrentOwnerLookup($select=crf7f_email,crf7f_jobtitle,crf7f_name,crf7f_isactive,crf7f_iscontractor,crf7f_location)`;
 
     const data = await dataverseCall({ query: url, method: 'GET' });
     const assets = filterDictionaryByList(data.value);
