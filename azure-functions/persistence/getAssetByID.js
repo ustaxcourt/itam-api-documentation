@@ -4,7 +4,7 @@ import { NotFoundError } from '../errors/NotFoundError.js';
 
 export async function getAssetByID(id) {
   // Build Dataverse query URL
-  const query = `crf7f_ois_assets?$filter=crf7f_ois_assetsid eq '${id}'&$expand=crf7f_ois_asset_entra_dat_userCurrentOw($select=crf7f_email,crf7f_jobtitle,crf7f_name,crf7f_isactive,crf7f_iscontractor,crf7f_entra_object_id,crf7f_phone,crf7f_location)`;
+  const query = `crf7f_ois_asset_rela_item_orgs?$filter=crf7f_ois_asset_rela_item_orgid eq '${id}'&$expand=crf7f_ois_asset_entra_dat_userCurrentOw($select=crf7f_email,crf7f_jobtitle,crf7f_name,crf7f_isactive,crf7f_iscontractor,crf7f_entra_object_id,crf7f_phone,crf7f_location)`;
 
   // Dataverse call
 
