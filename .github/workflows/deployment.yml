@@ -18,7 +18,7 @@ on:
           - prod
 
 jobs:
-  deploy-and-package:
+  package-and-deploy:
     runs-on: ubuntu-latest
 
     # Expose env-specific secrets; we'll pick the right ones later.
