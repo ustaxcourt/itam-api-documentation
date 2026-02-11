@@ -69,7 +69,7 @@ jobs:
           else
             branch="${GITHUB_REF##*/}"
             case "$branch" in
-              main)        env_name="prod" ;;
+              main)        env_name="dev" ;;
               deployTest)  env_name="test" ;;
               deployDev)         env_name="dev"  ;;
               *)           echo "Unsupported branch for auto-deploy: $branch"; exit 1 ;;
