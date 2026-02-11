@@ -9,11 +9,11 @@ export async function assignAssetOwner(userId, assetId) {
   }
 
   const body = {
-    'crf7f_ois_asset_entra_dat_userCurrentOw@odata.bind': `crf7f_ois_asset_entra_dat_users(${rowId})`,
+    'crf7f_userCurrentOwnerLookup@odata.bind': `crf7f_ois_asset_entra_dat_users(${rowId})`,
     crf7f_asset_item_status: 0,
   };
 
-  const query = `crf7f_ois_asset_rela_item_orgs(${assetId})`;
+  const query = `crf7f_ois_assetses(${assetId})`;
   return dataverseCall({
     query,
     method: 'PATCH',

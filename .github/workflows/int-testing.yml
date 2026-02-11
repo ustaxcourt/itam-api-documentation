@@ -1,14 +1,13 @@
-name: Deploy and Test Deployed ITAM Function App
+name: Integration Test Azure Function App (JavaScript ESM)
 
 permissions:
   contents: write
 
 on:
-  push:
+  pull_request:
     branches:
       - main
       - deployTest
-      - deployDev
   workflow_dispatch:
     inputs:
       environment:
@@ -21,7 +20,7 @@ on:
           - prod
 
 jobs:
-  build-deploy-and-test:
+  integration-test:
     runs-on: ubuntu-latest
 
     # Expose env-specific secrets; we'll pick the right ones later.
@@ -62,19 +61,6 @@ jobs:
       - name: Install dependencies from root
         run: npm ci
 
-      - name: Prepare function app package
-        run: |
-          mkdir functionapp
-          cp host.json functionapp/
-          cp package.json functionapp/
-          cp -R azure-functions functionapp/
-          cp -R node_modules functionapp/
-
-      - name: Zip function app
-        run: |
-          cd functionapp
-          zip -r ../functionapp.zip .
-
       # Decide environment:
       # - If workflow_dispatch has input, use it.
       # - Else map from branch: main -> dev, deployTest -> test, deployDev -> dev.
@@ -86,15 +72,17 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ github.event.inputs.environment }}" ]]; then
             env_name="${{ github.event.inputs.environment }}"
           else
-            branch="${GITHUB_REF##*/}"
-            case "$branch" in
-              main)        env_name="dev" ;;
-              deployTest)  env_name="test" ;;
-              deployDev)         env_name="dev"  ;;
-              *)           echo "Unsupported branch for auto-deploy: $branch"; exit 1 ;;
-            esac
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              branch="${{ github.base_ref }}"
+              case "$branch" in
+                main)       env_name="dev"  ;;
+                deployTest) env_name="test" ;;
+                deployDev)  env_name="dev"  ;;
+                *) echo "Unsupported branch for auto-deploy: $branch"; exit 1 ;;
+              esac
+            fi
           fi
-          echo "env_name=$env_name" >> $GITHUB_OUTPUT
+          echo "env_name=$env_name" >> "$GITHUB_OUTPUT"
           echo "Resolved environment: $env_name"
 
       - name: Select env-specific secrets
@@ -122,26 +110,6 @@ jobs:
               echo "Unknown environment: ${{ steps.resolve_env.outputs.env_name }}"; exit 1;
               ;;
           esac
-
-      - name: Deploy to Azure Functions
-        uses: Azure/functions-action@v1
-        with:
-          app-name: ${{ steps.pick.outputs.APP_NAME }}
-          package: functionapp.zip
-          publish-profile: ${{ steps.pick.outputs.PUBLISH_PROFILE }}
-
-      # Starts off the testing piece in the same workflow
-      # Currently set to run on dev/test only
-      - name: Validate OpenAPI schema
-        if: |
-          steps.resolve_env.outputs.env_name == 'dev' ||
-          steps.resolve_env.outputs.env_name == 'test'
-        uses: thiyagu06/openapi-validator-action@v1
-        with:
-          filepath: "./azure-functions/openapi.yml"
-
-      - name: Clean up temporary functionapp folder
-        run: rm -rf functionapp
 
       - name: POST and parse JSON response for authentication
         id: api
@@ -200,21 +168,3 @@ jobs:
           API_BASE_URL: https://${{ steps.pick.outputs.APP_NAME }}.azurewebsites.net
           BEARERTOKEN: "Bearer ${{ steps.api.outputs.token }}"
         run: npx jest --selectProjects integration --coverage=false
-
-      # Tag the deployed commit so it can be promoted later
-      # Only tags the same SHA once in case someone deploys to dev manually
-      - name: Tag dev deployment
-        if: steps.resolve_env.outputs.env_name == 'dev' && github.event_name == 'push'
-        shell: bash
-        run: |
-          DATE=$(date -u +"%d%b%y" | tr '[:upper:]' '[:lower:]')
-          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
-          TAG="dev-${DATE}-${SHORT_SHA}"
-
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-
-          git tag "${TAG}"
-          git push origin "${TAG}"
-
-          echo "Tagged dev release: ${TAG}"

@@ -3,7 +3,6 @@ export default {
     '^.+\\.js$': 'babel-jest',
   },
   testEnvironment: 'node',
-
   collectCoverage: true,
   collectCoverageFrom: [
     '**/*.{js,jsx,ts,tsx}',

@@ -4,21 +4,20 @@ export function filterDictionary(dict) {
     /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
 
   const keyMap = {
-    '_crf7f_ois_asset_dat_itemlookup_value@OData.Community.Display.V1.FormattedValue':
-      'assetName',
-    '_crf7f_fac_asset_ref_locationlookup_value@OData.Community.Display.V1.FormattedValue':
+    crf7f_name: 'assetName',
+    '_crf7f_fac_asset_ref_location_lookup_value@OData.Community.Display.V1.FormattedValue':
       'location',
-    _crf7f_fac_asset_ref_locationlookup_value: 'location',
+    _crf7f_fac_asset_ref_location_lookup_value: 'location',
     'crf7f_asset_item_status@OData.Community.Display.V1.FormattedValue':
       'itemStatus',
     crf7f_phone_numbers: 'phone',
     'crf7f_asset_item_condition@OData.Community.Display.V1.FormattedValue':
       'condition',
     crf7f_service_activation: 'activation',
-    '_crf7f_ois_asset_entra_dat_usercurrentow_value@OData.Community.Display.V1.FormattedValue':
+    '_crf7f_usercurrentownerlookup@OData.Community.Display.V1.FormattedValue':
       'user',
     crf7f_os_version: 'osVersion',
-    crf7f_ois_asset_entra_dat_userCurrentOw: 'user',
+    crf7f_userCurrentOwnerLookup: 'user',
     crf7f_entra_object_id: 'name',
     crf7f_iscontractor: 'isContractor',
     crf7f_isactive: 'isActive',
