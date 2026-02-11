@@ -31,11 +31,11 @@ describe('assignLocationAsset', () => {
 
     expect(dataverseCall).toHaveBeenCalledWith({
       body: {
-        'crf7f_fac_asset_ref_locationLookup@odata.bind':
+        'crf7f_fac_asset_ref_location_lookup@odata.bind':
           'crf7f_fac_asset_ref_locations(location456)',
       },
       method: 'PATCH',
-      query: 'crf7f_ois_asset_rela_item_orgs(asset123)',
+      query: 'crf7f_ois_assetses(asset123)',
     });
     expect(result).toEqual({ success: true });
   });

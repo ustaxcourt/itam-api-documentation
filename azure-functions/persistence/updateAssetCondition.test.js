@@ -30,7 +30,7 @@ describe('updateAssetCondition', () => {
 
     const assetId = '00000000-0000-0000-0000-000000000000';
     const conditionCode = 42;
-    const expectedQuery = `crf7f_ois_asset_rela_item_orgs(${assetId})`;
+    const expectedQuery = `crf7f_ois_assetses(${assetId})`;
     const result = await updateAssetCondition(assetId, conditionCode);
 
     expect(dataverseCall).toHaveBeenCalledWith({
