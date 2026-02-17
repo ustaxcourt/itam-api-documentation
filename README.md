@@ -66,9 +66,19 @@ For full reading on the task related to Terraform Provisioning - you can review 
 3. Run the Dataflows in sequential order and the data will be populated in the target environment. Data Migration Complete!
 4. (optional) If you have a migration pattern that has not been created yet (like Dev to Prod). You can copy the formatting and ordering of the existing migration Dataflows for your desired migration structure
 
+## To locate the Azure Functions application within the Azure portal:
+
+1. Open a browser instance that is associated / logged into your PIM account
+2. Go to the Azure Portal website located at https://portal.azure.com/#home - Please note if not already prompted before, this step will trigger multi-factor authentication if already configured, please be sure to complete the authentication prompt
+3. Under the list of Azure Services in the home screen, navigate to the "Function App" option. This will list all your active Azure Function apps available
+4. Select the desired function app for use
+5. (Optional) If you already know the name of the function app you are trying to navigate to, you can also type it within the search bar of the Azure Portal to navigate to the desired resource as well
+
 ## To enable Maintenance Mode
 
 Maintenance mode is the per environment feature that allows for developers to go in and shut down each of the endpoints so that they return a 503 with a message indicating they are undergoing maintenance at the moment. To turn on this feature you can:
-Visit the azure function application for your desired environment and set the environment variable GLOBAL_MAINTENANCE to either "true", "1", or "yes" - no quotations when setting the variable.
+Visit the Azure Function application for your desired environment and set the environment variable GLOBAL_MAINTENANCE to either "true", "1", or "yes" - no quotations when setting the variable.
 
-Once maintenance is complete you can go back in and set the variable back to "false" or any other value to turn the maintenance feature off.
+To update an environment variable once within the Azure Function application, navigate to "Settings" in the left sidebar panel, then "Environment Variables". You must click the apply button after editing the value of the variable so that the change may automatically apply itself to the Azure function.
+
+Once maintenance is complete you can go back in and set the variable back to "false" or any other value to turn the maintenance feature off and click on the "Apply" button once complete to confirm these changes.
