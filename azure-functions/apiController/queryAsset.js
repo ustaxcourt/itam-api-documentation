@@ -2,6 +2,7 @@ import { app } from '@azure/functions';
 import { getAssetDetails } from '../useCases/getAssetDetails.js';
 import { buildResponse } from './buildResponse.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
+import { patchAppHttp } from '../useCases/maintenanceMode.js';
 
 export async function queryAssetHandler(request, context) {
   try {
@@ -24,6 +25,8 @@ export async function queryAssetHandler(request, context) {
     return buildResponse(status, 'Dataverse query failed', error.message);
   }
 }
+
+patchAppHttp(app);
 
 app.http('queryAsset', {
   methods: ['GET'],

@@ -3,6 +3,7 @@ import { buildResponse } from './buildResponse.js';
 import { assignLocationToAsset } from '../useCases/assignLocationToAsset.js';
 import { unassignLocationToAsset } from '../useCases/unassignLocationToAsset.js';
 import { BadRequest } from '../errors/BadRequest.js';
+import { patchAppHttp } from '../useCases/maintenanceMode.js';
 
 export async function locationAssignmentsHandler(request, context) {
   try {
@@ -26,6 +27,8 @@ export async function locationAssignmentsHandler(request, context) {
     return buildResponse(error.statusCode, error.message);
   }
 }
+
+patchAppHttp(app);
 
 app.http('locationassignments', {
   methods: ['POST', 'DELETE'],

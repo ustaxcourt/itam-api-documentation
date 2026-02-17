@@ -1,6 +1,7 @@
 import { app } from '@azure/functions';
 import { buildResponse } from './buildResponse.js';
 import { getAssetsByEmail } from '../useCases/getAssetsByEmail.js';
+import { patchAppHttp } from '../useCases/maintenanceMode.js';
 
 export async function queryAssetsByEmail(request) {
   try {
@@ -13,6 +14,9 @@ export async function queryAssetsByEmail(request) {
     return buildResponse(error.statusCode, error.message);
   }
 }
+
+patchAppHttp(app);
+
 app.http('queryAssetsByEmail', {
   methods: ['GET'],
   authLevel: 'anonymous',
