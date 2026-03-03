@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "Target environment (dev | test | prod)"
+        description: 'Target environment (dev | test | prod)'
         required: false
         type: choice
         options:
@@ -39,7 +39,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "22.18.0"
+          node-version: '22.18.0'
 
       - name: Install dependencies from root
         run: npm ci
@@ -69,7 +69,7 @@ jobs:
           else
             branch="${GITHUB_REF##*/}"
             case "$branch" in
-              main)        env_name="prod" ;;
+              main)        env_name="dev" ;;
               deployTest)  env_name="test" ;;
               deployDev)         env_name="dev"  ;;
               *)           echo "Unsupported branch for auto-deploy: $branch"; exit 1 ;;
@@ -109,21 +109,3 @@ jobs:
 
       - name: Clean up temporary functionapp folder
         run: rm -rf functionapp
-
-      # Tag the deployed commit so it can be promoted later
-      # Only tags the same SHA once in case someone deploys to dev manually
-      - name: Tag dev deployment
-        if: steps.resolve_env.outputs.env_name == 'dev' && github.event_name == 'push'
-        shell: bash
-        run: |
-          DATE=$(date -u +"%d%b%y" | tr '[:upper:]' '[:lower:]')
-          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
-          TAG="dev-${DATE}-${SHORT_SHA}"
-
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-
-          git tag "${TAG}"
-          git push origin "${TAG}"
-
-          echo "Tagged dev release: ${TAG}"

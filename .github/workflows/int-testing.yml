@@ -4,25 +4,17 @@ permissions:
   contents: write
 
 on:
-  pull_request:
-    branches:
-      - main
-      - deployTest
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: "Target environment (dev | test | prod)"
-        required: false
-        type: choice
-        options:
-          - dev
-          - test
-          - prod
+  workflow_run:
+    workflows:
+      - Deploy Azure Function App (JavaScript ESM)
+    types:
+      - completed
 
 jobs:
   integration-test:
+    if: >
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-
     # Expose env-specific secrets; we'll pick the right ones later.
     env:
       APP_NAME_DEV: ${{ secrets.AZURE_FUNCTIONAPP_NAME_DEV }}
@@ -43,17 +35,17 @@ jobs:
       TESTCLIENT_SECRET: ${{ secrets.EXTERNALAUTHTESTCLIENTSECRET }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout code (our deployed SHA)
         uses: actions/checkout@v3
         # fetch depth 0 means we are getting full history, valuable for our tags
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "22.18.0"
+          node-version: '22.18.0'
 
       - name: Install Azure Functions Core Tools
         run: npm i -g azure-functions-core-tools@4 --unsafe-perm true
@@ -69,19 +61,14 @@ jobs:
         id: resolve_env
         shell: bash
         run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ github.event.inputs.environment }}" ]]; then
-            env_name="${{ github.event.inputs.environment }}"
-          else
-            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-              branch="${{ github.base_ref }}"
-              case "$branch" in
-                main)       env_name="dev"  ;;
-                deployTest) env_name="test" ;;
-                deployDev)  env_name="dev"  ;;
-                *) echo "Unsupported branch for auto-deploy: $branch"; exit 1 ;;
-              esac
-            fi
-          fi
+          branch="${{ github.event.workflow_run.head_branch }}"
+          case "$branch" in
+            main)        env_name="dev"  ;;
+            deployDev)   env_name="dev"  ;;
+            deployTest)  env_name="test" ;;
+            *) echo "Unsupported branch: $branch"; exit 1 ;;
+          esac
+
           echo "env_name=$env_name" >> "$GITHUB_OUTPUT"
           echo "Resolved environment: $env_name"
 
@@ -166,5 +153,24 @@ jobs:
           steps.resolve_env.outputs.env_name == 'test'
         env:
           API_BASE_URL: https://${{ steps.pick.outputs.APP_NAME }}.azurewebsites.net
-          BEARERTOKEN: "Bearer ${{ steps.api.outputs.token }}"
+          BEARERTOKEN: 'Bearer ${{ steps.api.outputs.token }}'
         run: npx jest --selectProjects integration --coverage=false
+
+      # Tag the deployed commit so it can be promoted later
+      # Only tags the same SHA once in case someone deploys to dev manually
+      # Grabs the workflow_run head SHA to avoid tagging the integration workflow SHA instead
+      - name: Tag dev deployment
+        if: success() && steps.resolve_env.outputs.env_name == 'dev'
+        shell: bash
+        run: |
+          DATE=$(date -u +"%d%b%y" | tr '[:upper:]' '[:lower:]')
+          SHORT_SHA=$(echo "${{ github.event.workflow_run.head_sha }}" | cut -c1-7)
+          TAG="dev-${DATE}-${SHORT_SHA}"
+
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git tag "${TAG}"
+          git push origin "${TAG}"
+
+          echo "Tagged dev release: ${TAG}"
