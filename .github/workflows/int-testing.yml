@@ -170,7 +170,10 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          git tag "${TAG}"
-          git push origin "${TAG}"
-
-          echo "Tagged dev release: ${TAG}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists — skipping"
+          else
+            git tag "$TAG"
+            git push origin "$TAG"
+            echo "Tagged dev release: $TAG"
+          fi
