@@ -78,6 +78,16 @@ jobs:
           echo "env_name=$env_name" >> $GITHUB_OUTPUT
           echo "Resolved environment: $env_name"
 
+      - name: Persist deployment environment
+        run: |
+          echo "${{ steps.resolve_env.outputs.env_name }}" > deployed-environment.txt
+
+      - name: Upload deployment metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-metadata
+          path: deployed-environment.txt
+
       - name: Select env-specific secrets
         id: pick
         shell: bash
