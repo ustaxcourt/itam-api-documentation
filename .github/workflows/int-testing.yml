@@ -53,24 +53,37 @@ jobs:
       - name: Install dependencies from root
         run: npm ci
 
+      - name: Download deployment metadata
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-metadata
+          run-id: ${{ github.event.workflow_run.id }}
+
       # Decide environment:
-      # - If workflow_dispatch has input, use it.
-      # - Else map from branch: main -> dev, deployTest -> test, deployDev -> dev.
-      # May want to consider removing deployTest/deployDev as branches / logic
+      # - Entirely based off deployment data - as this action is designed to be. Skips testing for prod
       - name: Resolve target environment
         id: resolve_env
         shell: bash
         run: |
-          branch="${{ github.event.workflow_run.head_branch }}"
-          case "$branch" in
-            main)        env_name="dev"  ;;
-            deployDev)   env_name="dev"  ;;
-            deployTest)  env_name="test" ;;
-            *) echo "Unsupported branch: $branch"; exit 1 ;;
+          env_name="$(cat deployed-environment.txt)"
+
+          case "$env_name" in
+            dev|test)
+              echo "env_name=$env_name" >> "$GITHUB_OUTPUT"
+              echo "Resolved environment from deployment: $env_name"
+              ;;
+            prod)
+              echo "Integration skipped for prod"
+              exit 0
+              ;;
+            *)
+              echo "Unknown environment from deployment: $env_name"
+              exit 1
+              ;;
           esac
 
           echo "env_name=$env_name" >> "$GITHUB_OUTPUT"
-          echo "Resolved environment: $env_name"
+          echo "Resolved environment for integration: $env_name"
 
       - name: Select env-specific secrets
         id: pick
@@ -170,7 +183,10 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          git tag "${TAG}"
-          git push origin "${TAG}"
-
-          echo "Tagged dev release: ${TAG}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists — skipping"
+          else
+            git tag "$TAG"
+            git push origin "$TAG"
+            echo "Tagged dev release: $TAG"
+          fi
