@@ -2,6 +2,7 @@ name: Integration Test Azure Function App (JavaScript ESM)
 
 permissions:
   contents: write
+  actions: read
 
 on:
   workflow_run:
