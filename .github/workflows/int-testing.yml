@@ -109,14 +109,35 @@ jobs:
         run: |
           set -euo pipefail
 
-          url="https://login.microsoftonline.com/${{ env.TENANTID }}/oauth2/v2.0/token"
+          url="https://login.microsoftonline.com/${TENANTID}/oauth2/v2.0/token"
 
-          resp=$(curl -sS -X POST "$url" \
-            -H "Content-Type: application/x-www-form-urlencoded" \
-            --data-urlencode "grant_type=client_credentials" \
-            --data-urlencode "client_id=${{ steps.pick.outputs.CLIENTID }}" \
-            --data-urlencode "client_secret=${{ steps.pick.outputs.CLIENTSECRET }}" \
-            --data-urlencode "scope=api://ustc-itam-apis-authentication-${{ steps.resolve_env.outputs.env_name }}/.default")
+          tmp_body="$(mktemp)"
+          http_code=$(
+            curl -sS -X POST "$url" \
+              -H "Content-Type: application/x-www-form-urlencoded" \
+              --data-urlencode "grant_type=client_credentials" \
+              --data-urlencode "client_id=${{ steps.pick.outputs.CLIENTID }}" \
+              --data-urlencode "client_secret=${{ steps.pick.outputs.CLIENTSECRET }}" \
+              --data-urlencode "scope=api://ustc-itam-apis-authentication-${{ steps.resolve_env.outputs.env_name }}/.default" \
+              -o "$tmp_body" \
+              -w "%{http_code}"
+          )
+
+          echo "HTTP status: $http_code"
+
+          if [[ "$http_code" != "200" ]]; then
+            echo "Token request failed. Response body:"
+            if command -v jq >/dev/null 2>&1; then
+              jq . < "$tmp_body" || cat "$tmp_body"
+            else
+              cat "$tmp_body"
+            fi
+            rm -f "$tmp_body"
+            exit 1
+          fi
+
+          resp="$(cat "$tmp_body")"
+          rm -f "$tmp_body"
 
           token=$(echo "$resp" | jq -r '.access_token')
 
