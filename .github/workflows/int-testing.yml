@@ -5,25 +5,23 @@ permissions:
   actions: read
 
 on:
-  workflow_run:
-    workflows:
-      - Deploy Azure Function App (JavaScript ESM)
+  repository_dispatch:
     types:
-      - completed
+      - run-integration-tests
 
 jobs:
   integration-test:
-    if: >
-      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    # Expose env-specific secrets; we'll pick the right ones later.
+    # Expose env-specific secrets; selected dynamically based on deployment payload
     env:
       APP_NAME_DEV: ${{ secrets.AZURE_FUNCTIONAPP_NAME_DEV }}
       APP_NAME_TEST: ${{ secrets.AZURE_FUNCTIONAPP_NAME_TEST }}
       APP_NAME_PROD: ${{ secrets.AZURE_FUNCTIONAPP_NAME_PROD }}
+
       PUBLISH_PROFILE_DEV: ${{ secrets.AZURE_PUBLISH_PROFILE_DEV }}
       PUBLISH_PROFILE_TEST: ${{ secrets.AZURE_PUBLISH_PROFILE_TEST }}
       PUBLISH_PROFILE_PROD: ${{ secrets.AZURE_PUBLISH_PROFILE_PROD }}
+
       TENANTID: ${{ secrets.EXTERNALAUTHTENANTID }}
 
       DEVENVIROMENTURL: ${{ secrets.DevEnviromentURL }}
@@ -40,7 +38,7 @@ jobs:
         uses: actions/checkout@v3
         # fetch depth 0 means we are getting full history, valuable for our tags
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ github.event.client_payload.sha }}
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -54,24 +52,19 @@ jobs:
       - name: Install dependencies from root
         run: npm ci
 
-      - name: Download deployment metadata
-        uses: actions/download-artifact@v4
-        with:
-          name: deployment-metadata
-          run-id: ${{ github.event.workflow_run.id }}
-
       # Decide environment:
-      # - Entirely based off deployment data - as this action is designed to be. Skips testing for prod
+      # - Entirely based on deployment payload from the deploy workflow
+      # - This workflow does not infer environment from branch
+      # - Integration tests are intentionally skipped for prod
       - name: Resolve target environment
         id: resolve_env
         shell: bash
         run: |
-          env_name="$(cat deployed-environment.txt)"
+          env_name="${{ github.event.client_payload.environment }}"
 
           case "$env_name" in
             dev|test)
               echo "env_name=$env_name" >> "$GITHUB_OUTPUT"
-              echo "Resolved environment from deployment: $env_name"
               ;;
             prod)
               echo "Integration skipped for prod"
@@ -82,9 +75,6 @@ jobs:
               exit 1
               ;;
           esac
-
-          echo "env_name=$env_name" >> "$GITHUB_OUTPUT"
-          echo "Resolved environment for integration: $env_name"
 
       - name: Select env-specific secrets
         id: pick
@@ -108,48 +98,25 @@ jobs:
               echo "PUBLISH_PROFILE=${PUBLISH_PROFILE_PROD}" >> $GITHUB_OUTPUT
               ;;
             *)
-              echo "Unknown environment: ${{ steps.resolve_env.outputs.env_name }}"; exit 1;
+              echo "Unknown environment: ${{ steps.resolve_env.outputs.env_name }}"
+              exit 1
               ;;
           esac
 
       - name: POST and parse JSON response for authentication
         id: api
         shell: bash
-
         run: |
           set -euo pipefail
 
           url="https://login.microsoftonline.com/${{ env.TENANTID }}/oauth2/v2.0/token"
 
-          tmp_body="$(mktemp)"
-          http_code=$(
-            curl -sS -X POST "$url" \
-              -H "Content-Type: application/x-www-form-urlencoded" \
-              --data-urlencode "grant_type=client_credentials" \
-              --data-urlencode "client_id=${{ steps.pick.outputs.CLIENTID }}" \
-              --data-urlencode "client_secret=${{ steps.pick.outputs.CLIENTSECRET }}" \
-              --data-urlencode "scope=api://ustc-itam-apis-authentication-${{ steps.resolve_env.outputs.env_name }}/.default" \
-              -o "$tmp_body" \
-              -w "%{http_code}"
-          )
-
-          echo "HTTP status: $http_code"
-
-          if [[ "$http_code" != "200" ]]; then
-            echo "Token request failed. Response body:"
-            # Pretty-print if jq exists, otherwise raw
-            if command -v jq >/dev/null 2>&1; then
-              jq . < "$tmp_body" || cat "$tmp_body"
-            else
-              cat "$tmp_body"
-            fi
-            rm -f "$tmp_body"
-            exit 1
-          fi
-
-          resp="$(cat "$tmp_body")"
-          rm -f "$tmp_body"
-
+          resp=$(curl -sS -X POST "$url" \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            --data-urlencode "grant_type=client_credentials" \
+            --data-urlencode "client_id=${{ steps.pick.outputs.CLIENTID }}" \
+            --data-urlencode "client_secret=${{ steps.pick.outputs.CLIENTSECRET }}" \
+            --data-urlencode "scope=api://ustc-itam-apis-authentication-${{ steps.resolve_env.outputs.env_name }}/.default")
 
           token=$(echo "$resp" | jq -r '.access_token')
 
@@ -158,7 +125,6 @@ jobs:
             exit 1
           fi
 
-          # Export as outputs for later steps
           echo "token=$token" >> "$GITHUB_OUTPUT"
 
       - name: Run integration tests
@@ -172,13 +138,13 @@ jobs:
 
       # Tag the deployed commit so it can be promoted later
       # Only tags the same SHA once in case someone deploys to dev manually
-      # Grabs the workflow_run head SHA to avoid tagging the integration workflow SHA instead
+      # Uses the deployed commit SHA passed from the deploy workflow
       - name: Tag dev deployment
         if: success() && steps.resolve_env.outputs.env_name == 'dev'
         shell: bash
         run: |
           DATE=$(date -u +"%d%b%y" | tr '[:upper:]' '[:lower:]')
-          SHORT_SHA=$(echo "${{ github.event.workflow_run.head_sha }}" | cut -c1-7)
+          SHORT_SHA=$(echo "${{ github.event.client_payload.sha }}" | cut -c1-7)
           TAG="dev-${DATE}-${SHORT_SHA}"
 
           git config user.name "github-actions"
