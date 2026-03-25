@@ -11,6 +11,7 @@ on:
 
 jobs:
   integration-test:
+    if: github.event.sender.login == 'github-actions[bot]'
     runs-on: ubuntu-latest
     # Expose env-specific secrets; selected dynamically based on deployment payload
     env:
