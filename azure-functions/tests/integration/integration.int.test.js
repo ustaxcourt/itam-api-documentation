@@ -489,4 +489,45 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.message).toMatch('Resource not found');
     expect(body.data).toBe(null);
   });
+
+  it('PATCH Decommission - should decommission asset and return 404 on subsequent GET', async () => {
+    // Decommission asset
+    const decommissionRes = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/decommission`,
+      {
+        method: 'PATCH',
+        headers: { Authorization: bearerToken },
+      },
+    );
+
+    expect(decommissionRes.status).toBe(200);
+
+    const decommissionBody = await decommissionRes.json();
+    expect(decommissionBody.message).toBe('Successfully decommissioned asset');
+    expect(decommissionBody.data).toBe(existingAssetId);
+
+    // Attempt to GET the same asset afterwards
+    const getRes = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
+      method: 'GET',
+      headers: { Authorization: bearerToken },
+    });
+
+    expect(getRes.status).toBe(404);
+
+    const getBody = await getRes.json();
+    expect(getBody.message).toMatch(/decommissioned|not found/i);
+  });
+
+  it('PATCH Decommission - should return 400 when asset ID is missing', async () => {
+    const res = await fetch(`${baseUrl}/api/v1/assets//decommission`, {
+      method: 'PATCH',
+      headers: { Authorization: bearerToken },
+    });
+
+    expect(res.status).toBe(400);
+
+    const body = await res.json();
+    expect(body.message).toBe('Missing Asset ID');
+    expect(body.data).toBe(null);
+  });
 });
