@@ -29,7 +29,7 @@ export async function decommissionAssetHandler(request, context) {
       'Unable to decommission the asset',
       error.response?.data || error.message,
     );
-    // add in internal error catch all in ors?
+    // add in internal error catch all in ors? like || Internal Server error and || 500?
     return buildResponse(error.statusCode, error.message);
   }
 }

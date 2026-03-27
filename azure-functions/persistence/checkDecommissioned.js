@@ -7,6 +7,6 @@ export async function checkDecommissioned(id) {
     query,
     method: 'GET',
   });
-
+  // Returns true if decommissioned is true
   return response.crf7f_decommissioned === true;
 }
