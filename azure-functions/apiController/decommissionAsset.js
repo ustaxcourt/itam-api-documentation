@@ -19,6 +19,9 @@ export async function decommissionAssetHandler(request, context) {
       throw new BadRequest('Invalid REST Method');
     }
   } catch (error) {
+    if (error instanceof BadRequest) {
+      return buildResponse(400, error.message);
+    }
     if (error instanceof NotFoundError) {
       return buildResponse(404, error.message);
     }
@@ -26,6 +29,7 @@ export async function decommissionAssetHandler(request, context) {
       'Unable to decommission the asset',
       error.response?.data || error.message,
     );
+    // add in internal error catch all in ors?
     return buildResponse(error.statusCode, error.message);
   }
 }
