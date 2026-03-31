@@ -307,7 +307,7 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "500": { $ref: "#/components/responses/InternalServerError" }
 
-    /v1/assets/{assetId}/assignments/{userId}:
+  /v1/assets/{assetId}/assignments/{userId}:
     post:
       description: >
         Assigns an asset to a user given a assetId and userId
