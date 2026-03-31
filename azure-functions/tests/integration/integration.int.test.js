@@ -1,7 +1,7 @@
 const baseUrl = process.env.API_BASE_URL || 'http://localhost:7071';
 const bearerToken = process.env.BEARERTOKEN || 'Bearer mocked-token';
 
-const existingAssetId = '966f3b66-8706-f111-8406-000d3a370650';
+const existingAssetId = 'c0c91c65-8706-f111-8407-000d3a37029d';
 const malformedAssetId = '8d204fa8-69d7-f011-85';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
 const existingUserId = '00674e1a-bd05-4c6c-a0a1-344404d4b2e4';
@@ -16,6 +16,25 @@ const malformedJobTitleId = 'b09cf686-30d5-f0';
 
 describe('Integration testing for ITAM Project', () => {
   jest.setTimeout(30000);
+
+  // Recommission the Asset used for testing before running suite
+  beforeAll(async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/recommission`,
+      {
+        method: 'PATCH',
+        headers: { Authorization: bearerToken },
+      },
+    );
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(
+        `beforeAll: Failed to recommission asset ${existingAssetId} (${res.status}) ${body.message ?? ''}`,
+      );
+    }
+  });
+
   //GET an asset
   it('GET Assets - should fetch an existing asset successfully', async () => {
     const res = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
@@ -41,7 +60,12 @@ describe('Integration testing for ITAM Project', () => {
     });
     expect(res.status).toBe(404);
     const body = await res.json();
-    expect(body.message).toBe(`No asset found for ID: ${nonExistentAssetId}`);
+    expect(body.message).toMatch(
+      new RegExp(
+        `Entity 'crf7f_ois_assets' With Id = ${nonExistentAssetId} Does Not Exist`,
+        'i',
+      ),
+    );
   });
 
   it('GET Assets - should return 400 when querying for a malformed asset', async () => {
@@ -518,16 +542,19 @@ describe('Integration testing for ITAM Project', () => {
     expect(getBody.message).toMatch(/decommissioned|not found/i);
   });
 
-  it('PATCH Decommission - should return 400 when asset ID is missing', async () => {
-    const res = await fetch(`${baseUrl}/api/v1/assets//decommission`, {
-      method: 'PATCH',
-      headers: { Authorization: bearerToken },
-    });
+  it('PATCH Decommission - should return 404 when asset ID is incorrect', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${nonExistentAssetId}/decommission`,
+      {
+        method: 'PATCH',
+        headers: { Authorization: bearerToken },
+      },
+    );
 
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(404);
 
     const body = await res.json();
-    expect(body.message).toBe('Missing Asset ID');
+    expect(body.message).toBe(`No asset found for ID: ${nonExistentAssetId}`);
     expect(body.data).toBe(null);
   });
 });

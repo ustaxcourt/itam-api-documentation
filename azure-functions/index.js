@@ -8,6 +8,7 @@ import './apiController/locationAssignment.js';
 import './apiController/queryAssetsByEmail.js';
 import './apiController/getRequirementsForJobTitleRequestHandler.js';
 import './apiController/decommissionAsset.js';
+import './apiController/recommissionAsset.js';
 
 app.setup({
   enableHttpStream: true,

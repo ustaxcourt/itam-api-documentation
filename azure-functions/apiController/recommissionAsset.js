@@ -3,9 +3,9 @@ import { BadRequest } from '../errors/BadRequest.js';
 import { buildResponse } from './buildResponse.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
 import { patchAppHttp } from '../useCases/maintenanceMode.js';
-import { decommissionWrapper } from '../useCases/decommissionWrapper.js';
+import { recommissionWrapper } from '../useCases/recommissionWrapper.js';
 
-export async function decommissionAssetHandler(request, context) {
+export async function recommissionAssetHandler(request, context) {
   try {
     const id = request.params.itemid;
     if (!id) {
@@ -13,8 +13,8 @@ export async function decommissionAssetHandler(request, context) {
     }
 
     if (request.method === 'PATCH') {
-      await decommissionWrapper(id);
-      return buildResponse(200, 'Successfully decommissioned asset', id);
+      await recommissionWrapper(id);
+      return buildResponse(200, 'Successfully recommissioned asset', id);
     } else {
       throw new BadRequest('Invalid REST Method');
     }
@@ -26,7 +26,7 @@ export async function decommissionAssetHandler(request, context) {
       return buildResponse(404, error.message);
     }
     context.error(
-      'Unable to decommission the asset',
+      'Unable to recommission the asset',
       error.response?.data || error.message,
     );
 
@@ -39,9 +39,9 @@ export async function decommissionAssetHandler(request, context) {
 
 patchAppHttp(app);
 
-app.http('decommissionAsset', {
+app.http('recommissionAsset', {
   methods: ['PATCH'],
   authLevel: 'anonymous',
-  route: 'v1/assets/{itemid}/decommission',
-  handler: decommissionAssetHandler,
+  route: 'v1/assets/{itemid}/recommission',
+  handler: recommissionAssetHandler,
 });

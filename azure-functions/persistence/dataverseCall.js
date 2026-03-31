@@ -35,18 +35,31 @@ export async function dataverseCall({
     const response = await fetch(url, options);
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      const errorMessage = errorData?.error?.message ?? '';
+      const errorMessage =
+        errorData?.error?.message ??
+        `Dataverse call failed with status ${response.status}`;
 
+      // Dataverse explicitly returned 404 (entity does not exist)
+      if (response.status === 404) {
+        throw new NotFoundError(errorMessage);
+      }
+
+      // Dataverse OData errors (GUID / type mismatch, etc.)
       if (
-        errorMessage.includes(
-          "incompatible types was detected. Found operand types 'Edm.Guid' and 'Edm.String' for operator kind 'Equal'.",
-        )
+        errorMessage.includes('incompatible types') ||
+        errorMessage.includes('Edm.Guid') ||
+        errorMessage.includes('Resource not found') ||
+        errorMessage.includes('does not exist') ||
+        errorMessage.includes('expected at position') ||
+        errorMessage.includes("')' or ',' expected")
       ) {
         throw new NotFoundError('Resource not found');
       }
-
+      // Preserves other HTTP status codes
       console.error('Dataverse API error:', errorData);
-      throw new Error(`Dataverse call failed with status ${response.status}`);
+      const err = new Error(errorMessage);
+      err.statusCode = response.status;
+      throw err;
     }
 
     // Collect headers (always safe; never forwarded)

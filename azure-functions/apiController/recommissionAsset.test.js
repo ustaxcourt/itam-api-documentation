@@ -1,9 +1,9 @@
-import { decommissionAssetHandler } from './decommissionAsset.js';
-import { decommissionWrapper } from '../useCases/decommissionWrapper.js';
+import { recommissionAssetHandler } from './recommissionAsset.js';
+import { recommissionWrapper } from '../useCases/recommissionWrapper.js';
 import { buildResponse } from './buildResponse.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
 
-jest.mock('../useCases/decommissionWrapper.js');
+jest.mock('../useCases/recommissionWrapper.js');
 jest.mock('./buildResponse.js', () => ({
   buildResponse: jest.fn((status, message, data = null) => ({
     status,
@@ -14,7 +14,7 @@ jest.mock('./buildResponse.js', () => ({
   })),
 }));
 
-describe('decommissionAssetHandler', () => {
+describe('recommissionAssetHandler', () => {
   let context;
 
   beforeEach(() => {
@@ -24,8 +24,8 @@ describe('decommissionAssetHandler', () => {
     jest.clearAllMocks();
   });
 
-  it('successfully decommissions asset on PATCH', async () => {
-    decommissionWrapper.mockResolvedValue();
+  it('successfully recommissions an asset on PATCH', async () => {
+    recommissionWrapper.mockResolvedValue();
 
     const request = {
       method: 'PATCH',
@@ -34,19 +34,19 @@ describe('decommissionAssetHandler', () => {
       },
     };
 
-    const result = await decommissionAssetHandler(request, context);
+    const result = await recommissionAssetHandler(request, context);
 
-    expect(decommissionWrapper).toHaveBeenCalledWith('asset123');
+    expect(recommissionWrapper).toHaveBeenCalledWith('asset123');
     expect(buildResponse).toHaveBeenCalledWith(
       200,
-      'Successfully decommissioned asset',
+      'Successfully recommissioned asset',
       'asset123',
     );
 
     expect(result).toEqual({
       status: 200,
       jsonBody: {
-        message: 'Successfully decommissioned asset',
+        message: 'Successfully recommissioned asset',
         data: 'asset123',
       },
     });
@@ -55,15 +55,14 @@ describe('decommissionAssetHandler', () => {
   });
 
   it('returns 400 when asset ID is missing', async () => {
-    // Bad Request
     const request = {
       method: 'PATCH',
       params: {},
     };
 
-    const result = await decommissionAssetHandler(request, context);
+    const result = await recommissionAssetHandler(request, context);
 
-    expect(decommissionWrapper).not.toHaveBeenCalled();
+    expect(recommissionWrapper).not.toHaveBeenCalled();
     expect(buildResponse).toHaveBeenCalledWith(400, 'Missing Asset ID');
 
     expect(result).toEqual({
@@ -76,7 +75,6 @@ describe('decommissionAssetHandler', () => {
   });
 
   it('returns 400 for invalid HTTP/REST method', async () => {
-    // Bad Request
     const request = {
       method: 'GET',
       params: {
@@ -84,9 +82,9 @@ describe('decommissionAssetHandler', () => {
       },
     };
 
-    const result = await decommissionAssetHandler(request, context);
+    const result = await recommissionAssetHandler(request, context);
 
-    expect(decommissionWrapper).not.toHaveBeenCalled();
+    expect(recommissionWrapper).not.toHaveBeenCalled();
     expect(context.error).not.toHaveBeenCalled(); // Bad Request handled explicitly
     expect(buildResponse).toHaveBeenCalledWith(400, 'Invalid REST Method');
 
@@ -99,10 +97,8 @@ describe('decommissionAssetHandler', () => {
     });
   });
 
-  it('returns 404 when decommissionWrapper throws NotFoundError', async () => {
-    decommissionWrapper.mockRejectedValue(
-      new NotFoundError('This asset has been decommissioned.'),
-    );
+  it('returns 404 when recommissionWrapper throws NotFoundError', async () => {
+    recommissionWrapper.mockRejectedValue(new NotFoundError('Asset not found'));
 
     const request = {
       method: 'PATCH',
@@ -111,19 +107,16 @@ describe('decommissionAssetHandler', () => {
       },
     };
 
-    const result = await decommissionAssetHandler(request, context);
+    const result = await recommissionAssetHandler(request, context);
 
-    expect(decommissionWrapper).toHaveBeenCalledWith('asset123');
+    expect(recommissionWrapper).toHaveBeenCalledWith('asset123');
 
-    expect(buildResponse).toHaveBeenCalledWith(
-      404,
-      'This asset has been decommissioned.',
-    );
+    expect(buildResponse).toHaveBeenCalledWith(404, 'Asset not found');
 
     expect(result).toEqual({
       status: 404,
       jsonBody: {
-        message: 'This asset has been decommissioned.',
+        message: 'Asset not found',
         data: null,
       },
     });
@@ -135,7 +128,7 @@ describe('decommissionAssetHandler', () => {
     const error = new Error('Dataverse failure');
     error.statusCode = 500;
 
-    decommissionWrapper.mockRejectedValue(error);
+    recommissionWrapper.mockRejectedValue(error);
 
     const request = {
       method: 'PATCH',
@@ -144,12 +137,12 @@ describe('decommissionAssetHandler', () => {
       },
     };
 
-    const result = await decommissionAssetHandler(request, context);
+    const result = await recommissionAssetHandler(request, context);
 
-    expect(decommissionWrapper).toHaveBeenCalledWith('asset123');
+    expect(recommissionWrapper).toHaveBeenCalledWith('asset123');
 
     expect(context.error).toHaveBeenCalledWith(
-      'Unable to decommission the asset',
+      'Unable to recommission the asset',
       'Dataverse failure',
     );
 
