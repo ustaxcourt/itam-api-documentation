@@ -8,7 +8,7 @@ export async function getDataverseAssetsByEmail(email) {
     const url =
       'crf7f_ois_assetses' +
       `?$filter=crf7f_userCurrentOwnerLookup/crf7f_email eq '${email}'` +
-      `&$expand=crf7f_userCurrentOwnerLookup($select=crf7f_email,crf7f_jobtitle,crf7f_name,crf7f_isactive,crf7f_iscontractor,crf7f_location)`;
+      `&$expand=crf7f_userCurrentOwnerLookup($select=crf7f_email,crf7f_jobtitle,crf7f_name,crf7f_isactive,crf7f_iscontractor,crf7f_location),crf7f_ois_asset_ref_model_lookup($select=crf7f_warrantyinformation)`;
 
     const data = await dataverseCall({ query: url, method: 'GET' });
     const assets = filterDictionaryByList(data.value);

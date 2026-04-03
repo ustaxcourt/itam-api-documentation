@@ -5,6 +5,8 @@ export function filterDictionary(dict) {
 
   const keyMap = {
     crf7f_name: 'assetName',
+    crf7f_ois_asset_ref_model_lookup: 'modelInfo',
+    crf7f_warrantyinformation: 'warrantyInformation',
     '_crf7f_fac_asset_ref_location_lookup_value@OData.Community.Display.V1.FormattedValue':
       'location',
     _crf7f_fac_asset_ref_location_lookup_value: 'location',
