@@ -5,22 +5,17 @@ export function buildSearchCriteria(query) {
     location,
     type,
     serialNumber,
-    // Unassigned is a presence-only flag, so we don't pull it from the query in the same way as the others
+    // Unassigned is a presence-only flag, so we don't pull it (or any value from it) from the query in the same way as the others
 
     sortBy = 'crf7f_name',
     sortDir = 'asc',
 
-    page = 1,
     pageSize = 25,
+    continuationToken = null, // Testing this out. Supposed to be used for Dataverse pagination if needed, but we'll see how it goes with the current implementation
   } = query;
 
   // Normalize paging - for when the data renders
-  const normalizedPage = Number(page);
   const normalizedPageSize = Number(pageSize);
-
-  if (!Number.isInteger(normalizedPage) || normalizedPage < 1) {
-    throw new BadRequest('page must be a positive integer');
-  }
 
   if (
     !Number.isInteger(normalizedPageSize) ||
@@ -43,7 +38,7 @@ export function buildSearchCriteria(query) {
   const hasFilters = location || type || serialNumber || isUnassigned;
 
   if (!hasFilters) {
-    throw new BadRequest('At least one search filter must be provided');
+    throw new BadRequest('At least one valid search filter must be provided');
   }
 
   // Options for possible search criteria
@@ -61,8 +56,8 @@ export function buildSearchCriteria(query) {
     },
 
     paging: {
-      page: normalizedPage,
       pageSize: normalizedPageSize,
+      continuationToken, // This can be used for Dataverse pagination if needed
     },
   };
 }

@@ -8,7 +8,19 @@ import { buildSearchCriteria } from '../useCases/buildSearchCriteria.js';
 
 export async function assetSearchHandler(request, context) {
   try {
-    const criteria = buildSearchCriteria(request.query);
+    context.log('Raw query params:', request.query);
+
+    const queryObject = Object.fromEntries(request.query.entries());
+
+    context.log('Normalized query:', queryObject);
+
+    const criteria = buildSearchCriteria(queryObject);
+
+    context.log(
+      'Criteria after buildSearchCriteria:',
+      JSON.stringify(criteria, null, 2),
+    );
+
     const assets = await assetSearchManager(criteria);
 
     return buildResponse(200, 'Success', assets);
