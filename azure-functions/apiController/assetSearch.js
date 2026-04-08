@@ -4,23 +4,20 @@ import { NotFoundError } from '../errors/NotFoundError.js';
 import { BadRequest } from '../errors/BadRequest.js';
 import { patchAppHttp } from '../useCases/maintenanceMode.js';
 import { assetSearchManager } from '../useCases/assetSearchManager.js';
-import { buildSearchCriteria } from '../useCases/buildSearchCriteria.js';
+import { validateSearchCriteria } from '../useCases/validateSearchCriteria.js';
 
 export async function assetSearchHandler(request, context) {
   try {
-    context.log('Raw query params:', request.query);
-
     const queryObject = Object.fromEntries(request.query.entries());
 
-    context.log('Normalized query:', queryObject);
-
-    const criteria = buildSearchCriteria(queryObject);
+    // This use case is checking to see if the query parameters are valid (parameters and syntax wise) and then transforming them into a criteria object that the assetSearchManager can use to query the database
+    const criteria = validateSearchCriteria(queryObject);
 
     context.log(
-      'Criteria after buildSearchCriteria:',
+      'Criteria after validateSearchCriteria:',
       JSON.stringify(criteria, null, 2),
     );
-
+    // This layer is orchestrating the search by taking the formed criteria - passing it to validate values, then running the filter operation and returning it as a list of assets from the filterDictByList function in the persistence layer
     const assets = await assetSearchManager(criteria);
 
     return buildResponse(200, 'Success', assets);
