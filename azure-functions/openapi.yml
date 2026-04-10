@@ -129,6 +129,13 @@ components:
           type: string
           example: 316
           nullable: true
+        modelInfo:
+          type: object
+          nullable: true
+          properties:
+            warrantyInformation:
+              type: string
+              example: "Warranty valid until 01/01/2025"
         osVersion:
           type: string
           example: Windows 11 24H2

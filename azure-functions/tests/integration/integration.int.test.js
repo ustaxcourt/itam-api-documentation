@@ -1,6 +1,5 @@
 const baseUrl = process.env.API_BASE_URL || 'http://localhost:7071';
 const bearerToken = process.env.BEARERTOKEN || 'Bearer mocked-token';
-
 const existingAssetId = '966f3b66-8706-f111-8406-000d3a370650';
 const malformedAssetId = '8d204fa8-69d7-f011-85';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
@@ -33,6 +32,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toHaveProperty('osVersion');
     expect(body.data).toHaveProperty('phone');
     expect(body.data).toHaveProperty('user');
+    expect(body.data).toHaveProperty('modelInfo');
   });
 
   it('GET Assets - should return 404 when querying for a non-existent asset', async () => {
