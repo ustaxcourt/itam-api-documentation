@@ -42,6 +42,5 @@ export async function filteredSearch(criteria) {
 
   return {
     items: data.value,
-    continuationToken: data['@odata.nextLink'] ?? null,
   };
 }

@@ -13,6 +13,8 @@ const nonExistentLocationId = '04d494f4-b5b9-f011-bbd2-000d3a56dc3b';
 const existingJobTitleId = '76c0a78f-5cd4-f011-8544-000d3a5b5036';
 const nonExistingJobTitleId = 'b09cf686-30d5-f011-8544-7c1e52177973';
 const malformedJobTitleId = 'b09cf686-30d5-f0';
+// const existingSerialNumber = '1234567';
+// const malformedSerialNumber = '12345';
 
 describe('Integration testing for ITAM Project', () => {
   jest.setTimeout(30000);

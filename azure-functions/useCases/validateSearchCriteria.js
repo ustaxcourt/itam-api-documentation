@@ -9,7 +9,7 @@ export function validateSearchCriteria(query) {
     serialNumber,
     // Unassigned is a presence-only flag, so we don't pull it (or any value from it) from the query in the same way as the others
     sortBy = 'crf7f_name',
-    sortDir = 'asc',
+    sortDir = 'asc', // These two features can be tweaked in the search query, but as is these are the defaults if not provided
   } = query;
 
   // Normalize sorting - for when the data renders

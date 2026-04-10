@@ -24,7 +24,7 @@ describe('index.js setup', () => {
       enableHttpStream: true,
     });
 
-    expect(httpSpy).toHaveBeenCalledTimes(6);
+    expect(httpSpy).toHaveBeenCalledTimes(7);
 
     setupSpy.mockRestore();
     httpSpy.mockRestore();
