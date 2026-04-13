@@ -32,7 +32,7 @@ export async function filteredSearch(criteria) {
   const url =
     'crf7f_ois_assetses' +
     `?$filter=${filterQuery}` +
-    `&$orderby=${criteria.sort.field} ${criteria.sort.direction}` +
+    `&$orderby=crf7f_name asc` +
     `&$top=${criteria.limit}`;
 
   const data = await dataverseCall({

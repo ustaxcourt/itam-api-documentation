@@ -1,4 +1,4 @@
-import { BadRequest } from '../errors/BadRequest.js';
+import { BadRequest } from '../../errors/BadRequest.js';
 
 export function validateSearchCriteria(query) {
   const maxItems = 2000; // Hard cap for returns to limit potential performance issues. Arbitrary number, can be adjusted as needed
@@ -8,15 +8,7 @@ export function validateSearchCriteria(query) {
     type,
     serialNumber,
     // Unassigned is a presence-only flag, so we don't pull it (or any value from it) from the query in the same way as the others
-    sortBy = 'crf7f_name',
-    sortDir = 'asc', // These two features can be tweaked in the search query, but as is these are the defaults if not provided
   } = query;
-
-  // Normalize sorting - for when the data renders
-  const direction = sortDir.toLowerCase();
-  if (!['asc', 'desc'].includes(direction)) {
-    throw new BadRequest('sortDir must be "asc" or "desc"');
-  }
 
   // Presence only unassigned flag - if present, true, if not, false
   const isUnassigned = 'unassigned' in query;
@@ -35,11 +27,6 @@ export function validateSearchCriteria(query) {
       type,
       serialNumber,
       unassigned: isUnassigned,
-    },
-
-    sort: {
-      field: sortBy,
-      direction,
     },
 
     limit: maxItems,

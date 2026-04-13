@@ -1,5 +1,5 @@
 import { validateSearchCriteria } from './validateSearchCriteria.js';
-import { BadRequest } from '../errors/BadRequest.js';
+import { BadRequest } from '../../errors/BadRequest.js';
 
 describe('validateSearchCriteria', () => {
   test('returns criteria with serialNumber filter only', () => {
@@ -16,10 +16,6 @@ describe('validateSearchCriteria', () => {
         serialNumber: '123456',
         unassigned: false,
       },
-      sort: {
-        field: 'crf7f_name',
-        direction: 'asc',
-      },
       limit: 2000,
     });
   });
@@ -31,8 +27,12 @@ describe('validateSearchCriteria', () => {
 
     const result = validateSearchCriteria(query);
 
-    expect(result.filters.location).toBe(query.location);
-    expect(result.filters.unassigned).toBe(false);
+    expect(result.filters).toEqual({
+      location: query.location,
+      type: undefined,
+      serialNumber: undefined,
+      unassigned: false,
+    });
     expect(result.limit).toBe(2000);
   });
 
@@ -59,45 +59,12 @@ describe('validateSearchCriteria', () => {
 
     const result = validateSearchCriteria(query);
 
-    expect(result.filters.unassigned).toBe(true);
-  });
-
-  test('uses provided sortBy and sortDir when valid', () => {
-    const query = {
-      serialNumber: '1234567',
-      sortBy: 'createdon',
-      sortDir: 'desc',
-    };
-
-    const result = validateSearchCriteria(query);
-
-    expect(result.sort).toEqual({
-      field: 'createdon',
-      direction: 'desc',
+    expect(result.filters).toEqual({
+      location: undefined,
+      type: undefined,
+      serialNumber: undefined,
+      unassigned: true,
     });
-  });
-
-  test('lowercases sortDir before validation', () => {
-    const query = {
-      serialNumber: '1234567',
-      sortDir: 'ASC',
-    };
-
-    const result = validateSearchCriteria(query);
-
-    expect(result.sort.direction).toBe('asc');
-  });
-
-  test('throws BadRequest when sortDir is invalid', () => {
-    const query = {
-      serialNumber: '1234567',
-      sortDir: 'sideways',
-    };
-
-    expect(() => validateSearchCriteria(query)).toThrow(BadRequest);
-    expect(() => validateSearchCriteria(query)).toThrow(
-      'sortDir must be "asc" or "desc"',
-    );
   });
 
   test('throws BadRequest when no valid filters are provided', () => {

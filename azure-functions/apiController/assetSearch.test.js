@@ -3,10 +3,8 @@ import { buildResponse } from './buildResponse.js';
 import { BadRequest } from '../errors/BadRequest.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
 import { assetSearchManager } from '../useCases/assetSearchManager.js';
-import { validateSearchCriteria } from '../useCases/validateSearchCriteria.js';
 
 jest.mock('../useCases/assetSearchManager.js');
-jest.mock('../useCases/validateSearchCriteria.js');
 
 describe('assetSearchHandler', () => {
   let context;
@@ -25,118 +23,85 @@ describe('assetSearchHandler', () => {
     };
   }
 
-  it('should return 200 and assets on successful search', async () => {
+  it('returns 200 and assets on successful search', async () => {
     const queryParams = { serialNumber: '123456' };
-    const criteria = { filters: { serialNumber: '123456' } };
-    const assets = { total: 1, data: [{ id: 'asset1' }] };
 
-    validateSearchCriteria.mockReturnValue(criteria);
+    const assets = {
+      total: 1,
+      data: [{ id: 'asset-1' }],
+    };
+
     assetSearchManager.mockResolvedValue(assets);
 
     const request = createRequest(queryParams);
-
     const result = await assetSearchHandler(request, context);
 
-    expect(validateSearchCriteria).toHaveBeenCalledWith(queryParams);
-    expect(assetSearchManager).toHaveBeenCalledWith(criteria);
-
+    expect(assetSearchManager).toHaveBeenCalledWith(queryParams);
     expect(result).toEqual(buildResponse(200, 'Success', assets));
     expect(context.error).not.toHaveBeenCalled();
   });
 
-  it('should return 200 and assets for combined search criteria', async () => {
+  it('returns 200 and assets for combined query parameters', async () => {
     const queryParams = {
       serialNumber: 'ABC123',
       location: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
     };
 
-    const criteria = {
-      filters: {
-        serialNumber: 'ABC123',
-        location: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
-        unassigned: false,
-      },
-      sort: {
-        field: 'crf7f_name',
-        direction: 'asc',
-      },
-      limit: 2000,
-    };
-
     const assets = {
       total: 2,
-      data: [
-        { id: 'asset-1', serialNumber: 'ABC123' },
-        { id: 'asset-2', serialNumber: 'ABC123' },
-      ],
+      data: [{ id: 'asset-1' }, { id: 'asset-2' }],
     };
 
-    validateSearchCriteria.mockReturnValue(criteria);
     assetSearchManager.mockResolvedValue(assets);
 
-    const request = {
-      query: new Map(Object.entries(queryParams)),
-    };
-
+    const request = createRequest(queryParams);
     const result = await assetSearchHandler(request, context);
 
-    expect(validateSearchCriteria).toHaveBeenCalledWith(queryParams);
-    expect(assetSearchManager).toHaveBeenCalledWith(criteria);
-
+    expect(assetSearchManager).toHaveBeenCalledWith(queryParams);
     expect(result).toEqual(buildResponse(200, 'Success', assets));
-
     expect(context.error).not.toHaveBeenCalled();
   });
 
-  it('should return 400 when validateSearchCriteria throws BadRequest', async () => {
+  it('returns 400 when use case throws BadRequest', async () => {
     const queryParams = {};
-    const error = new BadRequest('Invalid search criteria');
+    const error = new BadRequest(
+      'At least one valid search filter must be provided',
+    );
 
-    validateSearchCriteria.mockImplementation(() => {
-      throw error;
-    });
+    assetSearchManager.mockRejectedValue(error);
 
     const request = createRequest(queryParams);
-
     const result = await assetSearchHandler(request, context);
 
-    expect(assetSearchManager).not.toHaveBeenCalled();
+    expect(assetSearchManager).toHaveBeenCalledWith(queryParams);
     expect(result).toEqual(buildResponse(400, error.message));
+    expect(context.error).not.toHaveBeenCalled();
   });
 
-  it('should return 404 when assetSearchManager throws NotFoundError', async () => {
+  it('returns 404 when use case throws NotFoundError', async () => {
     const queryParams = { location: 'invalid-location' };
-    const criteria = { filters: { location: 'invalid-location' } };
     const error = new NotFoundError('Location not found');
 
-    validateSearchCriteria.mockReturnValue(criteria);
     assetSearchManager.mockRejectedValue(error);
 
     const request = createRequest(queryParams);
-
     const result = await assetSearchHandler(request, context);
 
-    expect(validateSearchCriteria).toHaveBeenCalledWith(queryParams);
-    expect(assetSearchManager).toHaveBeenCalledWith(criteria);
-    expect(context.error).not.toHaveBeenCalled();
-
+    expect(assetSearchManager).toHaveBeenCalledWith(queryParams);
     expect(result).toEqual(buildResponse(404, error.message));
+    expect(context.error).not.toHaveBeenCalled();
   });
 
-  it('should return 500 and log error for unexpected errors', async () => {
+  it('returns 500 and logs error for unexpected failures', async () => {
     const queryParams = { serialNumber: '123456' };
-    const criteria = { filters: { serialNumber: '123456' } };
     const error = new Error('Dataverse failure');
 
-    validateSearchCriteria.mockReturnValue(criteria);
     assetSearchManager.mockRejectedValue(error);
 
     const request = createRequest(queryParams);
-
     const result = await assetSearchHandler(request, context);
 
-    expect(validateSearchCriteria).toHaveBeenCalledWith(queryParams);
-    expect(assetSearchManager).toHaveBeenCalledWith(criteria);
+    expect(assetSearchManager).toHaveBeenCalledWith(queryParams);
     expect(context.error).toHaveBeenCalledWith(
       'Unable to complete search request.',
       error.message,

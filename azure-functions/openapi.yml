@@ -306,28 +306,6 @@ paths:
             type: string
             nullable: true
           example: ""
-
-        - name: sortBy
-          in: query
-          required: false
-          description: >
-            Field to sort results by.
-            Defaults to asset name.
-          schema:
-            type: string
-          example: crf7f_name
-
-        - name: sortDir
-          in: query
-          required: false
-          description: >
-            Sort direction.
-            Defaults to ascending.
-          schema:
-            type: string
-            enum: [asc, desc]
-          example: asc
-
         - $ref: "#/components/parameters/AuthorizationHeader"
 
       responses:

@@ -39,7 +39,7 @@ describe('filteredSearch', () => {
       query:
         'crf7f_ois_assetses' +
         "?$filter=crf7f_serial_number eq '1234567'" +
-        `&$orderby=${criteria.sort.field} ${criteria.sort.direction}` +
+        `&$orderby=crf7f_name asc` +
         `&$top=${criteria.limit}`,
     });
 
@@ -76,7 +76,7 @@ describe('filteredSearch', () => {
       query:
         'crf7f_ois_assetses' +
         '?$filter=_crf7f_fac_asset_ref_location_lookup_value eq aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' +
-        `&$orderby=${criteria.sort.field} ${criteria.sort.direction}` +
+        `&$orderby=crf7f_name asc` +
         `&$top=${criteria.limit}`,
     });
 
@@ -94,7 +94,7 @@ describe('filteredSearch', () => {
       },
       sort: {
         field: 'crf7f_name',
-        direction: 'desc',
+        direction: 'asc',
       },
       limit: 2000,
     };
@@ -115,7 +115,7 @@ describe('filteredSearch', () => {
         '?$filter=' +
         '_crf7f_fac_asset_ref_location_lookup_value eq 11111111-2222-3333-4444-555555555555' +
         " and crf7f_serial_number eq 'ABC123'" +
-        `&$orderby=${criteria.sort.field} ${criteria.sort.direction}` +
+        `&$orderby=crf7f_name asc` +
         `&$top=${criteria.limit}`,
     });
 
@@ -155,7 +155,7 @@ describe('filteredSearch', () => {
       query:
         'crf7f_ois_assetses' +
         "?$filter=crf7f_serial_number eq '1234567'" +
-        `&$orderby=${criteria.sort.field} ${criteria.sort.direction}` +
+        `&$orderby=crf7f_name asc` +
         `&$top=${criteria.limit}`,
     });
 
