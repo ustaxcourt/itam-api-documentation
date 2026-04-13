@@ -115,6 +115,31 @@ describe('assetSearchManager', () => {
     expect(filterDictionaryByList).not.toHaveBeenCalled();
   });
 
+  it('returns identical results regardless of serialNumber casing', async () => {
+    const lowerCaseQuery = { serialNumber: 'abc123' };
+    const upperCaseQuery = { serialNumber: 'ABC123' };
+
+    const sameAssets = [{ id: 'asset-1', serialNumber: 'ABC123' }];
+
+    validateSearchCriteria.mockImplementation(query => ({
+      filters: {
+        serialNumber: query.serialNumber,
+        location: undefined,
+        type: undefined,
+        unassigned: false,
+      },
+      limit: 2000,
+    }));
+
+    filteredSearch.mockResolvedValue({ items: sameAssets });
+    filterDictionaryByList.mockReturnValue(sameAssets);
+
+    const resultLower = await assetSearchManager(lowerCaseQuery);
+    const resultUpper = await assetSearchManager(upperCaseQuery);
+
+    expect(resultLower).toEqual(resultUpper);
+  });
+
   // API Controller layer catches this error - we just want to make sure it is passing cleanly here
   it('bubbles up errors from filteredSearch without modification', async () => {
     const queryObject = {
