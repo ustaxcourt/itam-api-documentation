@@ -591,4 +591,46 @@ describe('Integration testing for ITAM Project', () => {
     const asset = body.data.data[0];
     expect(asset).toHaveProperty('assetName');
   });
+
+  it('GET Asset Search - should return identical results regardless of serialNumber casing', async () => {
+    const lowerCaseResponse = await fetch(
+      `${baseUrl}/api/v1/assets/search?serialNumber=${existingSerialNumber.toLowerCase()}`,
+      {
+        method: 'GET',
+        headers: { Authorization: bearerToken },
+      },
+    );
+
+    const upperCaseResponse = await fetch(
+      `${baseUrl}/api/v1/assets/search?serialNumber=${existingSerialNumber.toUpperCase()}`,
+      {
+        method: 'GET',
+        headers: { Authorization: bearerToken },
+      },
+    );
+
+    expect(lowerCaseResponse.status).toBe(200);
+    expect(upperCaseResponse.status).toBe(200);
+
+    const lowerBody = await lowerCaseResponse.json();
+    const upperBody = await upperCaseResponse.json();
+
+    expect(lowerBody).toHaveProperty('message', 'Success');
+    expect(upperBody).toHaveProperty('message', 'Success');
+
+    expect(lowerBody.data).toHaveProperty('total');
+    expect(upperBody.data).toHaveProperty('total');
+
+    expect(lowerBody.data).toHaveProperty('data');
+    expect(upperBody.data).toHaveProperty('data');
+
+    expect(Array.isArray(lowerBody.data.data)).toBe(true);
+    expect(Array.isArray(upperBody.data.data)).toBe(true);
+
+    expect(lowerBody.data.total).toBe(upperBody.data.total);
+    expect(lowerBody.data.data).toEqual(upperBody.data.data);
+    // Already verified results are identical, just checking that the asset(s) returned have the expected properties as well
+    const asset = lowerBody.data.data[0];
+    expect(asset).toHaveProperty('assetName');
+  });
 });
