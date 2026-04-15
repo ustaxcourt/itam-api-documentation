@@ -36,6 +36,22 @@ describe('validateSearchCriteria', () => {
     expect(result.limit).toBe(2000);
   });
 
+  test('returns criteria with unassigned filter only', () => {
+    const query = {
+      unassigned: '',
+    };
+
+    const result = validateSearchCriteria(query);
+
+    expect(result.filters).toEqual({
+      location: undefined,
+      type: undefined,
+      serialNumber: undefined,
+      unassigned: true,
+    });
+    expect(result.limit).toBe(2000);
+  });
+
   test('returns criteria with multiple filters', () => {
     const query = {
       location: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',

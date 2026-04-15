@@ -85,6 +85,43 @@ describe('filteredSearch', () => {
     });
   });
 
+  test('builds correct query with unassigned filter only', async () => {
+    const criteria = {
+      filters: {
+        location: undefined,
+        serialNumber: undefined,
+        unassigned: true,
+      },
+      sort: {
+        field: 'crf7f_name',
+        direction: 'asc',
+      },
+      limit: 2000,
+    };
+
+    const mockResponse = {
+      value: [{ id: 'asset-5' }, { id: 'asset-6' }],
+    };
+
+    dataverseCall.mockResolvedValue(mockResponse);
+
+    const result = await filteredSearch(criteria);
+
+    expect(dataverseCall).toHaveBeenCalledTimes(1);
+    expect(dataverseCall).toHaveBeenCalledWith({
+      method: 'GET',
+      query:
+        'crf7f_ois_assetses' +
+        '?$filter=crf7f_asset_item_status eq 1' +
+        `&$orderby=crf7f_name asc` +
+        `&$top=${criteria.limit}`,
+    });
+
+    expect(result).toEqual({
+      items: mockResponse.value,
+    });
+  });
+
   test('builds correct query with location AND serialNumber filters', async () => {
     const criteria = {
       filters: {

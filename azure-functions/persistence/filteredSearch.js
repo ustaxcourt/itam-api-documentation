@@ -13,11 +13,13 @@ export async function filteredSearch(criteria) {
   if (criteria.filters.type) {
     clauses.push(`crf7f_asset_type eq '${criteria.filters.type}'`);
   }
-    // this will be for the choice field for asset status - logic pending either available only or not assigned.
-    if (criteria.filters.unassigned) {
-    clauses.push(`crf7f_asset_status eq <UNASSIGNED_CHOICE_VALUE>`);
+    */
+
+  // Using choice field for asset status, goes off a status of "Available", which is encoded as 1 in the Dataverse Choice column
+  if (criteria.filters.unassigned) {
+    clauses.push(`crf7f_asset_item_status eq 1`); // Unassigned/Available status in the enum/choice field
   }
-  */
+
   if (criteria.filters.serialNumber) {
     clauses.push(`crf7f_serial_number eq '${criteria.filters.serialNumber}'`);
   }

@@ -6,7 +6,6 @@ import { NotFoundError } from '../errors/NotFoundError.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
 import { BadRequest } from '../errors/BadRequest.js';
 import { checkDecommissioned } from '../persistence/checkDecommissioned.js';
-import { it } from '@jest/globals';
 
 jest.mock('../persistence/checkDecommissioned.js', () => ({
   checkDecommissioned: jest.fn(),
