@@ -5,6 +5,12 @@ import { addNewEntryToAssetAuditLog } from '../persistence/addNewEntryToAssetAud
 import { NotFoundError } from '../errors/NotFoundError.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
 import { BadRequest } from '../errors/BadRequest.js';
+import { checkDecommissioned } from '../persistence/checkDecommissioned.js';
+import { it } from '@jest/globals';
+
+jest.mock('../persistence/checkDecommissioned.js', () => ({
+  checkDecommissioned: jest.fn(),
+}));
 
 jest.mock('../persistence/decommission.js', () => ({
   decommission: jest.fn(),
@@ -35,6 +41,7 @@ describe('decommissionWrapper', () => {
     addNewEntryToAssetAuditLog.mockResolvedValue({
       id: 'audit-log-id',
     });
+    checkDecommissioned.mockResolvedValue(false);
   });
 
   it('successfully decommissions an unassigned asset and writes audit log entry', async () => {
@@ -98,6 +105,21 @@ describe('decommissionWrapper', () => {
 
     await expect(decommissionWrapper(assetId)).rejects.toThrow(
       'Asset not found',
+    );
+
+    expect(decommission).not.toHaveBeenCalled();
+    expect(addNewEntryToAssetAuditLog).not.toHaveBeenCalled();
+  });
+
+  it('throws BadRequest based on results from checkDecommissioned without wrapping', async () => {
+    checkDecommissioned.mockResolvedValue(true); // Asset is already decommissioned
+
+    await expect(decommissionWrapper(assetId)).rejects.toBeInstanceOf(
+      BadRequest,
+    );
+
+    await expect(decommissionWrapper(assetId)).rejects.toThrow(
+      'This asset is already decommissioned.',
     );
 
     expect(decommission).not.toHaveBeenCalled();

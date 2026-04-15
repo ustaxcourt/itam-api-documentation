@@ -5,9 +5,18 @@ import { BadRequest } from '../errors/BadRequest.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
 import { addNewEntryToAssetAuditLog } from '../persistence/addNewEntryToAssetAuditLog.js';
 import { AUDIT_LOG_CHOICES } from '../entityConstants.js';
+import { checkDecommissioned } from '../persistence/checkDecommissioned.js';
 
 export async function recommissionWrapper(id) {
   try {
+    // First check to see if the asset is decommissioned - if not, we should not be trying to recommission it when it is already active
+    const decommissioned = await checkDecommissioned(id);
+    if (!decommissioned) {
+      throw new BadRequest(
+        'This asset is not currently decommissioned and cannot be recommissioned.',
+      );
+    }
+
     const assetDetails = await getAssetByID(id);
 
     // Build the pieces of the body out for the audit log entry in case conditions are met

@@ -5,12 +5,19 @@ import { NotFoundError } from '../errors/NotFoundError.js';
 import { InternalServerError } from '../errors/InternalServerError.js';
 import { addNewEntryToAssetAuditLog } from '../persistence/addNewEntryToAssetAuditLog.js';
 import { AUDIT_LOG_CHOICES } from '../entityConstants.js';
+import { checkDecommissioned } from '../persistence/checkDecommissioned.js';
 
 export async function decommissionWrapper(id) {
   try {
+    // Checking to see if asset is already decommissioned - if so, we should not be decommissioning it again
+    const decommissioned = await checkDecommissioned(id);
+    if (decommissioned) {
+      throw new BadRequest('This asset is already decommissioned.');
+    }
+
     const assetDetails = await getAssetByID(id);
 
-    const unassigned =
+    const isUnassigned =
       assetDetails.user === undefined ||
       assetDetails.user === null ||
       (typeof assetDetails.user === 'string' &&
@@ -18,6 +25,12 @@ export async function decommissionWrapper(id) {
       (typeof assetDetails.user === 'object' &&
         assetDetails.user !== null &&
         Object.keys(assetDetails.user).length === 0);
+    if (!isUnassigned) {
+      // Asset has to be unassigned before a decommission - we will try to catch this in the API Controller layer
+      throw new BadRequest(
+        'This asset must be unassigned before it can be decommissioned! Please unassign the asset and try again.',
+      );
+    }
 
     // Build the pieces of the body out for the audit log entry in case conditions are met
     // We are doing all defaults from the asset object we got from getAssetByID and doing action as "decommission"
@@ -30,13 +43,6 @@ export async function decommissionWrapper(id) {
     if (conditionCode === undefined) {
       throw new InternalServerError(
         `Condition '${conditionLabel ?? '<missing>'}' is not mapped in OptionSet.`,
-      );
-    }
-
-    if (!unassigned) {
-      // Asset has to be unassigned before a decommission - we will try to catch this in the API Controller layer
-      throw new BadRequest(
-        'This asset must be unassigned before it can be decommissioned! Please unassign the asset and try again.',
       );
     }
 

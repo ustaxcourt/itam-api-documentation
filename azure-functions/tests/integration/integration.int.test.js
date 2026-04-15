@@ -696,9 +696,13 @@ describe('Integration testing for ITAM Project', () => {
     );
 
     expect(res.status).toBe(404);
-
     const body = await res.json();
-    expect(body.message).toBe(`No asset found for ID: ${nonExistentAssetId}`);
+    expect(body.message).toMatch(
+      new RegExp(
+        `Entity 'crf7f_ois_assets' With Id = ${nonExistentAssetId} Does Not Exist`,
+        'i',
+      ),
+    );
     expect(body.data).toBe(null);
   });
 });
