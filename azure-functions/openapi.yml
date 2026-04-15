@@ -129,6 +129,13 @@ components:
           type: string
           example: 316
           nullable: true
+        modelInfo:
+          type: object
+          nullable: true
+          properties:
+            warrantyInformation:
+              type: string
+              example: "Warranty valid until 01/01/2025"
         osVersion:
           type: string
           example: Windows 11 24H2
@@ -302,6 +309,99 @@ paths:
                         type: string
                         description: The ID of the recommissioned asset
         "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
+  /v1/assets/search:
+    get:
+      summary: Search assets using one or more filters
+      description: >
+        Searches IT assets using exact-match filters.
+        Clients must provide **at least one valid search filter**.
+        Multiple filters are combined using logical AND.
+
+        Notes:
+          - Search is exact match
+          - Unknown query parameters are ignored
+          - Results are capped at a maximum of 2000 items
+          - Pagination is not supported at this time
+
+      parameters:
+        - name: serialNumber
+          in: query
+          required: false
+          description: >
+            Exact serial number of the asset.
+            Must match the full serial number exactly.
+          schema:
+            type: string
+          example: "1234567"
+
+        - name: location
+          in: query
+          required: false
+          description: >
+            Location identifier (GUID).
+            The location must exist in available locations; otherwise a 404 response is returned.
+          schema:
+            type: string
+            format: uuid
+          example: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+
+        - name: type
+          in: query
+          required: false
+          description: >
+            Asset type (exact match).
+          schema:
+            type: string
+          example: "Monitor"
+
+        - name: unassigned
+          in: query
+          required: false
+          description: >
+            Presence-only flag.
+            When present, returns only assets that are unassigned.
+            Value is ignored; presence implies true.
+          schema:
+            type: string
+            nullable: true
+          example: ""
+        - $ref: "#/components/parameters/AuthorizationHeader"
+
+      responses:
+        "200":
+          description: Search executed successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                            description: Total number of assets returned
+                            example: 2
+                          data:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/Asset"
+        "400":
+          description: Invalid or empty search request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                message: "At least one valid search filter must be provided"
+                data: null
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "404": { $ref: "#/components/responses/NotFound" }

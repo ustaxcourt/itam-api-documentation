@@ -1,18 +1,18 @@
 const baseUrl = process.env.API_BASE_URL || 'http://localhost:7071';
 const bearerToken = process.env.BEARERTOKEN || 'Bearer mocked-token';
-
-const existingAssetId = 'c0c91c65-8706-f111-8407-000d3a37029d';
+const existingAssetId = '966f3b66-8706-f111-8406-000d3a370650';
 const malformedAssetId = '8d204fa8-69d7-f011-85';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
 const existingUserId = '00674e1a-bd05-4c6c-a0a1-344404d4b2e4';
 const nonExistentUserId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
-const existingLocationId = '4b64524c-8706-f111-8406-000d3a3708c4';
+const existingLocationId = '5710f84b-8706-f111-8406-000d3a37071f';
 const malformedLocationId = 'df164d9a-69d7-f011-854';
-const existingLocationName = '331';
+const existingLocationName = '306';
 const nonExistentLocationId = '04d494f4-b5b9-f011-bbd2-000d3a56dc3b';
 const existingJobTitleId = '76c0a78f-5cd4-f011-8544-000d3a5b5036';
 const nonExistingJobTitleId = 'b09cf686-30d5-f011-8544-7c1e52177973';
 const malformedJobTitleId = 'b09cf686-30d5-f0';
+const existingSerialNumber = 'DVTDFT772X';
 
 describe('Integration testing for ITAM Project', () => {
   jest.setTimeout(30000);
@@ -51,6 +51,7 @@ describe('Integration testing for ITAM Project', () => {
     expect(body.data).toHaveProperty('osVersion');
     expect(body.data).toHaveProperty('phone');
     expect(body.data).toHaveProperty('user');
+    expect(body.data).toHaveProperty('modelInfo');
   });
 
   it('GET Assets - should return 404 when querying for a non-existent asset', async () => {
@@ -512,6 +513,149 @@ describe('Integration testing for ITAM Project', () => {
     const body = await getTitleInfoResult.json();
     expect(body.message).toMatch('Resource not found');
     expect(body.data).toBe(null);
+  });
+
+  it('GET Asset Search - should return assets for a valid serialNumber search', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/search?serialNumber=${existingSerialNumber}`,
+      {
+        method: 'GET',
+        headers: { Authorization: bearerToken },
+      },
+    );
+
+    expect(res.status).toBe(200);
+    const body = await res.json();
+
+    expect(body).toHaveProperty('message', 'Success');
+    expect(body.data).toHaveProperty('total');
+    expect(body.data).toHaveProperty('data');
+    expect(Array.isArray(body.data.data)).toBe(true);
+
+    const asset = body.data.data[0];
+    expect(asset).toHaveProperty('assetName');
+    expect(asset).toHaveProperty('itemStatus');
+    expect(asset).toHaveProperty('location');
+  });
+
+  it('GET Asset Search - should return assets for a combined serialNumber and location search', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/search?serialNumber=${existingSerialNumber}&location=${existingLocationId}`,
+      {
+        method: 'GET',
+        headers: { Authorization: bearerToken },
+      },
+    );
+
+    expect(res.status).toBe(200);
+    const body = await res.json();
+
+    expect(body).toHaveProperty('message', 'Success');
+    expect(body.data).toHaveProperty('total');
+    expect(body.data).toHaveProperty('data');
+    expect(Array.isArray(body.data.data)).toBe(true);
+
+    expect(body.data.data.length).toBeGreaterThan(0); // This is a verified combined search - exists in database with both these filters
+
+    const asset = body.data.data[0];
+    expect(asset).toHaveProperty('assetName');
+    expect(asset).toHaveProperty('location');
+  });
+
+  it('GET Asset Search - should return 400 for an empty search query', async () => {
+    const res = await fetch(`${baseUrl}/api/v1/assets/search`, {
+      method: 'GET',
+      headers: { Authorization: bearerToken },
+    });
+
+    expect(res.status).toBe(400);
+    const body = await res.json();
+
+    expect(body.message).toBe(
+      'At least one valid search filter must be provided',
+    );
+    expect(body.data).toBe(null);
+  });
+
+  it('GET Asset Search - should return 404 when searching with a non-existent location', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/search?location=${nonExistentLocationId}`,
+      {
+        method: 'GET',
+        headers: { Authorization: bearerToken },
+      },
+    );
+
+    expect(res.status).toBe(404);
+    const body = await res.json();
+
+    expect(body.message).toBe(
+      `No location found for ID: ${nonExistentLocationId}`,
+    );
+    expect(body.data).toBe(null);
+  });
+
+  it('GET Asset Search - should ignore unknown query params and still return results', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/search?serialNumber=${existingSerialNumber}&blah=some-random-value`,
+      {
+        method: 'GET',
+        headers: { Authorization: bearerToken },
+      },
+    );
+
+    expect(res.status).toBe(200);
+    const body = await res.json();
+
+    expect(body).toHaveProperty('message', 'Success');
+    expect(body.data).toHaveProperty('total');
+    expect(body.data).toHaveProperty('data');
+    expect(Array.isArray(body.data.data)).toBe(true);
+
+    const asset = body.data.data[0];
+    expect(asset).toHaveProperty('assetName');
+  });
+
+  it('GET Asset Search - should return identical results regardless of serialNumber casing', async () => {
+    const lowerCaseResponse = await fetch(
+      `${baseUrl}/api/v1/assets/search?serialNumber=${existingSerialNumber.toLowerCase()}`,
+      {
+        method: 'GET',
+        headers: { Authorization: bearerToken },
+      },
+    );
+
+    const upperCaseResponse = await fetch(
+      `${baseUrl}/api/v1/assets/search?serialNumber=${existingSerialNumber.toUpperCase()}`,
+      {
+        method: 'GET',
+        headers: { Authorization: bearerToken },
+      },
+    );
+
+    expect(lowerCaseResponse.status).toBe(200);
+    expect(upperCaseResponse.status).toBe(200);
+
+    const lowerBody = await lowerCaseResponse.json();
+    const upperBody = await upperCaseResponse.json();
+
+    expect(lowerBody).toHaveProperty('message', 'Success');
+    expect(upperBody).toHaveProperty('message', 'Success');
+
+    expect(lowerBody.data).toHaveProperty('total');
+    expect(upperBody.data).toHaveProperty('total');
+
+    expect(lowerBody.data).toHaveProperty('data');
+    expect(upperBody.data).toHaveProperty('data');
+
+    expect(Array.isArray(lowerBody.data.data)).toBe(true);
+    expect(Array.isArray(upperBody.data.data)).toBe(true);
+
+    expect(lowerBody.data.total).toBe(upperBody.data.total);
+    expect(lowerBody.data.data).toEqual(upperBody.data.data);
+    // Already verified results are identical, just checking that the asset(s) returned have the expected properties as well
+    const asset = lowerBody.data.data[0];
+    expect(asset).toHaveProperty('assetName');
   });
 
   it('PATCH Decommission - should decommission asset and return 404 on subsequent GET', async () => {
