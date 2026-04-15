@@ -16,6 +16,25 @@ const existingSerialNumber = 'DVTDFT772X';
 
 describe('Integration testing for ITAM Project', () => {
   jest.setTimeout(30000);
+
+  // Recommission the Asset used for testing before running suite
+  beforeAll(async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/recommission`,
+      {
+        method: 'PATCH',
+        headers: { Authorization: bearerToken },
+      },
+    );
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(
+        `beforeAll: Failed to recommission asset ${existingAssetId} (${res.status}) ${body.message ?? ''}`,
+      );
+    }
+  });
+
   //GET an asset
   it('GET Assets - should fetch an existing asset successfully', async () => {
     const res = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
@@ -42,7 +61,12 @@ describe('Integration testing for ITAM Project', () => {
     });
     expect(res.status).toBe(404);
     const body = await res.json();
-    expect(body.message).toBe(`No asset found for ID: ${nonExistentAssetId}`);
+    expect(body.message).toMatch(
+      new RegExp(
+        `Entity 'crf7f_ois_assets' With Id = ${nonExistentAssetId} Does Not Exist`,
+        'i',
+      ),
+    );
   });
 
   it('GET Assets - should return 400 when querying for a malformed asset', async () => {
@@ -632,5 +656,53 @@ describe('Integration testing for ITAM Project', () => {
     // Already verified results are identical, just checking that the asset(s) returned have the expected properties as well
     const asset = lowerBody.data.data[0];
     expect(asset).toHaveProperty('assetName');
+  });
+
+  it('PATCH Decommission - should decommission asset and return 404 on subsequent GET', async () => {
+    // Decommission asset
+    const decommissionRes = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/decommission`,
+      {
+        method: 'PATCH',
+        headers: { Authorization: bearerToken },
+      },
+    );
+
+    expect(decommissionRes.status).toBe(200);
+
+    const decommissionBody = await decommissionRes.json();
+    expect(decommissionBody.message).toBe('Successfully decommissioned asset');
+    expect(decommissionBody.data).toBe(existingAssetId);
+
+    // Attempt to GET the same asset afterwards
+    const getRes = await fetch(`${baseUrl}/api/v1/assets/${existingAssetId}`, {
+      method: 'GET',
+      headers: { Authorization: bearerToken },
+    });
+
+    expect(getRes.status).toBe(404);
+
+    const getBody = await getRes.json();
+    expect(getBody.message).toMatch(/decommissioned|not found/i);
+  });
+
+  it('PATCH Decommission - should return 404 when asset ID is incorrect', async () => {
+    const res = await fetch(
+      `${baseUrl}/api/v1/assets/${nonExistentAssetId}/decommission`,
+      {
+        method: 'PATCH',
+        headers: { Authorization: bearerToken },
+      },
+    );
+
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.message).toMatch(
+      new RegExp(
+        `Entity 'crf7f_ois_assets' With Id = ${nonExistentAssetId} Does Not Exist`,
+        'i',
+      ),
+    );
+    expect(body.data).toBe(null);
   });
 });

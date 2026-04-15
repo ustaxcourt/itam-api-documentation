@@ -250,6 +250,70 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "500": { $ref: "#/components/responses/InternalServerError" }
 
+  /v1/assets/{assetId}/decommission:
+    patch:
+      description: >
+        Decommissions an asset given an asset Id. Decommissioned assets are treated as inactive
+        and are no longer retrievable through standard asset query endpoints.
+        The asset must be unassigned before it can be decommissioned.
+      parameters:
+        - name: assetId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/AuthorizationHeader"
+      responses:
+        "200":
+          description: Asset successfully decommissioned
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: string
+                        description: The ID of the decommissioned asset
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
+  /v1/assets/{assetId}/recommission:
+    patch:
+      description: >
+        Recommissions a previously decommissioned asset given an asset Id.
+        Recommissioned assets become active again and are retrievable through standard
+        asset query endpoints.
+      parameters:
+        - name: assetId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/AuthorizationHeader"
+      responses:
+        "200":
+          description: Asset successfully recommissioned
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: string
+                        description: The ID of the recommissioned asset
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
   /v1/assets/search:
     get:
       summary: Search assets using one or more filters
