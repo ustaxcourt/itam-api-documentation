@@ -14,7 +14,7 @@ describe('validateSearchCriteria', () => {
         location: undefined,
         type: undefined,
         serialNumber: '123456',
-        unassigned: false,
+        isUnassigned: undefined,
       },
       limit: 2000,
     });
@@ -31,14 +31,14 @@ describe('validateSearchCriteria', () => {
       location: query.location,
       type: undefined,
       serialNumber: undefined,
-      unassigned: false,
+      isUnassigned: undefined,
     });
     expect(result.limit).toBe(2000);
   });
 
-  test('returns criteria with unassigned filter only', () => {
+  test('returns criteria with isUnassigned filter only', () => {
     const query = {
-      unassigned: '',
+      isUnassigned: 'true',
     };
 
     const result = validateSearchCriteria(query);
@@ -47,7 +47,7 @@ describe('validateSearchCriteria', () => {
       location: undefined,
       type: undefined,
       serialNumber: undefined,
-      unassigned: true,
+      isUnassigned: 'true',
     });
     expect(result.limit).toBe(2000);
   });
@@ -64,13 +64,13 @@ describe('validateSearchCriteria', () => {
       location: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
       type: undefined,
       serialNumber: 'ABC123',
-      unassigned: false,
+      isUnassigned: undefined,
     });
   });
 
-  test('sets unassigned to true when flag is present (presence-only)', () => {
+  test('sets isUnassigned to false when flag is set to "false"', () => {
     const query = {
-      unassigned: '',
+      isUnassigned: 'false',
     };
 
     const result = validateSearchCriteria(query);
@@ -79,7 +79,7 @@ describe('validateSearchCriteria', () => {
       location: undefined,
       type: undefined,
       serialNumber: undefined,
-      unassigned: true,
+      isUnassigned: 'false',
     });
   });
 

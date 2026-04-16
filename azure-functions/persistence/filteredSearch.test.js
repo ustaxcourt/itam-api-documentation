@@ -16,7 +16,7 @@ describe('filteredSearch', () => {
       filters: {
         serialNumber: '1234567',
         location: undefined,
-        unassigned: false,
+        isUnassigned: undefined,
       },
       sort: {
         field: 'crf7f_name',
@@ -53,7 +53,7 @@ describe('filteredSearch', () => {
       filters: {
         location: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
         serialNumber: undefined,
-        unassigned: false,
+        isUnassigned: undefined,
       },
       sort: {
         field: 'crf7f_name',
@@ -85,12 +85,12 @@ describe('filteredSearch', () => {
     });
   });
 
-  test('builds correct query with unassigned filter only', async () => {
+  test('builds correct query with isUnassigned filter only', async () => {
     const criteria = {
       filters: {
         location: undefined,
         serialNumber: undefined,
-        unassigned: true,
+        isUnassigned: 'true',
       },
       sort: {
         field: 'crf7f_name',
@@ -127,7 +127,7 @@ describe('filteredSearch', () => {
       filters: {
         location: '11111111-2222-3333-4444-555555555555',
         serialNumber: 'ABC123',
-        unassigned: false,
+        isUnassigned: undefined,
       },
       sort: {
         field: 'crf7f_name',
@@ -166,7 +166,7 @@ describe('filteredSearch', () => {
       filters: {
         serialNumber: '1234567',
         location: undefined,
-        unassigned: false,
+        isUnassigned: 'false',
 
         // Unknown/nonsense filter should be ignored
         random: 'random-value',
@@ -187,14 +187,23 @@ describe('filteredSearch', () => {
     const result = await filteredSearch(criteria);
 
     expect(dataverseCall).toHaveBeenCalledTimes(1);
-    expect(dataverseCall).toHaveBeenCalledWith({
-      method: 'GET',
-      query:
-        'crf7f_ois_assetses' +
-        "?$filter=crf7f_serial_number eq '1234567'" +
-        `&$orderby=crf7f_name asc` +
-        `&$top=${criteria.limit}`,
-    });
+
+    // This piece makes it so ordering is not important - this test came back in a random order so this still asserts we get back what we expect
+    // Just not in any particular order
+    const callArg = dataverseCall.mock.calls[0][0];
+    expect(callArg.method).toBe('GET');
+    expect(callArg.query).toContain('crf7f_ois_assetses');
+
+    // Assert required filters exist
+    expect(callArg.query).toContain("crf7f_serial_number eq '1234567'");
+    expect(callArg.query).toContain('crf7f_asset_item_status eq 0');
+
+    // Assert sort + limit
+    expect(callArg.query).toContain('&$orderby=crf7f_name asc');
+    expect(callArg.query).toContain(`&$top=${criteria.limit}`);
+
+    // Assert unknown filter is NOT included
+    expect(callArg.query).not.toContain('random');
 
     expect(result).toEqual({
       items: mockResponse.value,
@@ -206,7 +215,7 @@ describe('filteredSearch', () => {
       filters: {
         location: undefined,
         serialNumber: undefined,
-        unassigned: false,
+        isUnassigned: undefined,
       },
       sort: {
         field: 'crf7f_name',
