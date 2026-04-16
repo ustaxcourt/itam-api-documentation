@@ -29,6 +29,17 @@ describe('Integration testing for ITAM Project', () => {
 
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
+
+      // If the asset is already active, we are going to ignore that error and continue since it is already ready for testing
+      if (
+        res.status === 400 &&
+        body.message ===
+          'This asset is not currently decommissioned and cannot be recommissioned.'
+      ) {
+        return; // Continue!
+      }
+
+      // Anything else is a real failure
       throw new Error(
         `beforeAll: Failed to recommission asset ${existingAssetId} (${res.status}) ${body.message ?? ''}`,
       );

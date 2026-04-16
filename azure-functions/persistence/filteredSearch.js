@@ -16,8 +16,12 @@ export async function filteredSearch(criteria) {
     */
 
   // Using choice field for asset status, goes off a status of "Available", which is encoded as 1 in the Dataverse Choice column
-  if (criteria.filters.unassigned) {
+  if (criteria.filters.isUnassigned === 'true') {
     clauses.push(`crf7f_asset_item_status eq 1`); // Unassigned/Available status in the enum/choice field
+  }
+
+  if (criteria.filters.isUnassigned === 'false') {
+    clauses.push(`crf7f_asset_item_status eq 0`); // Assigned is false. Mapped to assigned status
   }
 
   if (criteria.filters.serialNumber) {
