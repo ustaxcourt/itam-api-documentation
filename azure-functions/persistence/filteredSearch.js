@@ -1,5 +1,4 @@
 import { dataverseCall } from '../persistence/dataverseCall.js';
-import { BadRequest } from '../errors/BadRequest.js';
 
 export async function filteredSearch(criteria) {
   const clauses = [];
@@ -28,10 +27,11 @@ export async function filteredSearch(criteria) {
     clauses.push(`crf7f_serial_number eq '${criteria.filters.serialNumber}'`);
   }
 
-  // Added protection – validateSearchCriteria should already enforce this
-  if (!clauses.length) {
-    throw new BadRequest('No valid filters provided for asset search');
-  }
+  // We exclude decommissioned assets from search results, decommissioned can be either set to false or null
+  // null in cases where field is cleared or line item was created before implementation of decommissioned functionality
+  clauses.push(
+    `(crf7f_decommissioned eq false or crf7f_decommissioned eq null)`,
+  );
 
   const filterQuery = clauses.join(' and ');
 

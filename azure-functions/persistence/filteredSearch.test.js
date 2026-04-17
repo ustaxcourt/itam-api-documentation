@@ -1,6 +1,5 @@
 import { filteredSearch } from './filteredSearch.js';
 import { dataverseCall } from '../persistence/dataverseCall.js';
-import { BadRequest } from '../errors/BadRequest.js';
 
 jest.mock('../persistence/dataverseCall.js', () => ({
   dataverseCall: jest.fn(),
@@ -38,7 +37,7 @@ describe('filteredSearch', () => {
       method: 'GET',
       query:
         'crf7f_ois_assetses' +
-        "?$filter=crf7f_serial_number eq '1234567'" +
+        "?$filter=crf7f_serial_number eq '1234567' and (crf7f_decommissioned eq false or crf7f_decommissioned eq null)" +
         `&$orderby=crf7f_name asc` +
         `&$top=${criteria.limit}`,
     });
@@ -75,7 +74,7 @@ describe('filteredSearch', () => {
       method: 'GET',
       query:
         'crf7f_ois_assetses' +
-        '?$filter=_crf7f_fac_asset_ref_location_lookup_value eq aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' +
+        '?$filter=_crf7f_fac_asset_ref_location_lookup_value eq aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee and (crf7f_decommissioned eq false or crf7f_decommissioned eq null)' +
         `&$orderby=crf7f_name asc` +
         `&$top=${criteria.limit}`,
     });
@@ -112,7 +111,7 @@ describe('filteredSearch', () => {
       method: 'GET',
       query:
         'crf7f_ois_assetses' +
-        '?$filter=crf7f_asset_item_status eq 1' +
+        '?$filter=crf7f_asset_item_status eq 1 and (crf7f_decommissioned eq false or crf7f_decommissioned eq null)' +
         `&$orderby=crf7f_name asc` +
         `&$top=${criteria.limit}`,
     });
@@ -152,6 +151,44 @@ describe('filteredSearch', () => {
         '?$filter=' +
         '_crf7f_fac_asset_ref_location_lookup_value eq 11111111-2222-3333-4444-555555555555' +
         " and crf7f_serial_number eq 'ABC123'" +
+        ' and (crf7f_decommissioned eq false or crf7f_decommissioned eq null)' +
+        `&$orderby=crf7f_name asc` +
+        `&$top=${criteria.limit}`,
+    });
+
+    expect(result).toEqual({
+      items: mockResponse.value,
+    });
+  });
+
+  test('ensures decommissioned filter is always included', async () => {
+    const criteria = {
+      filters: {
+        serialNumber: '1234567',
+        location: undefined,
+        isUnassigned: undefined,
+      },
+      sort: {
+        field: 'crf7f_name',
+        direction: 'asc',
+      },
+      limit: 2000,
+    };
+
+    const mockResponse = {
+      value: [{ id: 'asset-7' }],
+    };
+
+    dataverseCall.mockResolvedValue(mockResponse);
+
+    const result = await filteredSearch(criteria);
+
+    expect(dataverseCall).toHaveBeenCalledTimes(1);
+    expect(dataverseCall).toHaveBeenCalledWith({
+      method: 'GET',
+      query:
+        'crf7f_ois_assetses' +
+        "?$filter=crf7f_serial_number eq '1234567' and (crf7f_decommissioned eq false or crf7f_decommissioned eq null)" +
         `&$orderby=crf7f_name asc` +
         `&$top=${criteria.limit}`,
     });
@@ -198,6 +235,11 @@ describe('filteredSearch', () => {
     expect(callArg.query).toContain("crf7f_serial_number eq '1234567'");
     expect(callArg.query).toContain('crf7f_asset_item_status eq 0');
 
+    // Assert decommissioned filter is included
+    expect(callArg.query).toContain(
+      '(crf7f_decommissioned eq false or crf7f_decommissioned eq null)',
+    );
+
     // Assert sort + limit
     expect(callArg.query).toContain('&$orderby=crf7f_name asc');
     expect(callArg.query).toContain(`&$top=${criteria.limit}`);
@@ -208,27 +250,5 @@ describe('filteredSearch', () => {
     expect(result).toEqual({
       items: mockResponse.value,
     });
-  });
-
-  test('throws BadRequest when no valid filters are provided', async () => {
-    const criteria = {
-      filters: {
-        location: undefined,
-        serialNumber: undefined,
-        isUnassigned: undefined,
-      },
-      sort: {
-        field: 'crf7f_name',
-        direction: 'asc',
-      },
-      limit: 2000,
-    };
-
-    await expect(filteredSearch(criteria)).rejects.toThrow(BadRequest);
-    await expect(filteredSearch(criteria)).rejects.toThrow(
-      'No valid filters provided for asset search',
-    );
-
-    expect(dataverseCall).not.toHaveBeenCalled();
   });
 });

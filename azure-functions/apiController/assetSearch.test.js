@@ -62,6 +62,35 @@ describe('assetSearchHandler', () => {
     expect(context.error).not.toHaveBeenCalled();
   });
 
+  it('delegates search parameters to the use case and assets that are not decommissioned', async () => {
+    const queryParams = {
+      location: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+      serialNumber: 'ABC123',
+      isUnassigned: 'true',
+    };
+
+    // Data returned will never include items that are decommissioned (true status) - this filter is applied in the persistence layer
+    const useCaseResult = {
+      total: 2,
+      data: [
+        { id: 'asset-1', status: 'Available', decommissioned: false },
+        { id: 'asset-2', status: 'Available', decommissioned: null },
+      ],
+    };
+
+    assetSearchManager.mockResolvedValue(useCaseResult);
+
+    const request = createRequest(queryParams);
+    const result = await assetSearchHandler(request, context);
+
+    expect(assetSearchManager).toHaveBeenCalledWith(queryParams);
+
+    // Handler returns use case result in response body
+    expect(result).toEqual(buildResponse(200, 'Success', useCaseResult));
+
+    expect(context.error).not.toHaveBeenCalled();
+  });
+
   it('returns 400 when use case throws BadRequest', async () => {
     const queryParams = {};
     const error = new BadRequest(

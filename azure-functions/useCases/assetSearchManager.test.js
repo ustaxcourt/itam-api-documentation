@@ -151,6 +151,37 @@ describe('assetSearchManager', () => {
     expect(filterDictionaryByList).not.toHaveBeenCalled();
   });
 
+  it('returns assets that are not decommissioned', async () => {
+    const queryObject = {
+      serialNumber: '123456',
+    };
+    const criteria = {
+      filters: {
+        serialNumber: '123456',
+        location: undefined,
+        type: undefined,
+        isUnassigned: false,
+      },
+      limit: 2000,
+    };
+    const assets = [
+      { id: 'asset-1', decommissioned: false },
+      { id: 'asset-2', decommissioned: null },
+    ];
+    validateSearchCriteria.mockReturnValue(criteria);
+    filteredSearch.mockResolvedValue({ items: assets });
+    filterDictionaryByList.mockReturnValue(assets);
+    const result = await assetSearchManager(queryObject);
+
+    expect(validateSearchCriteria).toHaveBeenCalledWith(queryObject);
+    expect(filteredSearch).toHaveBeenCalledWith(criteria);
+    expect(filterDictionaryByList).toHaveBeenCalledWith(assets);
+    expect(result).toEqual({
+      total: assets.length,
+      data: assets,
+    });
+  });
+
   it('returns identical results regardless of serialNumber casing', async () => {
     const lowerCaseQuery = { serialNumber: 'abc123' };
     const upperCaseQuery = { serialNumber: 'ABC123' };

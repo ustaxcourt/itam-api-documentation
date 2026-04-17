@@ -13,6 +13,7 @@ const existingJobTitleId = '76c0a78f-5cd4-f011-8544-000d3a5b5036';
 const nonExistingJobTitleId = 'b09cf686-30d5-f011-8544-7c1e52177973';
 const malformedJobTitleId = 'b09cf686-30d5-f0';
 const existingSerialNumber = 'DVTDFT772X';
+const matchSerial = 'DRY7PD2677';
 
 describe('Integration testing for ITAM Project', () => {
   jest.setTimeout(30000);
@@ -667,6 +668,48 @@ describe('Integration testing for ITAM Project', () => {
     // Already verified results are identical, just checking that the asset(s) returned have the expected properties as well
     const asset = lowerBody.data.data[0];
     expect(asset).toHaveProperty('assetName');
+  });
+
+  it('GET Asset Search - should not return decommissioned assets in search results', async () => {
+    // Decommission the active asset
+    const decommissionRes = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/decommission`,
+      {
+        method: 'PATCH',
+        headers: { Authorization: bearerToken },
+      },
+    );
+    expect(decommissionRes.status).toBe(200);
+
+    // Try to search for this asset with its exact serial number - should not be returned since it is now decommissioned
+    const searchRes = await fetch(
+      `${baseUrl}/api/v1/assets/search?serialNumber=${matchSerial}`,
+      {
+        method: 'GET',
+        headers: { Authorization: bearerToken },
+      },
+    );
+
+    expect(searchRes.status).toBe(200);
+    const body = await searchRes.json();
+
+    expect(body).toHaveProperty('message', 'Success');
+    expect(body.data).toHaveProperty('total');
+    expect(body.data).toHaveProperty('data');
+    expect(Array.isArray(body.data.data)).toBe(true);
+
+    // Asset should not be returned in search results
+    expect(body.data.data.length).toBe(0);
+
+    // Reset the asset afterwards
+    const recommissionRes = await fetch(
+      `${baseUrl}/api/v1/assets/${existingAssetId}/recommission`,
+      {
+        method: 'PATCH',
+        headers: { Authorization: bearerToken },
+      },
+    );
+    expect(recommissionRes.status).toBe(200);
   });
 
   it('PATCH Decommission - should decommission asset and return 404 on subsequent GET', async () => {
