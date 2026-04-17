@@ -1,5 +1,4 @@
 import { dataverseCall } from '../persistence/dataverseCall.js';
-import { BadRequest } from '../errors/BadRequest.js';
 
 export async function filteredSearch(criteria) {
   const clauses = [];
@@ -13,19 +12,26 @@ export async function filteredSearch(criteria) {
   if (criteria.filters.type) {
     clauses.push(`crf7f_asset_type eq '${criteria.filters.type}'`);
   }
-    // this will be for the choice field for asset status - logic pending either available only or not assigned.
-    if (criteria.filters.unassigned) {
-    clauses.push(`crf7f_asset_status eq <UNASSIGNED_CHOICE_VALUE>`);
+    */
+
+  // Using choice field for asset status, goes off a status of "Available", which is encoded as 1 in the Dataverse Choice column
+  if (criteria.filters.isUnassigned === 'true') {
+    clauses.push(`crf7f_asset_item_status eq 1`); // Unassigned/Available status in the enum/choice field
   }
-  */
+
+  if (criteria.filters.isUnassigned === 'false') {
+    clauses.push(`crf7f_asset_item_status eq 0`); // Assigned is false. Mapped to assigned status
+  }
+
   if (criteria.filters.serialNumber) {
     clauses.push(`crf7f_serial_number eq '${criteria.filters.serialNumber}'`);
   }
 
-  // Added protection – validateSearchCriteria should already enforce this
-  if (!clauses.length) {
-    throw new BadRequest('No valid filters provided for asset search');
-  }
+  // We exclude decommissioned assets from search results, decommissioned can be either set to false or null
+  // null in cases where field is cleared or line item was created before implementation of decommissioned functionality
+  clauses.push(
+    `(crf7f_decommissioned eq false or crf7f_decommissioned eq null)`,
+  );
 
   const filterQuery = clauses.join(' and ');
 
