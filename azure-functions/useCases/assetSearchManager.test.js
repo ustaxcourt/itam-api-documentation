@@ -16,6 +16,43 @@ describe('assetSearchManager', () => {
     jest.clearAllMocks();
   });
 
+  it('returns a regular combined search result with total and data fields present', async () => {
+    const queryObject = {
+      serialNumber: '123456',
+      location: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+      unassigned: '',
+    };
+
+    const criteria = {
+      filters: {
+        serialNumber: '123456',
+        location: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+        type: undefined,
+        unassigned: true,
+      },
+      limit: 2000,
+    };
+
+    const assets = [{ id: 1 }, { id: 2 }, { id: 3 }];
+
+    validateSearchCriteria.mockReturnValue(criteria);
+    getLocationById.mockResolvedValue({ id: criteria.filters.location });
+    filteredSearch.mockResolvedValue({ items: assets });
+    filterDictionaryByList.mockReturnValue(assets);
+
+    const result = await assetSearchManager(queryObject);
+
+    expect(validateSearchCriteria).toHaveBeenCalledWith(queryObject);
+    expect(getLocationById).toHaveBeenCalledWith(criteria.filters.location);
+    expect(filteredSearch).toHaveBeenCalledWith(criteria);
+    expect(filterDictionaryByList).toHaveBeenCalledWith(assets);
+
+    expect(result).toEqual({
+      total: assets.length,
+      data: assets,
+    });
+  });
+
   it('runs search without location filter and does not validate location', async () => {
     const queryObject = {
       serialNumber: '123456',
@@ -31,23 +68,23 @@ describe('assetSearchManager', () => {
       limit: 2000,
     };
 
-    const rawAssets = [{ id: 1 }, { id: 2 }];
-    const filteredAssets = [{ id: 1 }];
+    // Simulates a search that returns 2 assets matching the serial number filter, with no location filter applied
+    const assets = [{ id: 1 }, { id: 2 }];
 
     validateSearchCriteria.mockReturnValue(criteria);
-    filteredSearch.mockResolvedValue({ items: rawAssets });
-    filterDictionaryByList.mockReturnValue(filteredAssets);
+    filteredSearch.mockResolvedValue({ items: assets });
+    filterDictionaryByList.mockReturnValue(assets);
 
     const result = await assetSearchManager(queryObject);
 
     expect(validateSearchCriteria).toHaveBeenCalledWith(queryObject);
     expect(getLocationById).not.toHaveBeenCalled();
     expect(filteredSearch).toHaveBeenCalledWith(criteria);
-    expect(filterDictionaryByList).toHaveBeenCalledWith(rawAssets);
+    expect(filterDictionaryByList).toHaveBeenCalledWith(assets);
 
     expect(result).toEqual({
-      total: filteredAssets.length,
-      data: filteredAssets,
+      total: assets.length,
+      data: assets,
     });
   });
 
@@ -66,24 +103,23 @@ describe('assetSearchManager', () => {
       limit: 2000,
     };
 
-    const rawAssets = [{ id: 'asset-1' }];
-    const filteredAssets = [{ id: 'asset-1' }];
+    const assets = [{ id: 'asset-1' }];
 
     validateSearchCriteria.mockReturnValue(criteria);
     getLocationById.mockResolvedValue({ id: criteria.filters.location });
-    filteredSearch.mockResolvedValue({ items: rawAssets });
-    filterDictionaryByList.mockReturnValue(filteredAssets);
+    filteredSearch.mockResolvedValue({ items: assets });
+    filterDictionaryByList.mockReturnValue(assets);
 
     const result = await assetSearchManager(queryObject);
 
     expect(validateSearchCriteria).toHaveBeenCalledWith(queryObject);
     expect(getLocationById).toHaveBeenCalledWith(criteria.filters.location);
     expect(filteredSearch).toHaveBeenCalledWith(criteria);
-    expect(filterDictionaryByList).toHaveBeenCalledWith(rawAssets);
+    expect(filterDictionaryByList).toHaveBeenCalledWith(assets);
 
     expect(result).toEqual({
-      total: 1,
-      data: filteredAssets,
+      total: assets.length,
+      data: assets,
     });
   });
 
@@ -113,6 +149,37 @@ describe('assetSearchManager', () => {
     expect(getLocationById).toHaveBeenCalledWith(criteria.filters.location);
     expect(filteredSearch).not.toHaveBeenCalled();
     expect(filterDictionaryByList).not.toHaveBeenCalled();
+  });
+
+  it('returns assets that are not decommissioned', async () => {
+    const queryObject = {
+      serialNumber: '123456',
+    };
+    const criteria = {
+      filters: {
+        serialNumber: '123456',
+        location: undefined,
+        type: undefined,
+        isUnassigned: false,
+      },
+      limit: 2000,
+    };
+    const assets = [
+      { id: 'asset-1', decommissioned: false },
+      { id: 'asset-2', decommissioned: null },
+    ];
+    validateSearchCriteria.mockReturnValue(criteria);
+    filteredSearch.mockResolvedValue({ items: assets });
+    filterDictionaryByList.mockReturnValue(assets);
+    const result = await assetSearchManager(queryObject);
+
+    expect(validateSearchCriteria).toHaveBeenCalledWith(queryObject);
+    expect(filteredSearch).toHaveBeenCalledWith(criteria);
+    expect(filterDictionaryByList).toHaveBeenCalledWith(assets);
+    expect(result).toEqual({
+      total: assets.length,
+      data: assets,
+    });
   });
 
   it('returns identical results regardless of serialNumber casing', async () => {
