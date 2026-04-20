@@ -20,15 +20,15 @@ describe('assetSearchManager', () => {
     const queryObject = {
       serialNumber: '123456',
       location: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
-      unassigned: '',
+      isUnassigned: '',
     };
 
     const criteria = {
       filters: {
         serialNumber: '123456',
         location: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
-        type: undefined,
-        unassigned: true,
+        assetType: undefined,
+        isUnassigned: true,
       },
       limit: 2000,
     };
@@ -62,8 +62,8 @@ describe('assetSearchManager', () => {
       filters: {
         serialNumber: '123456',
         location: undefined,
-        type: undefined,
-        unassigned: false,
+        assetType: undefined,
+        isUnassigned: false,
       },
       limit: 2000,
     };
@@ -96,9 +96,9 @@ describe('assetSearchManager', () => {
     const criteria = {
       filters: {
         location: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
-        type: undefined,
+        assetType: undefined,
         serialNumber: undefined,
-        unassigned: false,
+        isUnassigned: false,
       },
       limit: 2000,
     };
@@ -131,9 +131,9 @@ describe('assetSearchManager', () => {
     const criteria = {
       filters: {
         location: 'invalid-location-id',
-        type: undefined,
+        assetType: undefined,
         serialNumber: undefined,
-        unassigned: false,
+        isUnassigned: false,
       },
       limit: 2000,
     };
@@ -159,7 +159,7 @@ describe('assetSearchManager', () => {
       filters: {
         serialNumber: '123456',
         location: undefined,
-        type: undefined,
+        assetType: undefined,
         isUnassigned: false,
       },
       limit: 2000,
@@ -192,8 +192,8 @@ describe('assetSearchManager', () => {
       filters: {
         serialNumber: query.serialNumber,
         location: undefined,
-        type: undefined,
-        unassigned: false,
+        assetType: undefined,
+        isUnassigned: false,
       },
       limit: 2000,
     }));
@@ -217,8 +217,8 @@ describe('assetSearchManager', () => {
       filters: {
         serialNumber: '123456',
         location: undefined,
-        type: undefined,
-        unassigned: false,
+        assetType: undefined,
+        isUnassigned: false,
       },
       limit: 2000,
     };

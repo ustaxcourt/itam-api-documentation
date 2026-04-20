@@ -16,6 +16,7 @@ describe('filteredSearch', () => {
         serialNumber: '1234567',
         location: undefined,
         isUnassigned: undefined,
+        assetType: undefined,
       },
       sort: {
         field: 'crf7f_name',
@@ -53,6 +54,7 @@ describe('filteredSearch', () => {
         location: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
         serialNumber: undefined,
         isUnassigned: undefined,
+        assetType: undefined,
       },
       sort: {
         field: 'crf7f_name',
@@ -90,6 +92,7 @@ describe('filteredSearch', () => {
         location: undefined,
         serialNumber: undefined,
         isUnassigned: 'true',
+        assetType: undefined,
       },
       sort: {
         field: 'crf7f_name',
@@ -127,6 +130,7 @@ describe('filteredSearch', () => {
         location: '11111111-2222-3333-4444-555555555555',
         serialNumber: 'ABC123',
         isUnassigned: undefined,
+        assetType: undefined,
       },
       sort: {
         field: 'crf7f_name',
@@ -167,6 +171,7 @@ describe('filteredSearch', () => {
         serialNumber: '1234567',
         location: undefined,
         isUnassigned: undefined,
+        assetType: undefined,
       },
       sort: {
         field: 'crf7f_name',
@@ -204,6 +209,7 @@ describe('filteredSearch', () => {
         serialNumber: '1234567',
         location: undefined,
         isUnassigned: 'false',
+        assetType: undefined,
 
         // Unknown/nonsense filter should be ignored
         random: 'random-value',

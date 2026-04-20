@@ -1,4 +1,11 @@
+import { NotFoundError } from '../errors/NotFoundError.js';
 import { dataverseCall } from '../persistence/dataverseCall.js';
+import { filterModelsByAssetType } from './filterModelsByAssetType.js';
+import { getAssetTypeIdByName } from './getAssetTypeIdByName.js';
+
+function buildLookupOrFilter(lookupField, ids) {
+  return ids.map(id => `${lookupField} eq ${id}`).join(' or ');
+}
 
 export async function filteredSearch(criteria) {
   const clauses = [];
@@ -8,11 +15,36 @@ export async function filteredSearch(criteria) {
       `_crf7f_fac_asset_ref_location_lookup_value eq ${criteria.filters.location}`, // Location - GUID based.
     );
   }
-  /*
-  if (criteria.filters.type) {
-    clauses.push(`crf7f_asset_type eq '${criteria.filters.type}'`);
+
+  if (criteria.filters.assetType) {
+    const assetTypeId = await getAssetTypeIdByName(criteria.filters.assetType);
+    console.log(
+      'Asset Type ID for type name',
+      criteria.filters.assetType,
+      'is',
+      assetTypeId,
+    ); // Testing!
+
+    if (!assetTypeId) {
+      throw new NotFoundError(
+        `No asset type found matching name: ${criteria.filters.assetType}`,
+      );
+    }
+
+    const modelIds = await filterModelsByAssetType(assetTypeId);
+
+    // If no models match the type, return empty result early
+    if (!modelIds.length) {
+      return { items: [] };
+    }
+
+    const modelFilter = buildLookupOrFilter(
+      '_crf7f_ois_asset_ref_model_lookup_value',
+      modelIds,
+    );
+
+    clauses.push(`(${modelFilter})`);
   }
-    */
 
   // Using choice field for asset status, goes off a status of "Available", which is encoded as 1 in the Dataverse Choice column
   if (criteria.filters.isUnassigned === 'true') {

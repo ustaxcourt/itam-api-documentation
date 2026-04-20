@@ -12,7 +12,7 @@ describe('validateSearchCriteria', () => {
     expect(result).toEqual({
       filters: {
         location: undefined,
-        type: undefined,
+        assetType: undefined,
         serialNumber: '123456',
         isUnassigned: undefined,
       },
@@ -29,7 +29,7 @@ describe('validateSearchCriteria', () => {
 
     expect(result.filters).toEqual({
       location: query.location,
-      type: undefined,
+      assetType: undefined,
       serialNumber: undefined,
       isUnassigned: undefined,
     });
@@ -45,7 +45,7 @@ describe('validateSearchCriteria', () => {
 
     expect(result.filters).toEqual({
       location: undefined,
-      type: undefined,
+      assetType: undefined,
       serialNumber: undefined,
       isUnassigned: 'true',
     });
@@ -62,7 +62,7 @@ describe('validateSearchCriteria', () => {
 
     expect(result.filters).toEqual({
       location: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
-      type: undefined,
+      assetType: undefined,
       serialNumber: 'ABC123',
       isUnassigned: undefined,
     });
@@ -77,7 +77,7 @@ describe('validateSearchCriteria', () => {
 
     expect(result.filters).toEqual({
       location: undefined,
-      type: undefined,
+      assetType: undefined,
       serialNumber: undefined,
       isUnassigned: 'false',
     });
