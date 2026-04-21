@@ -350,7 +350,7 @@ paths:
             format: uuid
           example: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
 
-        - name: type
+        - name: assetType
           in: query
           required: false
           description: >
@@ -359,13 +359,12 @@ paths:
             type: string
           example: "Monitor"
 
-        - name: unassigned
+        - name: isUnassigned
           in: query
           required: false
           description: >
-            Presence-only flag.
-            When present, returns only assets that are unassigned.
-            Value is ignored; presence implies true.
+            Can be either true or false. true returns assets that are not assigned and false returns assets that are assigned.
+            Any other value is ignored and does not impact search results.
           schema:
             type: string
             nullable: true

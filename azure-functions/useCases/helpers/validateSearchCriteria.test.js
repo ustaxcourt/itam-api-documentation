@@ -12,7 +12,7 @@ describe('validateSearchCriteria', () => {
     expect(result).toEqual({
       filters: {
         location: undefined,
-        type: undefined,
+        assetType: undefined,
         serialNumber: '123456',
         isUnassigned: undefined,
       },
@@ -29,7 +29,7 @@ describe('validateSearchCriteria', () => {
 
     expect(result.filters).toEqual({
       location: query.location,
-      type: undefined,
+      assetType: undefined,
       serialNumber: undefined,
       isUnassigned: undefined,
     });
@@ -45,9 +45,25 @@ describe('validateSearchCriteria', () => {
 
     expect(result.filters).toEqual({
       location: undefined,
-      type: undefined,
+      assetType: undefined,
       serialNumber: undefined,
       isUnassigned: 'true',
+    });
+    expect(result.limit).toBe(2000);
+  });
+
+  test('returns criteria with assetType filter only', () => {
+    const query = {
+      assetType: 'Laptop',
+    };
+
+    const result = validateSearchCriteria(query);
+
+    expect(result.filters).toEqual({
+      location: undefined,
+      assetType: 'Laptop',
+      serialNumber: undefined,
+      isUnassigned: undefined,
     });
     expect(result.limit).toBe(2000);
   });
@@ -62,7 +78,7 @@ describe('validateSearchCriteria', () => {
 
     expect(result.filters).toEqual({
       location: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
-      type: undefined,
+      assetType: undefined,
       serialNumber: 'ABC123',
       isUnassigned: undefined,
     });
@@ -77,7 +93,7 @@ describe('validateSearchCriteria', () => {
 
     expect(result.filters).toEqual({
       location: undefined,
-      type: undefined,
+      assetType: undefined,
       serialNumber: undefined,
       isUnassigned: 'false',
     });
