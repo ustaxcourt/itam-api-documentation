@@ -18,12 +18,6 @@ export async function filteredSearch(criteria) {
 
   if (criteria.filters.assetType) {
     const assetTypeId = await getAssetTypeIdByName(criteria.filters.assetType);
-    console.log(
-      'Asset Type ID for type name',
-      criteria.filters.assetType,
-      'is',
-      assetTypeId,
-    ); // Testing!
 
     if (!assetTypeId) {
       throw new NotFoundError(
