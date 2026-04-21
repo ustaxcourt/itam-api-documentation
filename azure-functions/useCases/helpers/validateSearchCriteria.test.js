@@ -52,6 +52,22 @@ describe('validateSearchCriteria', () => {
     expect(result.limit).toBe(2000);
   });
 
+  test('returns criteria with assetType filter only', () => {
+    const query = {
+      assetType: 'Laptop',
+    };
+
+    const result = validateSearchCriteria(query);
+
+    expect(result.filters).toEqual({
+      location: undefined,
+      assetType: 'Laptop',
+      serialNumber: undefined,
+      isUnassigned: undefined,
+    });
+    expect(result.limit).toBe(2000);
+  });
+
   test('returns criteria with multiple filters', () => {
     const query = {
       location: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',

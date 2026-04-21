@@ -1,8 +1,19 @@
 import { filteredSearch } from './filteredSearch.js';
-import { dataverseCall } from '../persistence/dataverseCall.js';
+import { dataverseCall } from './dataverseCall.js';
+import { filterModelsByAssetType } from './filterModelsByAssetType.js';
+import { getAssetTypeIdByName } from './getAssetTypeIdByName.js';
+import { NotFoundError } from '../errors/NotFoundError.js';
 
-jest.mock('../persistence/dataverseCall.js', () => ({
+jest.mock('./dataverseCall.js', () => ({
   dataverseCall: jest.fn(),
+}));
+
+jest.mock('./filterModelsByAssetType.js', () => ({
+  filterModelsByAssetType: jest.fn(),
+}));
+
+jest.mock('./getAssetTypeIdByName.js', () => ({
+  getAssetTypeIdByName: jest.fn(),
 }));
 
 describe('filteredSearch', () => {
@@ -124,6 +135,84 @@ describe('filteredSearch', () => {
     });
   });
 
+  test('builds correct query with assetType filter only', async () => {
+    const criteria = {
+      filters: {
+        assetType: 'Laptop',
+        location: undefined,
+        serialNumber: undefined,
+        isUnassigned: undefined,
+      },
+      sort: {
+        field: 'crf7f_name',
+        direction: 'asc',
+      },
+      limit: 2000,
+    };
+
+    const assetTypeId = '11111111-2222-3333-4444-555555555555';
+    const modelIds = ['aaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'];
+
+    getAssetTypeIdByName.mockResolvedValue(assetTypeId);
+    filterModelsByAssetType.mockResolvedValue(modelIds);
+
+    const mockResponse = {
+      value: [{ id: 'asset-7' }, { id: 'asset-8' }],
+    };
+
+    dataverseCall.mockResolvedValue(mockResponse);
+
+    const result = await filteredSearch(criteria);
+
+    expect(dataverseCall).toHaveBeenCalledTimes(1);
+
+    expect(dataverseCall).toHaveBeenCalledWith({
+      method: 'GET',
+      query:
+        'crf7f_ois_assetses' +
+        `?$filter=(_crf7f_ois_asset_ref_model_lookup_value eq ${modelIds[0]})` +
+        ' and (crf7f_decommissioned eq false or crf7f_decommissioned eq null)' +
+        `&$orderby=crf7f_name asc` +
+        `&$top=${criteria.limit}`,
+    });
+
+    expect(result).toEqual({
+      items: mockResponse.value,
+    });
+  });
+
+  test('returns empty result when assetType filter is provided but no models match the type', async () => {
+    const criteria = {
+      filters: {
+        assetType: 'Laptop',
+        location: undefined,
+        serialNumber: undefined,
+        isUnassigned: undefined,
+      },
+      sort: {
+        field: 'crf7f_name',
+        direction: 'asc',
+      },
+      limit: 2000,
+    };
+
+    const assetTypeId = '11111111-2222-3333-4444-555555555555';
+
+    getAssetTypeIdByName.mockResolvedValue(assetTypeId);
+    filterModelsByAssetType.mockResolvedValue([]); // No models match the asset type
+
+    const result = await filteredSearch(criteria);
+
+    expect(getAssetTypeIdByName).toHaveBeenCalledWith(
+      criteria.filters.assetType,
+    );
+    expect(filterModelsByAssetType).toHaveBeenCalledWith(assetTypeId);
+
+    expect(result).toEqual({
+      items: [],
+    });
+  });
+
   test('builds correct query with location AND serialNumber filters', async () => {
     const criteria = {
       filters: {
@@ -163,6 +252,27 @@ describe('filteredSearch', () => {
     expect(result).toEqual({
       items: mockResponse.value,
     });
+  });
+
+  test('throws NotFoundError if provided asset type does not exist', async () => {
+    const criteria = {
+      filters: {
+        assetType: 'NonexistentType',
+        location: undefined,
+        serialNumber: undefined,
+        isUnassigned: undefined,
+      },
+      sort: {
+        field: 'crf7f_name',
+        direction: 'asc',
+      },
+      limit: 2000,
+    };
+    getAssetTypeIdByName.mockResolvedValue(null); // Simulates when an asset type is not found in the database
+    await expect(filteredSearch(criteria)).rejects.toThrow(NotFoundError);
+    expect(getAssetTypeIdByName).toHaveBeenCalledWith(
+      criteria.filters.assetType,
+    );
   });
 
   test('ensures decommissioned filter is always included', async () => {

@@ -13,6 +13,6 @@ export async function getAssetTypeIdByName(typeName) {
     method: 'GET',
   });
 
-  // Here we assume that asset type names are unique, so we take the first match if there are multiple. If there are no matches, we return null
-  return data.value.length ? data.value[0].crf7f_ois_asset_ref_typeid : null; // may reduce this
+  // We assume that asset type names are unique. If there are no matches, we return null
+  return data.value.length ? data.value[0].crf7f_ois_asset_ref_typeid : null;
 }
