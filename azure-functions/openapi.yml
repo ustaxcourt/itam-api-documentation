@@ -101,9 +101,6 @@ components:
     Asset:
       type: object
       properties:
-        activation:
-          type: boolean
-          nullable: true
         assetName:
           type: string
           example: "EliteDisplay 231i #22"

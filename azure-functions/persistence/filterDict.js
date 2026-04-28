@@ -15,9 +15,6 @@ export function filterDictionary(dict) {
     crf7f_phone_numbers: 'phone',
     'crf7f_asset_item_condition@OData.Community.Display.V1.FormattedValue':
       'condition',
-    crf7f_service_activation: 'activation',
-    '_crf7f_usercurrentownerlookup@OData.Community.Display.V1.FormattedValue':
-      'user',
     crf7f_os_version: 'osVersion',
     crf7f_userCurrentOwnerLookup: 'user',
     crf7f_entra_object_id: 'name',
