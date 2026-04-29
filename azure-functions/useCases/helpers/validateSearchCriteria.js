@@ -3,10 +3,10 @@ import { BadRequest } from '../../errors/BadRequest.js';
 export function validateSearchCriteria(query) {
   const maxItems = 2000; // Hard cap for returns to limit potential performance issues. Arbitrary number, can be adjusted as needed
 
-  const { location, type, serialNumber, isUnassigned } = query;
+  const { location, assetType, serialNumber, isUnassigned } = query;
 
   // Ensure at least one valid filter exists
-  const hasFilters = location || type || serialNumber || isUnassigned;
+  const hasFilters = location || assetType || serialNumber || isUnassigned;
 
   if (!hasFilters) {
     throw new BadRequest('At least one valid search filter must be provided');
@@ -16,7 +16,7 @@ export function validateSearchCriteria(query) {
   return {
     filters: {
       location,
-      type,
+      assetType,
       serialNumber,
       isUnassigned,
     },
