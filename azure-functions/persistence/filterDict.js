@@ -7,6 +7,8 @@ export function filterDictionary(dict) {
     crf7f_name: 'assetName',
     crf7f_ois_asset_ref_model_lookup: 'modelInfo',
     crf7f_warrantyinformation: 'warrantyInformation',
+    'crf7f_asset_assignment_location_type@OData.Community.Display.V1.FormattedValue':
+      'assignmentLocationType',
     '_crf7f_fac_asset_ref_location_lookup_value@OData.Community.Display.V1.FormattedValue':
       'location',
     _crf7f_fac_asset_ref_location_lookup_value: 'location',
