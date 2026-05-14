@@ -211,6 +211,29 @@ components:
                       type: integer
                       example: 1
                       description: Minimum number of assets required for this specfic model
+    Location:
+      type: object
+      properties:
+        assetLocationName:
+          type: string
+          example: "322"
+        chambersName:
+          type: string
+          example: "Judge Marshall"
+        guid:
+          type: string
+          format: uuid
+          example: "aaaaaaaa-2222-cccc-dddd-eeeeeeeeeeee"
+        locationType:
+          type: string
+          example: "Chambers"
+        name:
+          type: string
+          example: "316 - Field Courthouse"
+          description: "Friendly format name for location - dependent on location type."
+        officeName:
+          type: string
+          example: "Information Services"
 security:
   - clientCredentialsAuth: []
 paths:

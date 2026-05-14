@@ -1,13 +1,9 @@
 export function filterDictionaryLocation(dict) {
   const cleaned = {};
-  const guidRegex =
-    /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
 
   const keyMap = {
     crf7f_name: 'assetLocationName',
     crf7f_fac_asset_ref_locationid: 'guid',
-    'crf7f_fac_asset_ref_locationId@OData.Community.Display.V1.FormattedValue':
-      'guidFormatted',
     crf7f_chambers_name: 'chambersName',
     crf7f_location_type: 'locationType',
     crf7f_office_name: 'officeName',
@@ -18,8 +14,6 @@ export function filterDictionaryLocation(dict) {
 
     const value = dict[key];
 
-    if (typeof value === 'string' && guidRegex.test(value)) continue;
-
     const prettyKey = keyMap[key];
 
     if (value && typeof value === 'object' && !Array.isArray(value)) {
@@ -27,6 +21,25 @@ export function filterDictionaryLocation(dict) {
     } else {
       cleaned[prettyKey] = value;
     }
+  }
+
+  const nameClean = cleaned.assetLocationName || '';
+  const chamber = cleaned.chambersName || '';
+  const office = cleaned.officeName || '';
+  const type = cleaned.locationType || '';
+
+  switch (type) {
+    case 'Chambers':
+      cleaned.name = `${nameClean} - (Chambers of ${chamber})`;
+      break;
+
+    case 'Court Room':
+    case 'Field Courthouse':
+      cleaned.name = `${nameClean} - ${type}`;
+      break;
+
+    default:
+      cleaned.name = `${nameClean} - ${office}`;
   }
 
   const sortedCleaned = Object.keys(cleaned)
