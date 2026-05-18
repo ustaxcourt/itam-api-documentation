@@ -163,4 +163,36 @@ describe('decommissionAssetHandler', () => {
       },
     });
   });
+
+  it('uses fallback status/message when error lacks properties', async () => {
+    const error = new Error(); // message === ""
+
+    decommissionWrapper.mockRejectedValue(error);
+
+    const request = {
+      method: 'PATCH',
+      params: {
+        itemid: 'asset123',
+      },
+    };
+
+    const result = await decommissionAssetHandler(request, context);
+
+    expect(decommissionWrapper).toHaveBeenCalledWith('asset123');
+
+    expect(context.error).toHaveBeenCalledWith(
+      'Unable to decommission the asset',
+      '', // current behavior (empty string)
+    );
+
+    expect(buildResponse).toHaveBeenCalledWith(500, 'Internal Server Error');
+
+    expect(result).toEqual({
+      status: 500,
+      jsonBody: {
+        message: 'Internal Server Error',
+        data: null,
+      },
+    });
+  });
 });

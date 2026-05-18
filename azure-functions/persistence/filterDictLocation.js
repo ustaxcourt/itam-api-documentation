@@ -33,6 +33,10 @@ export function filterDictionaryLocation(dict) {
       cleaned.name = `${nameClean} - (Chambers of ${chamber})`;
       break;
 
+    case 'Home Office (HO)':
+      cleaned.name = `${nameClean}`;
+      break;
+
     case 'Court Room':
     case 'Field Courthouse':
       cleaned.name = `${nameClean} - ${type}`;

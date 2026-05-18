@@ -32,7 +32,7 @@ export async function decommissionAssetHandler(request, context) {
 
     return buildResponse(
       error.statusCode ?? 500,
-      error.message ?? 'Internal Server Error',
+      error.message || 'Internal Server Error',
     );
   }
 }
