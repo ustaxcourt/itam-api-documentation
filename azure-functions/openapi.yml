@@ -104,6 +104,9 @@ components:
         assetName:
           type: string
           example: "EliteDisplay 231i #22"
+        assignmentLocationType:
+          type: string
+          enum: [Not Assigned to User, User's Home Office, User's Designated Office Location]
         condition:
           type: string
           example: Good
