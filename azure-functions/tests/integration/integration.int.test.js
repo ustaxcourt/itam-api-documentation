@@ -1,3 +1,5 @@
+import { expect } from '@jest/globals';
+
 const baseUrl = process.env.API_BASE_URL || 'http://localhost:7071';
 const bearerToken = process.env.BEARERTOKEN || 'Bearer mocked-token';
 const existingAssetId = '966f3b66-8706-f111-8406-000d3a370650';
@@ -753,5 +755,24 @@ describe('Integration testing for ITAM Project', () => {
       ),
     );
     expect(body.data).toBe(null);
+  });
+
+  it('GET Locations - should return a list of locations', async () => {
+    const res = await fetch(`${baseUrl}/api/v1/locations`, {
+      method: 'GET',
+      headers: { Authorization: bearerToken },
+    });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body).toHaveProperty('message', 'Successfully retrieved locations');
+    expect(Array.isArray(body.data)).toBe(true);
+    expect(typeof body.data[0]).toBe('object');
+    expect(body.data.length).toBeGreaterThan(0);
+    expect(body.data[0]).toHaveProperty('guid');
+    expect(body.data[0]).toHaveProperty('name');
+    expect(body.data[0]).toHaveProperty('assetLocationName');
+    expect(body.data[0]).toHaveProperty('locationType');
+    expect(body.data[0]).toHaveProperty('officeName');
+    expect(body.data[0]).toHaveProperty('chambersName');
   });
 });

@@ -214,6 +214,29 @@ components:
                       type: integer
                       example: 1
                       description: Minimum number of assets required for this specfic model
+    Location:
+      type: object
+      properties:
+        assetLocationName:
+          type: string
+          example: "322"
+        chambersName:
+          type: string
+          example: "Judge Marshall"
+        guid:
+          type: string
+          format: uuid
+          example: "aaaaaaaa-2222-cccc-dddd-eeeeeeeeeeee"
+        locationType:
+          type: string
+          example: "Chambers"
+        name:
+          type: string
+          example: "316 - Field Courthouse"
+          description: "Friendly format name for location - dependent on location type."
+        officeName:
+          type: string
+          example: "Information Services"
 security:
   - clientCredentialsAuth: []
 paths:
@@ -610,6 +633,30 @@ paths:
                       data:
                         type: object
                         $ref: "#/components/schemas/JobTitles"
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+  /v1/locations:
+    get:
+      description: >
+        Retrieves all asset locations. Location information includes location guid, location name, chamber name, location type, and office name.
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+      responses:
+        "200":
+          description: Retrieves all asset locations
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Location"
+        "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "404": { $ref: "#/components/responses/NotFound" }
         "500": { $ref: "#/components/responses/InternalServerError" }

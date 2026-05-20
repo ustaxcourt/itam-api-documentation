@@ -3,18 +3,13 @@ import { BadRequest } from '../errors/BadRequest.js';
 import { buildResponse } from './buildResponse.js';
 import { NotFoundError } from '../errors/NotFoundError.js';
 import { patchAppHttp } from '../useCases/maintenanceMode.js';
-import { decommissionWrapper } from '../useCases/decommissionWrapper.js';
+import { locationsWrapper } from '../useCases/locationsWrapper.js';
 
-export async function decommissionAssetHandler(request, context) {
+export async function listLocationsHandler(request, context) {
   try {
-    const id = request.params.itemid;
-    if (!id) {
-      throw new BadRequest('Missing Asset ID');
-    }
-
-    if (request.method === 'PATCH') {
-      await decommissionWrapper(id);
-      return buildResponse(200, 'Successfully decommissioned asset', id);
+    if (request.method === 'GET') {
+      const locations = await locationsWrapper();
+      return buildResponse(200, 'Successfully retrieved locations', locations);
     } else {
       throw new BadRequest('Invalid REST Method');
     }
@@ -26,7 +21,7 @@ export async function decommissionAssetHandler(request, context) {
       return buildResponse(404, error.message);
     }
     context.error(
-      'Unable to decommission the asset',
+      'Unable to list locations',
       error.response?.data || error.message,
     );
 
@@ -39,9 +34,9 @@ export async function decommissionAssetHandler(request, context) {
 
 patchAppHttp(app);
 
-app.http('decommissionAsset', {
-  methods: ['PATCH'],
+app.http('listLocations', {
+  methods: ['GET'],
   authLevel: 'anonymous',
-  route: 'v1/assets/{itemid}/decommission',
-  handler: decommissionAssetHandler,
+  route: 'v1/locations',
+  handler: listLocationsHandler,
 });
