@@ -4,7 +4,6 @@ export function filterDictionaryLocation(dict) {
   const keyMap = {
     crf7f_name: 'assetLocationName',
     crf7f_fac_asset_ref_locationid: 'guid',
-    crf7f_chambers_name: 'chambersName',
     crf7f_location_type: 'locationType',
     crf7f_office_name: 'officeName',
   };
@@ -24,13 +23,12 @@ export function filterDictionaryLocation(dict) {
   }
 
   const nameClean = cleaned.assetLocationName || '';
-  const chamber = cleaned.chambersName || '';
   const office = cleaned.officeName || '';
   const type = cleaned.locationType || '';
 
   switch (type) {
     case 'Chambers':
-      cleaned.name = `${nameClean} - (Chambers of ${chamber})`;
+      cleaned.name = `${nameClean} - (Chambers of ${office})`;
       break;
 
     case 'Home Office (HO)':
