@@ -4,7 +4,7 @@ describe('filterDictionaryLocation', () => {
   it('should map and rename keys based on keyMap', () => {
     const input = {
       crf7f_name: 'Main Office',
-      crf7f_chambers_name: 'Judge Morrison',
+      crf7f_office_name: 'Judge Morrison',
       crf7f_location_type: 'Chambers',
       unknown_key: 'ignored',
     };
@@ -12,7 +12,7 @@ describe('filterDictionaryLocation', () => {
     const result = filterDictionaryLocation(input);
 
     expect(result.assetLocationName).toBe('Main Office');
-    expect(result.chambersName).toBe('Judge Morrison');
+    expect(result.officeName).toBe('Judge Morrison');
     expect(result.locationType).toBe('Chambers');
     expect(result.unknown_key).toBeUndefined();
   });
@@ -30,7 +30,7 @@ describe('filterDictionaryLocation', () => {
   it('should construct name for Chambers correctly', () => {
     const input = {
       crf7f_name: 'Main Office',
-      crf7f_chambers_name: 'Judge Morrison',
+      crf7f_office_name: 'Judge Morrison',
       crf7f_location_type: 'Chambers',
     };
 
@@ -90,7 +90,7 @@ describe('filterDictionaryLocation', () => {
     const input = {
       crf7f_location_type: 'Chambers',
       crf7f_name: 'Main Office',
-      crf7f_chambers_name: 'Judge Morrison',
+      crf7f_office_name: 'Judge Morrison',
     };
 
     const result = filterDictionaryLocation(input);

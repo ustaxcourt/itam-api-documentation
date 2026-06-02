@@ -220,9 +220,6 @@ components:
         assetLocationName:
           type: string
           example: "322"
-        chambersName:
-          type: string
-          example: "Judge Marshall"
         guid:
           type: string
           format: uuid
@@ -639,7 +636,7 @@ paths:
   /v1/locations:
     get:
       description: >
-        Retrieves all asset locations. Location information includes location guid, location name, chamber name, location type, and office name.
+        Retrieves all asset locations. Location information includes location guid, location name, location type, and office name.
       parameters:
         - $ref: "#/components/parameters/AuthorizationHeader"
       responses:
