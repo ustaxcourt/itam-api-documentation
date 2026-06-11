@@ -53,7 +53,6 @@ jobs:
           cp host.json functionapp/
           cp package.json functionapp/
           cp -R azure-functions functionapp/
-          cp -R node_modules functionapp/
 
       - name: Zip function app
         run: |
@@ -109,6 +108,8 @@ jobs:
           app-name: ${{ steps.pick.outputs.APP_NAME }}
           package: functionapp.zip
           publish-profile: ${{ steps.pick.outputs.PUBLISH_PROFILE }}
+          scm-do-build-during-deployment: true
+
 
       - name: Trigger integration tests
         if: ${{ steps.resolve_env.outputs.env_name != 'prod' }}
