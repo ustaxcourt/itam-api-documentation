@@ -52,7 +52,7 @@ jobs:
           mkdir functionapp
           cp host.json functionapp/
           cp package.json functionapp/
-          cp -R azure-functions functionapp/
+          cp -R azure-functions/* functionapp/
 
       - name: Zip function app
         run: |
