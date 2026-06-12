@@ -45,7 +45,7 @@ jobs:
           node-version: '22.18.0'
 
       - name: Install dependencies from root
-        run: npm ci
+        run: npm ci --omit=dev
 
       - name: Prepare function app package
         run: |
@@ -53,6 +53,7 @@ jobs:
           cp host.json functionapp/
           cp package.json functionapp/
           cp -R azure-functions functionapp/
+          cp -R node_modules functionapp/
 
       - name: Zip function app
         run: |
@@ -111,8 +112,8 @@ jobs:
           app-name: ${{ steps.pick.outputs.APP_NAME }}
           package: functionapp.zip
           publish-profile: ${{ steps.pick.outputs.PUBLISH_PROFILE }}
-          scm-do-build-during-deployment: true
-          enable-oryx-build: true
+          scm-do-build-during-deployment: false
+          enable-oryx-build: false
 
       - name: Trigger integration tests
         if: ${{ steps.resolve_env.outputs.env_name != 'prod' }}
