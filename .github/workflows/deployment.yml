@@ -106,6 +106,9 @@ jobs:
       - name: Verify package structure
         run: unzip -l functionapp.zip
 
+      - name: Wait before deploy
+        run: sleep 15
+
       - name: Deploy to Azure Functions
         uses: Azure/functions-action@v1
         with:
