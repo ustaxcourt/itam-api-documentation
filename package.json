@@ -9,7 +9,7 @@
     "test": "jest",
     "test:unit": "jest --selectProjects unit",
     "test:integration": "jest --selectProjects integration --coverage=false",
-    "prepare": "husky"
+    "prepare": "if [ -z \"$CI\" ]; then husky; fi"
   },
   "dependencies": {
     "@azure/data-tables": "^13.3.1",
