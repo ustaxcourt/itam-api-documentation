@@ -27,7 +27,7 @@ jobs:
 
       DEVENVIROMENTURL: ${{ secrets.DevEnviromentURL }}
       TESTENVIROMENTURL: ${{ secrets.TestEnviromentURL }}
-
+      # These two are to authenticate the Github action to run successfully!! Not the Auth App itself.
       DEVCLIENT_ID: ${{ secrets.EXTERNALAUTHDEVCLIENTID }}
       DEVCLIENT_SECRET: ${{ secrets.EXTERNALAUTHDEVCLIENTSECRET }}
 
