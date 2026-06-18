@@ -9,7 +9,7 @@
     "test": "jest",
     "test:unit": "jest --selectProjects unit",
     "test:integration": "jest --selectProjects integration --coverage=false",
-    "prepare": "node -e \"if (!process.env.CI) require('child_process').execSync('npx husky install', { stdio: 'inherit' })\""
+    "prepare": "husky"
   },
   "dependencies": {
     "@azure/data-tables": "^13.3.1",

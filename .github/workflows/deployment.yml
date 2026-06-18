@@ -45,7 +45,7 @@ jobs:
           node-version: '22.18.0'
 
       - name: Install dependencies from root
-        run: npm ci --omit=dev
+        run: HUSKY=0 npm ci --omit=dev
 
       - name: Prepare function app package
         run: |
