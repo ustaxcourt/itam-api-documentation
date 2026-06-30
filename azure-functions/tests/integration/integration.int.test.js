@@ -1,6 +1,6 @@
 const baseUrl = process.env.API_BASE_URL || 'http://localhost:7071';
 const bearerToken = process.env.BEARERTOKEN || 'Bearer mocked-token';
-const existingAssetId = '1f4f7490-2a59-f111-bec7-000d3a3708c4';
+const existingAssetId = '274f7490-2a59-f111-bec7-000d3a3708c4';
 const malformedAssetId = '8d204fa8-69d7-f011-85';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
 const existingUserId = '00674e1a-bd05-4c6c-a0a1-344404d4b2e4';
@@ -12,7 +12,7 @@ const nonExistentLocationId = '04d494f4-b5b9-f011-bbd2-000d3a56dc3b';
 const existingJobTitleId = '76c0a78f-5cd4-f011-8544-000d3a5b5036';
 const nonExistingJobTitleId = 'b09cf686-30d5-f011-8544-7c1e52177973';
 const malformedJobTitleId = 'b09cf686-30d5-f0';
-const existingSerialNumber = 'X002I8FY7H-10';
+const existingSerialNumber = 'X002I8FY7H-9';
 
 describe('Integration testing for ITAM Project', () => {
   jest.setTimeout(30000);
