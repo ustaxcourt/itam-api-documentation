@@ -1,5 +1,3 @@
-import { expect } from '@jest/globals';
-
 const baseUrl = process.env.API_BASE_URL || 'http://localhost:7071';
 const bearerToken = process.env.BEARERTOKEN || 'Bearer mocked-token';
 const existingAssetId = '1f4f7490-2a59-f111-bec7-000d3a3708c4';
@@ -73,12 +71,7 @@ describe('Integration testing for ITAM Project', () => {
     });
     expect(res.status).toBe(404);
     const body = await res.json();
-    expect(body.message).toMatch(
-      new RegExp(
-        `Entity 'crf7f_ois_assets' With Id = ${nonExistentAssetId} Does Not Exist`,
-        'i',
-      ),
-    );
+    expect(body.message).toMatch('Requested resource does not exist');
   });
 
   it('GET Assets - should return 400 when querying for a malformed asset', async () => {
@@ -747,12 +740,7 @@ describe('Integration testing for ITAM Project', () => {
 
     expect(res.status).toBe(404);
     const body = await res.json();
-    expect(body.message).toMatch(
-      new RegExp(
-        `Entity 'crf7f_ois_assets' With Id = ${nonExistentAssetId} Does Not Exist`,
-        'i',
-      ),
-    );
+    expect(body.message).toMatch('Requested resource does not exist');
     expect(body.data).toBe(null);
   });
 
