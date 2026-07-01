@@ -41,7 +41,7 @@ export async function dataverseCall({
 
       // Dataverse explicitly returned 404 (entity does not exist)
       if (response.status === 404) {
-        throw new NotFoundError(errorMessage);
+        throw new NotFoundError('Requested resource does not exist');
       }
 
       // Dataverse OData errors (GUID / type mismatch, etc.)
