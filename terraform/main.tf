@@ -46,7 +46,7 @@ resource "azurerm_linux_function_app" "function" {
   # ---------- App settings (per env) ----------
   app_settings = {
     FUNCTIONS_WORKER_RUNTIME              = "node"
-    WEBSITE_RUN_FROM_PACKAGE              = "1"
+
     AzureWebJobsStorage                   = data.azurerm_storage_account.storage.primary_connection_string
     APPINSIGHTS_INSTRUMENTATIONKEY        = azurerm_application_insights.insights.instrumentation_key
     APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.insights.connection_string
