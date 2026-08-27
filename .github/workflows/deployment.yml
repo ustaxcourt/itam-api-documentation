@@ -106,6 +106,25 @@ jobs:
       - name: Verify package structure
         run: unzip -l functionapp.zip
 
+      - name: Count files in package
+        run: |
+          unzip -l functionapp.zip | tail -1
+
+      - name: Show package size
+        run: |
+          echo "===== ZIP FILE ====="
+          ls -lh functionapp.zip
+
+          echo "===== NODE_MODULES ====="
+          du -sh node_modules
+
+          echo "===== FUNCTION APP FOLDER ====="
+          du -sh functionapp
+
+          echo "===== TOP 20 LARGEST PACKAGES ====="
+          du -sh node_modules/* 2>/dev/null | sort -hr | head -20
+
+
       - name: Wait before deploy
         run: sleep 15
 
