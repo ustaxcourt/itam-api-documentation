@@ -134,8 +134,8 @@ jobs:
           app-name: ${{ steps.pick.outputs.APP_NAME }}
           package: functionapp.zip
           publish-profile: ${{ steps.pick.outputs.PUBLISH_PROFILE }}
-          scm-do-build-during-deployment: false
-          enable-oryx-build: false
+          sku: flexconsumption
+          remote-build: true
 
       - name: Trigger integration tests
         if: ${{ steps.resolve_env.outputs.env_name != 'prod' }}
