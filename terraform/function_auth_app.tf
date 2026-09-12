@@ -15,9 +15,36 @@ resource "azuread_application" "function_auth_app" {
     }
   }
 
+  app_role {
+    id                   = var.auth_user_role_id
+    allowed_member_types = ["User"]
+    description          = "${var.environment_name} Users who can authenticate to the app."
+    display_name         = "${var.environment_name} Auth Users"
+    enabled              = true
+    value                = "${var.environment_name}.Auth.Users"
+  }
+
+  app_role {
+    id                   = var.auth_app_role_id
+    allowed_member_types = ["Application"]
+    description          = "For applications to authenticate only"
+    display_name         = "${var.environment_name} App Auth Users"
+    enabled              = true
+    value                = "${var.environment_name}.App.Auth.Users"
+  }
+
   api {
     requested_access_token_version = 2
     mapped_claims_enabled          = false
+
+    oauth2_permission_scope {
+      id                         = var.auth_scope_id
+      admin_consent_description  = "API access."
+      admin_consent_display_name = "Access APIs"
+      enabled                    = true
+      type                       = "User"
+      value                      = "user_impersonation"
+    }
   }
 
   required_resource_access {

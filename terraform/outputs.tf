@@ -1,16 +1,16 @@
 output "function_app_name" {
   description = "The name of the Azure Function App"
-  value       = azurerm_linux_function_app.function.name
+  value       = azurerm_function_app_flex_consumption.function.name
 }
 
 output "function_app_default_hostname" {
   description = "The default hostname of the Function App"
-  value       = azurerm_linux_function_app.function.default_hostname
+  value       = azurerm_function_app_flex_consumption.function.default_hostname
 }
 
 output "function_app_url" {
   description = "The full HTTPS URL of the Function App"
-  value       = "https://${azurerm_linux_function_app.function.default_hostname}"
+  value       = "https://${azurerm_function_app_flex_consumption.function.default_hostname}"
 }
 
 output "app_service_plan_name" {

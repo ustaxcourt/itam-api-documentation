@@ -3,6 +3,11 @@ variable "env" {
   type        = string
 }
 
+variable "environment_name" {
+  description = "Uppercase name of the environment (e.g., Test, Prod)"
+  type        = string
+}
+
 variable "resource_group_name" {
   description = "Name of the existing Azure resource group"
   type        = string
@@ -86,4 +91,16 @@ variable "dataverse_homepage_url" {
 variable "dataverse_redirect_uris" {
   description = "Redirect URIs for the Dataverse web application"
   type        = list(string)
+}
+
+variable "auth_user_role_id" {
+  type = string
+}
+
+variable "auth_app_role_id" {
+  type = string
+}
+
+variable "auth_scope_id" {
+  type = string
 }
