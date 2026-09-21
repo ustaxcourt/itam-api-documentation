@@ -106,24 +106,25 @@ jobs:
       - name: Verify package structure
         run: unzip -l functionapp.zip
 
-      - name: Count files in package
+      - name: Validate package size thresholds
+        shell: bash
         run: |
-          unzip -l functionapp.zip | tail -1
+          SIZE_BYTES=$(stat -c%s functionapp.zip)
+          SIZE_MB=$((SIZE_BYTES / 1024 / 1024))
 
-      - name: Show package size
-        run: |
-          echo "===== ZIP FILE ====="
-          ls -lh functionapp.zip
+          WARN_BYTES=$((1024 * 1024 * 1024))                 # 1.00 GB
+          FAIL_BYTES=$((1750 * 1024 * 1024))                 # 1.75 GB
 
-          echo "===== NODE_MODULES ====="
-          du -sh node_modules
+          echo "Package size: ${SIZE_MB} MB"
 
-          echo "===== FUNCTION APP FOLDER ====="
-          du -sh functionapp
+          if [ "$SIZE_BYTES" -ge "$FAIL_BYTES" ]; then
+            echo "::error::Package size (${SIZE_MB} MB) exceeds 1.75 GB deployment limit."
+            exit 1
+          fi
 
-          echo "===== TOP 20 LARGEST PACKAGES ====="
-          du -sh node_modules/* 2>/dev/null | sort -hr | head -20
-
+          if [ "$SIZE_BYTES" -ge "$WARN_BYTES" ]; then
+            echo "::warning::Package size (${SIZE_MB} MB) exceeds 1 GB. Consider reducing dependencies or deployment contents."
+          fi
 
       - name: Wait before deploy
         run: sleep 15
