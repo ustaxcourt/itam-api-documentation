@@ -27,7 +27,7 @@ Local files needed:
 
 - local.settings.json - Azure Functions, for now for appropriate IDs and secrets
 
-- terraform.tfvars - Local information regarding subscription and existing resource identification
+- terraform.tfvars (per environment) - Local information regarding subscription, terraform variable values, and existing resource identification
 
 ### Steps for deployment via GitHub actions and provisioning with Terraform
 

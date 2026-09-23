@@ -6,7 +6,7 @@ terraform {
 
   required_providers {
     azurerm = {
-      source  = "hashicorp/azurerm"
+      source = "hashicorp/azurerm"
       # Matching current installed major/minor
       version = "~> 4.46"
     }

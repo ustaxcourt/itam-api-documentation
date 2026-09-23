@@ -106,6 +106,26 @@ jobs:
       - name: Verify package structure
         run: unzip -l functionapp.zip
 
+      - name: Validate package size thresholds
+        shell: bash
+        run: |
+          SIZE_BYTES=$(stat -c%s functionapp.zip)
+          SIZE_MB=$((SIZE_BYTES / 1024 / 1024))
+
+          WARN_BYTES=$((1024 * 1024 * 1024))                 # 1.00 GB
+          FAIL_BYTES=$((1750 * 1024 * 1024))                 # 1.75 GB
+
+          echo "Package size: ${SIZE_MB} MB"
+
+          if [ "$SIZE_BYTES" -ge "$FAIL_BYTES" ]; then
+            echo "::error::Package size (${SIZE_MB} MB) exceeds 1.75 GB deployment limit."
+            exit 1
+          fi
+
+          if [ "$SIZE_BYTES" -ge "$WARN_BYTES" ]; then
+            echo "::warning::Package size (${SIZE_MB} MB) exceeds 1 GB. Consider reducing dependencies or deployment contents."
+          fi
+
       - name: Wait before deploy
         run: sleep 15
 
@@ -115,8 +135,8 @@ jobs:
           app-name: ${{ steps.pick.outputs.APP_NAME }}
           package: functionapp.zip
           publish-profile: ${{ steps.pick.outputs.PUBLISH_PROFILE }}
-          scm-do-build-during-deployment: false
-          enable-oryx-build: false
+          sku: flexconsumption
+          remote-build: true
 
       - name: Trigger integration tests
         if: ${{ steps.resolve_env.outputs.env_name != 'prod' }}
