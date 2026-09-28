@@ -110,7 +110,7 @@ components:
         condition:
           type: string
           example: Good
-          enum: [Excellent, Good, Poor, Garbage, Damaged, New]
+          enum: [Excellent, Good, Poor, Unserviceable, Damaged, New]
         itemStatus:
           type: string
           enum:
@@ -457,7 +457,7 @@ paths:
                   type: integer
                 condition:
                   type: string
-                  enum: [Excellent, Good, Poor, Garbage, Damaged, New]
+                  enum: [Excellent, Good, Poor, Unserviceable, Damaged, New]
       responses:
         "200":
           description: Assigns user to asset
@@ -503,7 +503,7 @@ paths:
                   type: integer
                 condition:
                   type: string
-                  enum: [Excellent, Good, Poor, Garbage, Damaged, New]
+                  enum: [Excellent, Good, Poor, Unserviceable, Damaged, New]
       responses:
         "200":
           description: Removes user assignment from asset
