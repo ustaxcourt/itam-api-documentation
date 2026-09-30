@@ -34,7 +34,7 @@ describe('getChoiceFieldIntegersFromAssetAuditLogTable', () => {
       Excellent: 0,
       Good: 1,
       Poor: 2,
-      Garbage: 3,
+      Unserviceable: 3,
       Damaged: 4,
       New: 5,
     });
@@ -54,7 +54,7 @@ describe('getChoiceFieldIntegersFromAssetAuditLogTable', () => {
       Excellent: 0,
       Good: 1,
       Poor: 2,
-      Garbage: 3,
+      Unserviceable: 3,
       Damaged: 4,
       New: 5,
     });

@@ -1,11 +1,11 @@
 const baseUrl = process.env.API_BASE_URL || 'http://localhost:7071';
 const bearerToken = process.env.BEARERTOKEN || 'Bearer mocked-token';
-const existingAssetId = '274f7490-2a59-f111-bec7-000d3a3708c4';
+const existingAssetId = '29b81658-44bc-f111-aaae-6045bd03ee84';
 const malformedAssetId = '8d204fa8-69d7-f011-85';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
 const existingUserId = '00674e1a-bd05-4c6c-a0a1-344404d4b2e4';
 const nonExistentUserId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
-const existingLocationId = '5f29bf8e-2a59-f111-bec7-000d3a37071f';
+const existingLocationId = '87567b44-44bc-f111-aaae-6045bd03ee84';
 const malformedLocationId = 'df164d9a-69d7-f011-854';
 const existingLocationName = 'G-54';
 const nonExistentLocationId = '04d494f4-b5b9-f011-bbd2-000d3a56dc3b';
