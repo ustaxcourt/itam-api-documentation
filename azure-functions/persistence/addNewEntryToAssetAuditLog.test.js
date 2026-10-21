@@ -28,6 +28,7 @@ describe('addNewEntryToAssetAuditLog', () => {
 
     const result = await addNewEntryToAssetAuditLog(
       'assetName',
+      'asset123',
       'Poor',
       '123',
       'big notes',
@@ -37,6 +38,7 @@ describe('addNewEntryToAssetAuditLog', () => {
     expect(dataverseCall).toHaveBeenCalledWith({
       body: {
         crf7f_name: 'assetName',
+        at_assetid: 'asset123',
         crf7f_condition: 'Poor',
         crf7f_zendesk_ticket_number: '123',
         crf7f_notes: 'big notes',
@@ -56,6 +58,7 @@ describe('addNewEntryToAssetAuditLog', () => {
     await expect(
       addNewEntryToAssetAuditLog(
         'assetName',
+        'asset123',
         'Poor',
         '123',
         'big notes',
@@ -70,6 +73,7 @@ describe('addNewEntryToAssetAuditLog', () => {
     await expect(
       addNewEntryToAssetAuditLog(
         'assestName',
+        'asset123',
         'Poor',
         '123',
         'big notes',
@@ -86,6 +90,7 @@ describe('addNewEntryToAssetAuditLog', () => {
     await expect(
       addNewEntryToAssetAuditLog(
         'assestName',
+        'asset123',
         'Poor',
         '123',
         'big notes',

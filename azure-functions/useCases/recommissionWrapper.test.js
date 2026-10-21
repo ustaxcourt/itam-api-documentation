@@ -51,6 +51,7 @@ describe('recommissionWrapper', () => {
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledTimes(1);
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
       'Dell Latitude', // assetName
+      'asset123',
       1, // AUDIT_LOG_CHOICES -> Good
       null, // zendesk ticket ID
       null, // notes

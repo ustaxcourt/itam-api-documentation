@@ -29,6 +29,7 @@ describe('updateAssetAuditLog', () => {
 
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
       'Device #1',
+      'asset123',
       1,
       123123,
       'Condition changed to Good',
@@ -57,6 +58,7 @@ describe('updateAssetAuditLog', () => {
 
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
       'HP EliteDisplay E241i #22',
+      'asset123',
       2,
       555,
       'encoding test',
@@ -79,6 +81,7 @@ describe('updateAssetAuditLog', () => {
 
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
       'Device #1',
+      'asset123',
       2,
       999,
       'ticket as string',
@@ -100,6 +103,7 @@ describe('updateAssetAuditLog', () => {
 
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
       'Device #1',
+      'asset123',
       2,
       321,
       null,
@@ -121,6 +125,7 @@ describe('updateAssetAuditLog', () => {
 
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
       'Device #1',
+      'asset123',
       1,
       101,
       'no action provided',
