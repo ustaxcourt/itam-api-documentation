@@ -38,6 +38,7 @@ export async function recommissionWrapper(id) {
     // Audit log entry here rather than call another persistence method within another persistence method
     await addNewEntryToAssetAuditLog(
       assetName,
+      id,
       conditionCode,
       // Treating this as no required zendesk ticket id - endpoint does not provide that info as of now
       null,

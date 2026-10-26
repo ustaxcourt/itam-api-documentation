@@ -52,6 +52,7 @@ describe('decommissionWrapper', () => {
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledTimes(1);
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
       'Dell Latitude', // assetName
+      'asset123',
       1, // Good
       null, // zendesk ticket ID
       null, // notes
