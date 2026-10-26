@@ -101,16 +101,16 @@ components:
     Asset:
       type: object
       properties:
-        activation:
-          type: boolean
-          nullable: true
         assetName:
           type: string
           example: "EliteDisplay 231i #22"
+        assignmentLocationType:
+          type: string
+          enum: [Not Assigned to User, User's Home Office, User's Designated Office Location]
         condition:
           type: string
           example: Good
-          enum: [Excellent, Good, Poor, Garbage, Damaged, New]
+          enum: [Excellent, Good, Poor, Unserviceable, Damaged, New]
         itemStatus:
           type: string
           enum:
@@ -129,6 +129,13 @@ components:
           type: string
           example: 316
           nullable: true
+        modelInfo:
+          type: object
+          nullable: true
+          properties:
+            warrantyInformation:
+              type: string
+              example: "Warranty valid until 01/01/2025"
         osVersion:
           type: string
           example: Windows 11 24H2
@@ -207,6 +214,26 @@ components:
                       type: integer
                       example: 1
                       description: Minimum number of assets required for this specfic model
+    Location:
+      type: object
+      properties:
+        assetLocationName:
+          type: string
+          example: "322"
+        guid:
+          type: string
+          format: uuid
+          example: "aaaaaaaa-2222-cccc-dddd-eeeeeeeeeeee"
+        locationType:
+          type: string
+          example: "Chambers"
+        name:
+          type: string
+          example: "316 - Field Courthouse"
+          description: "Friendly format name for location - dependent on location type."
+        officeName:
+          type: string
+          example: "Information Services"
 security:
   - clientCredentialsAuth: []
 paths:
@@ -243,6 +270,162 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "500": { $ref: "#/components/responses/InternalServerError" }
 
+  /v1/assets/{assetId}/decommission:
+    patch:
+      description: >
+        Decommissions an asset given an asset Id. Decommissioned assets are treated as inactive
+        and are no longer retrievable through standard asset query endpoints.
+        The asset must be unassigned before it can be decommissioned.
+      parameters:
+        - name: assetId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/AuthorizationHeader"
+      responses:
+        "200":
+          description: Asset successfully decommissioned
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: string
+                        description: The ID of the decommissioned asset
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
+  /v1/assets/{assetId}/recommission:
+    patch:
+      description: >
+        Recommissions a previously decommissioned asset given an asset Id.
+        Recommissioned assets become active again and are retrievable through standard
+        asset query endpoints.
+      parameters:
+        - name: assetId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/AuthorizationHeader"
+      responses:
+        "200":
+          description: Asset successfully recommissioned
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: string
+                        description: The ID of the recommissioned asset
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
+  /v1/assets/search:
+    get:
+      summary: Search assets using one or more filters
+      description: >
+        Searches IT assets using exact-match filters.
+        Clients must provide **at least one valid search filter**.
+        Multiple filters are combined using logical AND.
+
+        Notes:
+          - Search is exact match
+          - Unknown query parameters are ignored
+          - Results are capped at a maximum of 2000 items
+          - Pagination is not supported at this time
+
+      parameters:
+        - name: serialNumber
+          in: query
+          required: false
+          description: >
+            Exact serial number of the asset.
+            Must match the full serial number exactly.
+          schema:
+            type: string
+          example: "1234567"
+
+        - name: location
+          in: query
+          required: false
+          description: >
+            Location identifier (GUID).
+            The location must exist in available locations; otherwise a 404 response is returned.
+          schema:
+            type: string
+            format: uuid
+          example: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+
+        - name: assetType
+          in: query
+          required: false
+          description: >
+            Asset type (exact match).
+          schema:
+            type: string
+          example: "Monitor"
+
+        - name: isUnassigned
+          in: query
+          required: false
+          description: >
+            Can be either true or false. true returns assets that are not assigned and false returns assets that are assigned.
+            Any other value is ignored and does not impact search results.
+          schema:
+            type: string
+            nullable: true
+          example: ""
+        - $ref: "#/components/parameters/AuthorizationHeader"
+
+      responses:
+        "200":
+          description: Search executed successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                            description: Total number of assets returned
+                            example: 2
+                          data:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/Asset"
+        "400":
+          description: Invalid or empty search request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                message: "At least one valid search filter must be provided"
+                data: null
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
   /v1/assets/{assetId}/assignments/{userId}:
     post:
       description: >
@@ -274,7 +457,7 @@ paths:
                   type: integer
                 condition:
                   type: string
-                  enum: [Excellent, Good, Poor, Garbage, Damaged, New]
+                  enum: [Excellent, Good, Poor, Unserviceable, Damaged, New]
       responses:
         "200":
           description: Assigns user to asset
@@ -320,7 +503,7 @@ paths:
                   type: integer
                 condition:
                   type: string
-                  enum: [Excellent, Good, Poor, Garbage, Damaged, New]
+                  enum: [Excellent, Good, Poor, Unserviceable, Damaged, New]
       responses:
         "200":
           description: Removes user assignment from asset
@@ -447,6 +630,30 @@ paths:
                       data:
                         type: object
                         $ref: "#/components/schemas/JobTitles"
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+  /v1/locations:
+    get:
+      description: >
+        Retrieves all asset locations. Location information includes location guid, location name, location type, and office name.
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+      responses:
+        "200":
+          description: Retrieves all asset locations
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Location"
+        "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "404": { $ref: "#/components/responses/NotFound" }
         "500": { $ref: "#/components/responses/InternalServerError" }

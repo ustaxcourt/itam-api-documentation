@@ -2,40 +2,32 @@ name: Integration Test Azure Function App (JavaScript ESM)
 
 permissions:
   contents: write
+  actions: read
 
 on:
-  pull_request:
-    branches:
-      - main
-      - deployTest
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: "Target environment (dev | test | prod)"
-        required: false
-        type: choice
-        options:
-          - dev
-          - test
-          - prod
+  repository_dispatch:
+    types:
+      - run-integration-tests
 
 jobs:
   integration-test:
+    if: github.event.sender.login == 'github-actions[bot]'
     runs-on: ubuntu-latest
-
-    # Expose env-specific secrets; we'll pick the right ones later.
+    # Expose env-specific secrets; selected dynamically based on deployment payload
     env:
       APP_NAME_DEV: ${{ secrets.AZURE_FUNCTIONAPP_NAME_DEV }}
       APP_NAME_TEST: ${{ secrets.AZURE_FUNCTIONAPP_NAME_TEST }}
       APP_NAME_PROD: ${{ secrets.AZURE_FUNCTIONAPP_NAME_PROD }}
+
       PUBLISH_PROFILE_DEV: ${{ secrets.AZURE_PUBLISH_PROFILE_DEV }}
       PUBLISH_PROFILE_TEST: ${{ secrets.AZURE_PUBLISH_PROFILE_TEST }}
       PUBLISH_PROFILE_PROD: ${{ secrets.AZURE_PUBLISH_PROFILE_PROD }}
+
       TENANTID: ${{ secrets.EXTERNALAUTHTENANTID }}
 
       DEVENVIROMENTURL: ${{ secrets.DevEnviromentURL }}
       TESTENVIROMENTURL: ${{ secrets.TestEnviromentURL }}
-
+      # These two are to authenticate the Github action to run successfully!! Not the Auth App itself.
       DEVCLIENT_ID: ${{ secrets.EXTERNALAUTHDEVCLIENTID }}
       DEVCLIENT_SECRET: ${{ secrets.EXTERNALAUTHDEVCLIENTSECRET }}
 
@@ -43,17 +35,17 @@ jobs:
       TESTCLIENT_SECRET: ${{ secrets.EXTERNALAUTHTESTCLIENTSECRET }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout code (our deployed SHA)
         uses: actions/checkout@v3
         # fetch depth 0 means we are getting full history, valuable for our tags
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.event.client_payload.sha }}
           fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "22.18.0"
+          node-version: '22.18.0'
 
       - name: Install Azure Functions Core Tools
         run: npm i -g azure-functions-core-tools@4 --unsafe-perm true
@@ -62,28 +54,28 @@ jobs:
         run: npm ci
 
       # Decide environment:
-      # - If workflow_dispatch has input, use it.
-      # - Else map from branch: main -> dev, deployTest -> test, deployDev -> dev.
-      # May want to consider removing deployTest/deployDev as branches / logic
+      # - Entirely based on deployment payload from the deploy workflow
+      # - This workflow does not infer environment from branch
+      # - Integration tests are intentionally skipped for prod
       - name: Resolve target environment
         id: resolve_env
         shell: bash
         run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ github.event.inputs.environment }}" ]]; then
-            env_name="${{ github.event.inputs.environment }}"
-          else
-            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-              branch="${{ github.base_ref }}"
-              case "$branch" in
-                main)       env_name="dev"  ;;
-                deployTest) env_name="test" ;;
-                deployDev)  env_name="dev"  ;;
-                *) echo "Unsupported branch for auto-deploy: $branch"; exit 1 ;;
-              esac
-            fi
-          fi
-          echo "env_name=$env_name" >> "$GITHUB_OUTPUT"
-          echo "Resolved environment: $env_name"
+          env_name="${{ github.event.client_payload.environment }}"
+
+          case "$env_name" in
+            dev|test)
+              echo "env_name=$env_name" >> "$GITHUB_OUTPUT"
+              ;;
+            prod)
+              echo "Integration skipped for prod"
+              exit 0
+              ;;
+            *)
+              echo "Unknown environment from deployment: $env_name"
+              exit 1
+              ;;
+          esac
 
       - name: Select env-specific secrets
         id: pick
@@ -107,18 +99,18 @@ jobs:
               echo "PUBLISH_PROFILE=${PUBLISH_PROFILE_PROD}" >> $GITHUB_OUTPUT
               ;;
             *)
-              echo "Unknown environment: ${{ steps.resolve_env.outputs.env_name }}"; exit 1;
+              echo "Unknown environment: ${{ steps.resolve_env.outputs.env_name }}"
+              exit 1
               ;;
           esac
 
       - name: POST and parse JSON response for authentication
         id: api
         shell: bash
-
         run: |
           set -euo pipefail
 
-          url="https://login.microsoftonline.com/${{ env.TENANTID }}/oauth2/v2.0/token"
+          url="https://login.microsoftonline.com/${TENANTID}/oauth2/v2.0/token"
 
           tmp_body="$(mktemp)"
           http_code=$(
@@ -136,7 +128,6 @@ jobs:
 
           if [[ "$http_code" != "200" ]]; then
             echo "Token request failed. Response body:"
-            # Pretty-print if jq exists, otherwise raw
             if command -v jq >/dev/null 2>&1; then
               jq . < "$tmp_body" || cat "$tmp_body"
             else
@@ -149,7 +140,6 @@ jobs:
           resp="$(cat "$tmp_body")"
           rm -f "$tmp_body"
 
-
           token=$(echo "$resp" | jq -r '.access_token')
 
           if [[ -z "$token" || "$token" == "null" ]]; then
@@ -157,7 +147,6 @@ jobs:
             exit 1
           fi
 
-          # Export as outputs for later steps
           echo "token=$token" >> "$GITHUB_OUTPUT"
 
       - name: Run integration tests
@@ -166,5 +155,27 @@ jobs:
           steps.resolve_env.outputs.env_name == 'test'
         env:
           API_BASE_URL: https://${{ steps.pick.outputs.APP_NAME }}.azurewebsites.net
-          BEARERTOKEN: "Bearer ${{ steps.api.outputs.token }}"
+          BEARERTOKEN: 'Bearer ${{ steps.api.outputs.token }}'
         run: npx jest --selectProjects integration --coverage=false
+
+      # Tag the deployed commit so it can be promoted later
+      # Only tags the same SHA once in case someone deploys to dev manually
+      # Uses the deployed commit SHA passed from the deploy workflow
+      - name: Tag dev deployment
+        if: success() && steps.resolve_env.outputs.env_name == 'dev'
+        shell: bash
+        run: |
+          DATE=$(date -u +"%d%b%y" | tr '[:upper:]' '[:lower:]')
+          SHORT_SHA=$(echo "${{ github.event.client_payload.sha }}" | cut -c1-7)
+          TAG="dev-${DATE}-${SHORT_SHA}"
+
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists — skipping"
+          else
+            git tag "$TAG"
+            git push origin "$TAG"
+            echo "Tagged dev release: $TAG"
+          fi

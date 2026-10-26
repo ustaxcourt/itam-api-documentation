@@ -211,7 +211,7 @@ export const mockOptionSet = {
         Label: {
           LocalizedLabels: [
             {
-              Label: 'Garbage',
+              Label: 'Unserviceable',
               LanguageCode: 1033,
               IsManaged: false,
               MetadataId: '4dc86081-1c7b-42e5-aa36-059f1634ad1e',
@@ -219,7 +219,7 @@ export const mockOptionSet = {
             },
           ],
           UserLocalizedLabel: {
-            Label: 'Garbage',
+            Label: 'Unserviceable',
             LanguageCode: 1033,
             IsManaged: false,
             MetadataId: '4dc86081-1c7b-42e5-aa36-059f1634ad1e',

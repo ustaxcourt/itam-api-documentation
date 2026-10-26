@@ -9,13 +9,19 @@ data "azurerm_storage_account" "storage" {
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
-# Create Service Plan (Linux, Consumption)
+resource "azurerm_storage_container" "deployment" {
+  name                  = "${var.function_app_name}-deployment"
+  storage_account_id    = data.azurerm_storage_account.storage.id
+  container_access_type = "private"
+}
+
+# Create Service Plan (Flex, Consumption)
 resource "azurerm_service_plan" "plan" {
-  name                = "${var.function_app_name}-plan"
+  name                = "${var.function_app_name}-flex-plan"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   os_type             = "Linux"
-  sku_name            = "Y1"
+  sku_name            = "FC1"
 }
 
 # Create Application Insights (per env)
@@ -26,14 +32,18 @@ resource "azurerm_application_insights" "insights" {
   application_type    = "web"
 }
 
-# Create Azure Function App (Linux)
-resource "azurerm_linux_function_app" "function" {
-  name                       = var.function_app_name
-  location                   = data.azurerm_resource_group.rg.location
-  resource_group_name        = data.azurerm_resource_group.rg.name
-  service_plan_id            = azurerm_service_plan.plan.id
-  storage_account_name       = data.azurerm_storage_account.storage.name
-  storage_account_access_key = data.azurerm_storage_account.storage.primary_access_key
+# Create Azure Function App (Flex Consumption)
+resource "azurerm_function_app_flex_consumption" "function" {
+  name                        = var.function_app_name
+  location                    = data.azurerm_resource_group.rg.location
+  resource_group_name         = data.azurerm_resource_group.rg.name
+  service_plan_id             = azurerm_service_plan.plan.id
+  storage_container_type      = "blobContainer"
+  storage_container_endpoint  = "${data.azurerm_storage_account.storage.primary_blob_endpoint}${azurerm_storage_container.deployment.name}"
+  storage_authentication_type = "StorageAccountConnectionString"
+  storage_access_key          = data.azurerm_storage_account.storage.primary_access_key
+  runtime_name                = "node"
+  runtime_version             = "22"
 
   identity {
     type = "SystemAssigned"
@@ -45,11 +55,7 @@ resource "azurerm_linux_function_app" "function" {
 
   # ---------- App settings (per env) ----------
   app_settings = {
-    FUNCTIONS_WORKER_RUNTIME              = "node"
-    WEBSITE_RUN_FROM_PACKAGE              = "1"
-    AzureWebJobsStorage                   = data.azurerm_storage_account.storage.primary_connection_string
-    APPINSIGHTS_INSTRUMENTATIONKEY        = azurerm_application_insights.insights.instrumentation_key
-    APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.insights.connection_string
+    APPINSIGHTS_INSTRUMENTATIONKEY = azurerm_application_insights.insights.instrumentation_key
 
     # These are the environment variables within the azure function app (per env)
     STORAGE_ACCOUNT_NAME = data.azurerm_storage_account.storage.name
@@ -104,7 +110,5 @@ resource "azurerm_linux_function_app" "function" {
   site_config {
     application_insights_key               = azurerm_application_insights.insights.instrumentation_key
     application_insights_connection_string = azurerm_application_insights.insights.connection_string
-
-    application_stack { node_version = "22" }
   }
 }

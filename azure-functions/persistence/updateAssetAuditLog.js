@@ -25,6 +25,7 @@ export async function updateAssetAuditLog(assetId, body) {
   // Write audit log entry
   const auditLogResponse = await addNewEntryToAssetAuditLog(
     assetName,
+    assetId,
     conditionCode,
     Number(body.zendeskTicketId),
     body?.notes ?? null,

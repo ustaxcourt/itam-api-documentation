@@ -157,7 +157,7 @@ describe('restructureDataverseChoiceResponse', () => {
         Label: {
           LocalizedLabels: [
             {
-              Label: 'Garbage',
+              Label: 'Unserviceable',
               LanguageCode: 1033,
               IsManaged: false,
               MetadataId: '4dc86081-1c7b-42e5-aa36-059f1634ad1e',
@@ -165,7 +165,7 @@ describe('restructureDataverseChoiceResponse', () => {
             },
           ],
           UserLocalizedLabel: {
-            Label: 'Garbage',
+            Label: 'Unserviceable',
             LanguageCode: 1033,
             IsManaged: false,
             MetadataId: '4dc86081-1c7b-42e5-aa36-059f1634ad1e',
@@ -292,7 +292,7 @@ describe('restructureDataverseChoiceResponse', () => {
     expect(Object.keys(result).length).toBe(6);
     expect(result).toHaveProperty('New');
     expect(result).toHaveProperty('Damaged');
-    expect(result).toHaveProperty('Garbage');
+    expect(result).toHaveProperty('Unserviceable');
     expect(result).toHaveProperty('Poor');
     expect(result).toHaveProperty('Excellent');
   });

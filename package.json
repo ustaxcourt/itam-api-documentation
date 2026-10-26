@@ -8,8 +8,7 @@
     "start": "func start",
     "test": "jest",
     "test:unit": "jest --selectProjects unit",
-    "test:integration": "jest --selectProjects integration --coverage=false",
-    "prepare": "husky"
+    "test:integration": "jest --selectProjects integration --coverage=false"
   },
   "dependencies": {
     "@azure/data-tables": "^13.3.1",
