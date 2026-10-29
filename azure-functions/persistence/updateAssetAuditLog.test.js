@@ -30,7 +30,7 @@ describe('updateAssetAuditLog', () => {
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
       'Device #1',
       'asset123',
-      1,
+      2,
       123123,
       'Condition changed to Good',
       'Asset Assignment',
@@ -39,7 +39,7 @@ describe('updateAssetAuditLog', () => {
     // return shape
     expect(result).toEqual({
       auditId: 'mock-created-id',
-      conditionCode: 1,
+      conditionCode: 2,
     });
   });
 
@@ -59,7 +59,7 @@ describe('updateAssetAuditLog', () => {
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
       'HP EliteDisplay E241i #22',
       'asset123',
-      2,
+      3,
       555,
       'encoding test',
       'Transfer',
@@ -67,7 +67,7 @@ describe('updateAssetAuditLog', () => {
 
     expect(result).toEqual({
       auditId: 'mock-created-id',
-      conditionCode: 2,
+      conditionCode: 3,
     });
   });
 
@@ -82,7 +82,7 @@ describe('updateAssetAuditLog', () => {
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
       'Device #1',
       'asset123',
-      2,
+      3,
       999,
       'ticket as string',
       'Return',
@@ -90,7 +90,7 @@ describe('updateAssetAuditLog', () => {
 
     expect(result).toEqual({
       auditId: 'mock-created-id',
-      conditionCode: 2,
+      conditionCode: 3,
     });
   });
 
@@ -104,7 +104,7 @@ describe('updateAssetAuditLog', () => {
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
       'Device #1',
       'asset123',
-      2,
+      3,
       321,
       null,
       'Dispose',
@@ -112,7 +112,7 @@ describe('updateAssetAuditLog', () => {
 
     expect(result).toEqual({
       auditId: 'mock-created-id',
-      conditionCode: 2,
+      conditionCode: 3,
     });
   });
 
@@ -126,7 +126,7 @@ describe('updateAssetAuditLog', () => {
     expect(addNewEntryToAssetAuditLog).toHaveBeenCalledWith(
       'Device #1',
       'asset123',
-      1,
+      2,
       101,
       'no action provided',
       null,
@@ -134,7 +134,7 @@ describe('updateAssetAuditLog', () => {
 
     expect(result).toEqual({
       auditId: 'mock-created-id',
-      conditionCode: 1,
+      conditionCode: 2,
     });
   });
 

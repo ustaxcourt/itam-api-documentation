@@ -1,18 +1,18 @@
 const baseUrl = process.env.API_BASE_URL || 'http://localhost:7071';
 const bearerToken = process.env.BEARERTOKEN || 'Bearer mocked-token';
-const existingAssetId = '29b81658-44bc-f111-aaae-6045bd03ee84';
+const existingAssetId = 'fa905a5b-13d3-f111-a05b-000d3a58c43a';
 const malformedAssetId = '8d204fa8-69d7-f011-85';
 const nonExistentAssetId = '00000000-0000-0000-0000-000000000000';
 const existingUserId = '00674e1a-bd05-4c6c-a0a1-344404d4b2e4';
 const nonExistentUserId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
-const existingLocationId = '87567b44-44bc-f111-aaae-6045bd03ee84';
+const existingLocationId = '096cbc26-13d3-f111-a059-000d3a5945d9';
 const malformedLocationId = 'df164d9a-69d7-f011-854';
 const existingLocationName = 'G-54';
 const nonExistentLocationId = '04d494f4-b5b9-f011-bbd2-000d3a56dc3b';
 const existingJobTitleId = '76c0a78f-5cd4-f011-8544-000d3a5b5036';
 const nonExistingJobTitleId = 'b09cf686-30d5-f011-8544-7c1e52177973';
 const malformedJobTitleId = 'b09cf686-30d5-f0';
-const existingSerialNumber = 'X002I8FY7H-9';
+const existingSerialNumber = 'CN44150KBF';
 
 describe('Integration testing for ITAM Project', () => {
   jest.setTimeout(30000);
